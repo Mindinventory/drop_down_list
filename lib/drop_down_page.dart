@@ -166,7 +166,6 @@ class _AddTextField extends StatelessWidget {
       controller: controller,
       decoration: const InputDecoration(
         labelText: kEnterData,
-        // icon: Icon(Icons.account_box),
       ),
     );
   }

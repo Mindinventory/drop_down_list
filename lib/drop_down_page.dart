@@ -25,14 +25,14 @@ class _MyHomePageState extends State<DropDownPage> {
         ),
         body: ElevatedButton(
           onPressed: () {
-            showBottomSheet();
+            _showBottomSheet();
           },
           child: const Text(kClickMe),
         ));
   }
 
   // Bottom sheet with list data
-  showBottomSheet({Icon? icon, String? title}) {
+  _showBottomSheet({Icon? icon, String? title}) {
     return showModalBottomSheet(
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
@@ -44,15 +44,66 @@ class _MyHomePageState extends State<DropDownPage> {
         builder: (context) {
           return Stack(
             children: [
-              _buildListview(),
-              _buildFloatingAddButton(),
+              _DropDownListView(
+                dropDownList: _iconData,
+              ),
+              _FloatingButton(
+                dropDownList: _iconData,
+                controller: _controller,
+              ),
             ],
           );
         });
   }
+}
 
-  // alert to add data in bottom sheet list
-  showAlert(BuildContext context) {
+class _DropDownListView extends StatelessWidget {
+  final List<DropDownData> dropDownList;
+  const _DropDownListView({Key? key, required this.dropDownList})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+        itemCount: dropDownList.length,
+        itemBuilder: (BuildContext context, int index) {
+          return ListTile(
+            leading: dropDownList[index].icon,
+            title: Text(
+              dropDownList[index].title,
+            ),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          );
+        });
+  }
+}
+
+class _FloatingButton extends StatelessWidget {
+  final List<DropDownData> dropDownList;
+  final TextEditingController controller;
+  const _FloatingButton(
+      {Key? key, required this.dropDownList, required this.controller})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.bottomRight,
+      child: FloatingActionButton.small(
+        onPressed: () {
+          _showAlert(context);
+        },
+        backgroundColor: Colors.blue,
+        elevation: 5,
+        splashColor: Colors.grey,
+        child: const Icon(Icons.add_outlined),
+      ),
+    );
+  }
+
+  _showAlert(BuildContext context) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -64,71 +115,59 @@ class _MyHomePageState extends State<DropDownPage> {
               child: Form(
                 child: Column(
                   children: <Widget>[
-                    _buildTextFiled(),
+                    _AddTextField(
+                      controller: controller,
+                    ),
                   ],
                 ),
               ),
             ),
             actions: [
-              _buildSubmitButton(),
+              _SubmitButton(
+                dropDownList: dropDownList,
+                controller: controller,
+              ),
             ],
           );
         });
   }
+}
 
-  // widgets
-  Widget _buildListview() {
-    return ListView.builder(
-        itemCount: _iconData.length,
-        itemBuilder: (BuildContext context, int index) {
-          return ListTile(
-            leading: _iconData[index].icon,
-            title: Text(
-              _iconData[index].title,
-            ),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          );
-        });
-  }
+class _SubmitButton extends StatelessWidget {
+  final List<DropDownData> dropDownList;
+  final TextEditingController controller;
+  const _SubmitButton(
+      {Key? key, required this.dropDownList, required this.controller})
+      : super(key: key);
 
-  Widget _buildFloatingAddButton() {
-    return Align(
-      alignment: Alignment.bottomRight,
-      child: FloatingActionButton.small(
-        onPressed: () {
-          showAlert(context);
-        },
-        backgroundColor: Colors.blue,
-        elevation: 5,
-        splashColor: Colors.grey,
-        child: const Icon(Icons.add_outlined),
-      ),
-    );
-  }
-
-  Widget _buildTextFiled() {
-    return TextFormField(
-      controller: _controller,
-      decoration: const InputDecoration(
-        labelText: kEnterData,
-        // icon: Icon(Icons.account_box),
-      ),
-    );
-  }
-
-  Widget _buildSubmitButton() {
+  @override
+  Widget build(BuildContext context) {
     return ElevatedButton(
         child: const Text(kSubmit),
         onPressed: () {
-          _iconData.add(DropDownData(
-              title: _controller.text,
+          dropDownList.add(DropDownData(
+              title: controller.text,
               icon: const Icon(
                 Icons.ac_unit,
                 size: 20.0,
               )));
           Navigator.pop(context);
         });
+  }
+}
+
+class _AddTextField extends StatelessWidget {
+  final TextEditingController controller;
+  const _AddTextField({Key? key, required this.controller}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controller,
+      decoration: const InputDecoration(
+        labelText: kEnterData,
+        // icon: Icon(Icons.account_box),
+      ),
+    );
   }
 }

@@ -18,7 +18,7 @@ The following examples are extracted from the example project available in the r
 `drop_down_list: ^1.0.0`
 
 # How to Use
-`DropDownState(
+```DropDownState(
               DropDown(
                 submitButtonText: 'Submit',
                 submitButtonColor: Colors.blue,
@@ -34,7 +34,7 @@ The following examples are extracted from the example project available in the r
                 },
               ),
             ).showModal(context);
-`
+```
             
 
 

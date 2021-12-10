@@ -11,6 +11,7 @@ The following examples are extracted from the example project available in the r
 
 ## Dropdown Multiple Selection 
 <img src="https://git.mindinventory.com/github/drop-down-list/-/blob/feature/drop_down_plugin/assets/drop_down_multiple_selection.gif" />
+![](https://avatars3.githubusercontent.com/u/31112269?v=4&s=200)
 
 ## Dropdown Single Selection 
 ![drop-down-list](https://git.mindinventory.com/github/drop-down-list/-/blob/feature/drop_down_plugin/assets/drop_down_single_selection.gif)

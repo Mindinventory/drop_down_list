@@ -9,10 +9,10 @@ The following examples are extracted from the example project available in the r
 
 # Samples of Dropdown list with choices
 
-# Dropdown Multiple Selection 
+## Dropdown Multiple Selection 
 ![Dropdown list](file:///Users/mac-00022/Desktop/drop_down_multiple_selection.gif)
 
-# Dropdown Single Selection 
+## Dropdown Single Selection 
 ![Dropdown list](file:///Users/mac-00022/Desktop/drop_down_single_selection.gif)
 
 # Installation

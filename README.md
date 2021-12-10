@@ -16,7 +16,7 @@ The following examples are extracted from the example project available in the r
 ![Dropdown list](file:///Users/mac-00022/Desktop/drop_down_single_selection.gif)
 
 # Installation
-drop_down_list: ^1.0.0
+`drop_down_list: ^1.0.0`
 
 # How to Use
 `DropDown(

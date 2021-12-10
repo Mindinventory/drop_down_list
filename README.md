@@ -10,30 +10,31 @@ The following examples are extracted from the example project available in the r
 # Samples of Dropdown list with choices
 
 ## Dropdown Multiple Selection 
-![Dropdown list](file:///Users/mac-00022/Desktop/drop_down_multiple_selection.gif)
+![Dropdown list]()
 
 ## Dropdown Single Selection 
-![Dropdown list](file:///Users/mac-00022/Desktop/drop_down_single_selection.gif)
+![Dropdown list]()
 
 # Installation
 `drop_down_list: ^1.0.0`
 
 # How to Use
-`DropDown(
-submitButtonText: 'Submit',
-submitButtonColor: Colors.blue,
-searchHintText: 'Search.....',
-bottomSheetTitle: 'Cities',
-searchBackgroundColor: Colors.black12,
-listOfData: _listOfCities,
-callbackForMultipleSelectedItems: (List<dynamic> selectedList) {
-print('Multiple Selected ::: $selectedList');
-},
-callbackForSelectedItem: (String selected) {
-print('Single Selected ::: $selected');
-},
-),
-).showModal(context);
+`DropDownState(
+              DropDown(
+                submitButtonText: 'Submit',
+                submitButtonColor: Colors.blue,
+                searchHintText: 'Search.....',
+                bottomSheetTitle: 'Cities',
+                searchBackgroundColor: Colors.black12,
+                listOfData: _listOfCities,
+                callbackForMultipleSelectedItems: (List<dynamic> selectedList) {
+                  print('Multiple Selected ::: $selectedList');
+                },
+                callbackForSelectedItem: (String selected) {
+                  print('Single Selected ::: $selected');
+                },
+              ),
+            ).showModal(context);
 `
 
 # LICENSE!

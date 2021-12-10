@@ -18,7 +18,7 @@ The following examples are extracted from the example project available in the r
 `drop_down_list: ^1.0.0`
 
 # How to Use
-DropDownState(
+```DropDownState(
               DropDown(
                 submitButtonText: 'Submit',
                 submitButtonColor: Colors.blue,
@@ -33,7 +33,8 @@ DropDownState(
                   print('Single Selected ::: $selected');
                 },
               ),
-            ).showModal(context);
+            ).showModal(context);```
+            
 
 
 # LICENSE!

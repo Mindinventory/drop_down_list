@@ -10,7 +10,7 @@ The following examples are extracted from the example project available in the r
 # Samples of Dropdown list with choices
 
 ## Dropdown Multiple Selection 
-![drop-down-list](https://git.mindinventory.com/github/drop-down-list/-/blob/feature/drop_down_plugin/assets/drop_down_multiple_selection.gif)
+![dropdownlist](https://git.mindinventory.com/github/drop-down-list/-/blob/feature/drop_down_plugin/assets/drop_down_multiple_selection.gif)
 
 ## Dropdown Single Selection 
 ![drop-down-list](https://git.mindinventory.com/github/drop-down-list/-/blob/feature/drop_down_plugin/assets/drop_down_single_selection.gif)

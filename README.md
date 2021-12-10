@@ -33,7 +33,8 @@ callbackForSelectedItem: (String selected) {
 print('Single Selected ::: $selected');
 },
 ),
-).showModal(context);`
+).showModal(context);
+`
 
 # LICENSE!
 

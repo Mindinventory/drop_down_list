@@ -32,6 +32,9 @@ class DropDown {
   /// This will give the call back to the single selected item from list.
   final Function(String)? callbackForSelectedItem;
 
+  /// This will give selection choise for single or multiple for list.
+  final bool isSelectedMultiple;
+
   DropDown({
     Key? key,
     this.buttonText,
@@ -44,6 +47,7 @@ class DropDown {
     this.listOfData,
     this.callbackForMultipleSelectedItems,
     this.callbackForSelectedItem,
+    required this.isSelectedMultiple,
   });
 }
 
@@ -60,17 +64,19 @@ class DropDownState {
   /// This gives the bottom sheet widget.
   void showModal(context) {
     showModalBottomSheet(
-        isScrollControlled: true,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(15.0)),
-        ),
-        context: context,
-        builder: (context) {
-          return StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(15.0)),
+      ),
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
             return DraggableScrollableSheet(
-                expand: false,
-                builder: (BuildContext context, ScrollController scrollController) {
-                  return Column(children: <Widget>[
+              expand: false,
+              builder: (BuildContext context, ScrollController scrollController) {
+                return Column(
+                  children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 10),
                       child: Row(
@@ -101,8 +107,12 @@ class DropDownState {
                                   Navigator.of(context).pop();
                                 },
                                 style: ElevatedButton.styleFrom(
-                                    primary: dropDown.submitButtonColor ?? Colors.blue,
-                                    textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                                  primary: dropDown.submitButtonColor ?? Colors.blue,
+                                  textStyle: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                                 child: Text(dropDown.submitButtonText ?? 'Submit')),
                           ),
                         ],
@@ -158,50 +168,63 @@ class DropDownState {
                     /// Listview (list of data with check box for multiple selection & on tile tap single selection)
                     Expanded(
                       child: ListView.builder(
-                          controller: scrollController,
-                          itemCount: mainList.isNotEmpty ? mainList.length : dropDown.listOfData!.length,
-                          itemBuilder: (context, index) {
-                            return InkWell(
-                                child: Container(
-                                  color: Colors.white,
-                                  child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-                                    child: ListTile(
-                                      title: Text(
-                                        mainList.isNotEmpty ? mainList[index].name : dropDown.listOfData![index].name,
-                                      ),
-                                      trailing: GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            if (mainList.isNotEmpty) {
-                                              mainList[index].isSelected = !mainList[index].isSelected;
-                                            } else {
-                                              dropDown.listOfData![index].isSelected = !dropDown.listOfData![index].isSelected;
-                                            }
-                                          });
-                                        },
-                                        child: (mainList.isNotEmpty)
-                                            ? mainList[index].isSelected
-                                                ? const Icon(Icons.check_box)
-                                                : const Icon(Icons.check_box_outline_blank)
-                                            : dropDown.listOfData![index].isSelected
-                                                ? const Icon(Icons.check_box)
-                                                : const Icon(Icons.check_box_outline_blank),
-                                      ),
-                                    ),
+                        controller: scrollController,
+                        itemCount: mainList.isNotEmpty ? mainList.length : dropDown.listOfData!.length,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            child: Container(
+                              color: Colors.white,
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                                child: ListTile(
+                                  title: Text(
+                                    mainList.isNotEmpty ? mainList[index].name : dropDown.listOfData![index].name,
                                   ),
+                                  trailing: dropDown.isSelectedMultiple
+                                      ? GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              if (mainList.isNotEmpty) {
+                                                mainList[index].isSelected = !mainList[index].isSelected;
+                                              } else {
+                                                dropDown.listOfData![index].isSelected = !dropDown.listOfData![index].isSelected;
+                                              }
+                                            });
+                                          },
+                                          child: (mainList.isNotEmpty)
+                                              ? mainList[index].isSelected
+                                                  ? const Icon(Icons.check_box)
+                                                  : const Icon(Icons.check_box_outline_blank)
+                                              : dropDown.listOfData![index].isSelected
+                                                  ? const Icon(Icons.check_box)
+                                                  : const Icon(Icons.check_box_outline_blank),
+                                        )
+                                      : const SizedBox(
+                                          height: 0.0,
+                                          width: 0.0,
+                                        ),
                                 ),
-                                onTap: () {
-                                  dropDown.callbackForSelectedItem
-                                      ?.call((mainList.isNotEmpty) ? mainList[index].name : dropDown.listOfData![index].name);
-                                  Navigator.of(context).pop();
-                                });
-                          }),
-                    )
-                  ]);
-                });
-          });
-        });
+                              ),
+                            ),
+                            onTap: dropDown.isSelectedMultiple
+                                ? null
+                                : () {
+                                    dropDown.callbackForSelectedItem
+                                        ?.call((mainList.isNotEmpty) ? mainList[index].name : dropDown.listOfData![index].name);
+                                    Navigator.of(context).pop();
+                                  },
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+        );
+      },
+    );
   }
 
   /// This helps when search enabled & show the filtered data in list.

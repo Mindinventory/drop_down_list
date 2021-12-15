@@ -1,10 +1,12 @@
 import 'package:drop_down_plugin/drop_down_plugin.dart';
 import 'package:flutter/material.dart';
 
+import 'constants.dart';
+
 void main() {
   runApp(
     const MaterialApp(
-      title: 'DropDownList',
+      title: kTitle,
       home: DropDownListExample(),
       debugShowCheckedModeBanner: false,
     ),
@@ -23,18 +25,18 @@ class DropDownListExample extends StatefulWidget {
 class _DropDownListExampleState extends State<DropDownListExample> {
   /// This is list of city which will pass to the drop down.
   final List<SelectedListItem> _listOfCities = [
-    SelectedListItem(false, 'Tokyo'),
-    SelectedListItem(false, 'New York'),
-    SelectedListItem(false, 'London'),
-    SelectedListItem(false, 'Paris'),
-    SelectedListItem(false, 'Madrid'),
-    SelectedListItem(false, 'Dubai'),
-    SelectedListItem(false, 'Rome'),
-    SelectedListItem(false, 'Barcelona'),
-    SelectedListItem(false, 'Cologne'),
-    SelectedListItem(false, 'Monte Carlo'),
-    SelectedListItem(false, 'Puebla'),
-    SelectedListItem(false, 'Florence'),
+    SelectedListItem(false, kTokyo),
+    SelectedListItem(false, kNewYork),
+    SelectedListItem(false, kLondon),
+    SelectedListItem(false, kParis),
+    SelectedListItem(false, kMadrid),
+    SelectedListItem(false, kDubai),
+    SelectedListItem(false, kRome),
+    SelectedListItem(false, kBarcelona),
+    SelectedListItem(false, kCologne),
+    SelectedListItem(false, kMonteCarlo),
+    SelectedListItem(false, kPuebla),
+    SelectedListItem(false, kFlorence),
   ];
   TextEditingController fullNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -62,7 +64,7 @@ class _DropDownListExampleState extends State<DropDownListExample> {
             height: 30.0,
           ),
           const Text(
-            'Register',
+            kRegister,
             style: TextStyle(
               fontSize: 34.0,
               fontWeight: FontWeight.bold,
@@ -73,33 +75,33 @@ class _DropDownListExampleState extends State<DropDownListExample> {
           ),
           AppTextField(
             controller: fullNameController,
-            strTextFiledTitle: 'Full Name',
-            strHint: 'Enter your name',
+            strTextFiledTitle: kFullName,
+            strHint: kEnterYourName,
             isCitySelected: false,
           ),
           AppTextField(
             controller: emailController,
-            strTextFiledTitle: 'Email',
-            strHint: 'Enter your email',
+            strTextFiledTitle: kEmail,
+            strHint: kEnterYourEmail,
             isCitySelected: false,
           ),
           AppTextField(
             controller: phoneNumberController,
-            strTextFiledTitle: 'Phone Number',
-            strHint: 'Enter your phone number',
+            strTextFiledTitle: kPhoneNumber,
+            strHint: kEnterYourPhoneNumber,
             isCitySelected: false,
           ),
           AppTextField(
             controller: cityController,
-            strTextFiledTitle: 'City',
-            strHint: 'Choose your city',
+            strTextFiledTitle: kCity,
+            strHint: kChooseYourCity,
             isCitySelected: true,
             listOfCities: _listOfCities,
           ),
           AppTextField(
             controller: passwordController,
-            strTextFiledTitle: 'Password',
-            strHint: 'Add your password',
+            strTextFiledTitle: kPassword,
+            strHint: kAddYourPassword,
             isCitySelected: false,
           ),
           const SizedBox(
@@ -132,28 +134,30 @@ class AppTextField extends StatefulWidget {
 }
 
 class _AppTextFieldState extends State<AppTextField> {
+  TextEditingController searchController = TextEditingController();
+
   void onTextFieldTap() {
     DropDownState(
       DropDown(
-        submitButtonText: 'Submit',
+        submitButtonText: kDone,
         submitButtonColor: const Color.fromRGBO(70, 76, 222, 1),
-        searchHintText: 'Search.....',
-        bottomSheetTitle: 'Cities',
+        searchHintText: kSearch,
+        bottomSheetTitle: kCities,
         searchBackgroundColor: Colors.black12,
-        listOfData: widget.listOfCities,
-        callbackForMultipleSelectedItems: (List<dynamic> selectedList) {
-          // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          //   content: Text('$selectedList'),
-          // ));
+        dataList: widget.listOfCities ?? [],
+        selectedItems: (List<dynamic> selectedList) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('$selectedList'),
+          ));
         },
-        callbackForSelectedItem: (String selected) {
-          print('Single Selected ::: $selected');
+        selectedItem: (String selected) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(selected),
           ));
           widget.controller.text = selected;
         },
-        isSelectedMultiple: false,
+        enableMultipleSelection: false,
+        searchController: searchController,
       ),
     ).showModal(context);
   }
@@ -172,6 +176,7 @@ class _AppTextFieldState extends State<AppTextField> {
           cursorColor: Colors.black,
           onTap: widget.isCitySelected
               ? () {
+                  FocusScope.of(context).unfocus();
                   onTextFieldTap();
                 }
               : null,
@@ -208,7 +213,7 @@ class _AppElevatedButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: () {},
         child: const Text(
-          'REGISTER',
+          kREGISTER,
           style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.normal),
         ),
         style: ElevatedButton.styleFrom(

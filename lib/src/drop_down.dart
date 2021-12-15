@@ -21,19 +21,19 @@ class DropDown {
   final Color? searchBackgroundColor;
 
   /// This will give the default search controller to the search text field.
-  final TextEditingController? searchController;
+  final TextEditingController searchController;
 
   /// This will give the list of data.
-  final List<SelectedListItem>? listOfData;
+  final List<SelectedListItem> dataList;
 
-  /// This will give the call back to the multiple selected items from list.
-  final Function(List<dynamic>)? callbackForMultipleSelectedItems;
+  /// This will give the call back to the selected items (multiple) from list.
+  final Function(List<dynamic>)? selectedItems;
 
-  /// This will give the call back to the single selected item from list.
-  final Function(String)? callbackForSelectedItem;
+  /// This will give the call back to the selected item (single) from list.
+  final Function(String)? selectedItem;
 
   /// This will give selection choise for single or multiple for list.
-  final bool isSelectedMultiple;
+  final bool enableMultipleSelection;
 
   DropDown({
     Key? key,
@@ -43,23 +43,17 @@ class DropDown {
     this.submitButtonColor,
     this.searchHintText,
     this.searchBackgroundColor,
-    this.searchController,
-    this.listOfData,
-    this.callbackForMultipleSelectedItems,
-    this.callbackForSelectedItem,
-    required this.isSelectedMultiple,
+    required this.searchController,
+    required this.dataList,
+    this.selectedItems,
+    this.selectedItem,
+    required this.enableMultipleSelection,
   });
 }
 
 class DropDownState {
   DropDown dropDown;
   DropDownState(this.dropDown);
-
-  /// This list will set when the list of data is not available.
-  List<SelectedListItem> mainList = [];
-
-  /// This is default search controller.
-  final TextEditingController searchController = TextEditingController();
 
   /// This gives the bottom sheet widget.
   void showModal(context) {
@@ -72,173 +66,13 @@ class DropDownState {
       builder: (context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
-            return DraggableScrollableSheet(
-              expand: false,
-              builder: (BuildContext context, ScrollController scrollController) {
-                return Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          /// Bottom sheet title text
-                          Text(
-                            dropDown.bottomSheetTitle ?? 'Title',
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
-                          ),
-                          Expanded(
-                            child: Container(),
-                          ),
-
-                          /// Submit button
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: ElevatedButton(
-                                onPressed: () {
-                                  List<SelectedListItem> selectedList = dropDown.listOfData!.where((element) => element.isSelected == true).toList();
-                                  List<String> selectedNameList = [];
-
-                                  for (var element in selectedList) {
-                                    selectedNameList.add(element.name);
-                                  }
-
-                                  dropDown.callbackForMultipleSelectedItems?.call(selectedNameList);
-                                  Navigator.of(context).pop();
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  primary: dropDown.submitButtonColor ?? Colors.blue,
-                                  textStyle: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                child: Text(dropDown.submitButtonText ?? 'Submit')),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    /// A [TextField] that displays a list of suggestions as the user types with clear button.
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: TextFormField(
-                        controller: dropDown.searchController ?? searchController,
-                        cursorColor: Colors.black,
-                        onChanged: (value) {
-                          setState(() {
-                            _buildSearchList(value);
-                          });
-                        },
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: dropDown.searchBackgroundColor ?? Colors.black12,
-                          contentPadding: const EdgeInsets.only(left: 0, bottom: 0, top: 0, right: 15),
-                          hintText: dropDown.searchHintText ?? 'Search',
-                          border: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                              width: 0,
-                              style: BorderStyle.none,
-                            ),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(8.0),
-                            ),
-                          ),
-                          prefixIcon: const IconButton(
-                            icon: Icon(Icons.search),
-                            onPressed: null,
-                          ),
-                          suffixIcon: GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                dropDown.searchController!.clear();
-                                mainList.clear();
-                                searchController.clear();
-                              });
-                            },
-                            child: const Icon(
-                              Icons.cancel,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    /// Listview (list of data with check box for multiple selection & on tile tap single selection)
-                    Expanded(
-                      child: ListView.builder(
-                        controller: scrollController,
-                        itemCount: mainList.isNotEmpty ? mainList.length : dropDown.listOfData!.length,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            child: Container(
-                              color: Colors.white,
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-                                child: ListTile(
-                                  title: Text(
-                                    mainList.isNotEmpty ? mainList[index].name : dropDown.listOfData![index].name,
-                                  ),
-                                  trailing: dropDown.isSelectedMultiple
-                                      ? GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              if (mainList.isNotEmpty) {
-                                                mainList[index].isSelected = !mainList[index].isSelected;
-                                              } else {
-                                                dropDown.listOfData![index].isSelected = !dropDown.listOfData![index].isSelected;
-                                              }
-                                            });
-                                          },
-                                          child: (mainList.isNotEmpty)
-                                              ? mainList[index].isSelected
-                                                  ? const Icon(Icons.check_box)
-                                                  : const Icon(Icons.check_box_outline_blank)
-                                              : dropDown.listOfData![index].isSelected
-                                                  ? const Icon(Icons.check_box)
-                                                  : const Icon(Icons.check_box_outline_blank),
-                                        )
-                                      : const SizedBox(
-                                          height: 0.0,
-                                          width: 0.0,
-                                        ),
-                                ),
-                              ),
-                            ),
-                            onTap: dropDown.isSelectedMultiple
-                                ? null
-                                : () {
-                                    dropDown.callbackForSelectedItem
-                                        ?.call((mainList.isNotEmpty) ? mainList[index].name : dropDown.listOfData![index].name);
-                                    Navigator.of(context).pop();
-                                  },
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                );
-              },
+            return MainBody(
+              dropDown: dropDown,
             );
           },
         );
       },
     );
-  }
-
-  /// This helps when search enabled & show the filtered data in list.
-  _buildSearchList(String userSearchTerm) {
-    List<SelectedListItem> _searchList = [];
-
-    for (int i = 0; i < dropDown.listOfData!.length; i++) {
-      String name = dropDown.listOfData![i].name;
-      if (name.toLowerCase().contains(userSearchTerm.toLowerCase())) {
-        _searchList.add(dropDown.listOfData![i]);
-      }
-    }
-
-    mainList = _searchList;
   }
 }
 
@@ -248,4 +82,183 @@ class SelectedListItem {
   String name;
 
   SelectedListItem(this.isSelected, this.name);
+}
+
+/// This is main class to display the bottom sheet body.
+class MainBody extends StatefulWidget {
+  DropDown dropDown;
+
+  MainBody({required this.dropDown, Key? key}) : super(key: key);
+
+  @override
+  State<MainBody> createState() => _MainBodyState();
+}
+
+class _MainBodyState extends State<MainBody> {
+  /// This list will set when the list of data is not available.
+  List<SelectedListItem> mainList = [];
+  @override
+  void initState() {
+    super.initState();
+    mainList = widget.dropDown.dataList;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DraggableScrollableSheet(
+      initialChildSize: 0.7,
+      minChildSize: 0.13,
+      maxChildSize: 0.9,
+      expand: false,
+      builder: (BuildContext context, ScrollController scrollController) {
+        return Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  /// Bottom sheet title text
+                  Text(
+                    widget.dropDown.bottomSheetTitle ?? 'Title',
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                  ),
+                  Expanded(
+                    child: Container(),
+                  ),
+
+                  /// Done button
+                  Visibility(
+                    visible: widget.dropDown.enableMultipleSelection,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: ElevatedButton(
+                          onPressed: () {
+                            List<SelectedListItem> selectedList = widget.dropDown.dataList.where((element) => element.isSelected == true).toList();
+                            List<String> selectedNameList = [];
+
+                            for (var element in selectedList) {
+                              selectedNameList.add(element.name);
+                            }
+
+                            widget.dropDown.selectedItems?.call(selectedNameList);
+                            Navigator.of(context).pop();
+                            FocusScope.of(context).unfocus();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: widget.dropDown.submitButtonColor ?? Colors.blue,
+                            textStyle: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          child: Text(widget.dropDown.submitButtonText ?? 'Done')),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            /// A [TextField] that displays a list of suggestions as the user types with clear button.
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: TextFormField(
+                controller: widget.dropDown.searchController,
+                cursorColor: Colors.black,
+                onChanged: (value) {
+                  setState(() {
+                    _buildSearchList(value);
+                  });
+                },
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: widget.dropDown.searchBackgroundColor ?? Colors.black12,
+                  contentPadding: const EdgeInsets.only(left: 0, bottom: 0, top: 0, right: 15),
+                  hintText: widget.dropDown.searchHintText ?? 'Search',
+                  border: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      width: 0,
+                      style: BorderStyle.none,
+                    ),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(8.0),
+                    ),
+                  ),
+                  prefixIcon: const IconButton(
+                    icon: Icon(Icons.search),
+                    onPressed: null,
+                  ),
+                  suffixIcon: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        widget.dropDown.searchController.clear();
+                        mainList = widget.dropDown.dataList;
+                      });
+                    },
+                    child: const Icon(
+                      Icons.cancel,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            /// Listview (list of data with check box for multiple selection & on tile tap single selection)
+            Expanded(
+              child: ListView.builder(
+                controller: scrollController,
+                itemCount: mainList.length,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    child: Container(
+                      color: Colors.white,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                        child: ListTile(
+                          title: Text(
+                            mainList[index].name,
+                          ),
+                          trailing: widget.dropDown.enableMultipleSelection
+                              ? GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      mainList[index].isSelected = !mainList[index].isSelected;
+                                    });
+                                  },
+                                  child: mainList[index].isSelected ? const Icon(Icons.check_box) : const Icon(Icons.check_box_outline_blank),
+                                )
+                              : const SizedBox(
+                                  height: 0.0,
+                                  width: 0.0,
+                                ),
+                        ),
+                      ),
+                    ),
+                    onTap: widget.dropDown.enableMultipleSelection
+                        ? null
+                        : () {
+                            widget.dropDown.selectedItem?.call(mainList[index].name);
+                            Navigator.of(context).pop();
+                            FocusScope.of(context).unfocus();
+                          },
+                  );
+                },
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /// This helps when search enabled & show the filtered data in list.
+  _buildSearchList(String userSearchTerm) {
+    final results = widget.dropDown.dataList.where((element) => element.name.toLowerCase().contains(userSearchTerm.toLowerCase())).toList();
+    if (userSearchTerm.isEmpty) {
+      mainList = widget.dropDown.dataList;
+    } else {
+      mainList = results;
+    }
+  }
 }

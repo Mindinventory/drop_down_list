@@ -18,25 +18,25 @@ The following examples are extracted from the example project available in the r
 `drop_down_list: ^1.0.0`
 
 # How to Use
-```DropDownState(
-              DropDown(
-                submitButtonText: 'Submit',
-                submitButtonColor: Colors.blue,
-                searchHintText: 'Search.....',
-                bottomSheetTitle: 'Cities',
-                searchBackgroundColor: Colors.black12,
-                listOfData: _listOfCities,
-                callbackForMultipleSelectedItems: (List<dynamic> selectedList) {
-                  print('Multiple Selected ::: $selectedList');
-                },
-                callbackForSelectedItem: (String selected) {
-                  print('Single Selected ::: $selected');
-                },
-              ),
-            ).showModal(context);
+```
+DropDownState(
+  DropDown(
+    submitButtonText: 'Submit',
+    submitButtonColor: Colors.blue,
+    searchHintText: 'Search.....',
+    bottomSheetTitle: 'Cities',
+    searchBackgroundColor: Colors.black12,
+    listOfData: _listOfCities,
+    callbackForMultipleSelectedItems: (List<dynamic> selectedList) {
+        print('Multiple Selected ::: $selectedList');
+    },
+    callbackForSelectedItem: (String selected) {
+        print('Single Selected ::: $selected');
+    },
+  ),
+).showModal(context);
 ```
             
-
 
 # LICENSE!
 

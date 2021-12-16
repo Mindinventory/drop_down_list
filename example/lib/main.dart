@@ -38,6 +38,8 @@ class _DropDownListExampleState extends State<DropDownListExample> {
     SelectedListItem(false, kPuebla),
     SelectedListItem(false, kFlorence),
   ];
+
+  /// This is register text field controllers.
   TextEditingController fullNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
@@ -54,6 +56,7 @@ class _DropDownListExampleState extends State<DropDownListExample> {
     );
   }
 
+  /// This is Main Body widget.
   Widget _mainBody() {
     return Padding(
       padding: const EdgeInsets.all(12.0),
@@ -114,6 +117,7 @@ class _DropDownListExampleState extends State<DropDownListExample> {
   }
 }
 
+/// This is Common App textfiled class.
 class AppTextField extends StatefulWidget {
   TextEditingController controller = TextEditingController();
   final String strTextFiledTitle;
@@ -136,6 +140,7 @@ class AppTextField extends StatefulWidget {
 class _AppTextFieldState extends State<AppTextField> {
   TextEditingController searchController = TextEditingController();
 
+  /// This is on text changed method which will display on city text field on changed.
   void onTextFieldTap() {
     DropDownState(
       DropDown(
@@ -156,7 +161,7 @@ class _AppTextFieldState extends State<AppTextField> {
           ));
           widget.controller.text = selected;
         },
-        enableMultipleSelection: true,
+        enableMultipleSelection: false,
         searchController: searchController,
       ),
     ).showModal(context);
@@ -204,6 +209,7 @@ class _AppTextFieldState extends State<AppTextField> {
   }
 }
 
+/// This is common class for 'REGISTER' elevated button.
 class _AppElevatedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

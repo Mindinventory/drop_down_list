@@ -97,6 +97,7 @@ class MainBody extends StatefulWidget {
 class _MainBodyState extends State<MainBody> {
   /// This list will set when the list of data is not available.
   List<SelectedListItem> mainList = [];
+
   @override
   void initState() {
     super.initState();
@@ -142,8 +143,7 @@ class _MainBodyState extends State<MainBody> {
                             }
 
                             widget.dropDown.selectedItems?.call(selectedNameList);
-                            FocusScope.of(context).unfocus();
-                            Navigator.of(context).pop();
+                            _onUnfocusKeyboardAndPop();
                           },
                           style: ElevatedButton.styleFrom(
                             primary: widget.dropDown.submitButtonColor ?? Colors.blue,
@@ -161,52 +161,10 @@ class _MainBodyState extends State<MainBody> {
 
             /// A [TextField] that displays a list of suggestions as the user types with clear button.
             _AppTextField(
-              mainList: mainList,
               dropDown: widget.dropDown,
+              onTextChanged: _buildSearchList,
+              onClearTap: _onClearTap,
             ),
-            // Padding(
-            //   padding: const EdgeInsets.all(12.0),
-            //   child: TextFormField(
-            //     controller: widget.dropDown.searchController,
-            //     cursorColor: Colors.black,
-            //     onChanged: (value) {
-            //       setState(() {
-            //         // _buildSearchList(value);
-            //       });
-            //     },
-            //     decoration: InputDecoration(
-            //       filled: true,
-            //       fillColor: widget.dropDown.searchBackgroundColor ?? Colors.black12,
-            //       contentPadding: const EdgeInsets.only(left: 0, bottom: 0, top: 0, right: 15),
-            //       hintText: widget.dropDown.searchHintText ?? 'Search',
-            //       border: const OutlineInputBorder(
-            //         borderSide: BorderSide(
-            //           width: 0,
-            //           style: BorderStyle.none,
-            //         ),
-            //         borderRadius: BorderRadius.all(
-            //           Radius.circular(8.0),
-            //         ),
-            //       ),
-            //       prefixIcon: const IconButton(
-            //         icon: Icon(Icons.search),
-            //         onPressed: null,
-            //       ),
-            //       suffixIcon: GestureDetector(
-            //         onTap: () {
-            //           setState(() {
-            //             widget.dropDown.searchController.clear();
-            //             mainList = widget.dropDown.dataList;
-            //           });
-            //         },
-            //         child: const Icon(
-            //           Icons.cancel,
-            //           color: Colors.grey,
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-            // ),
 
             /// Listview (list of data with check box for multiple selection & on tile tap single selection)
             Expanded(
@@ -243,8 +201,7 @@ class _MainBodyState extends State<MainBody> {
                         ? null
                         : () {
                             widget.dropDown.selectedItem?.call(mainList[index].name);
-                            FocusScope.of(context).unfocus();
-                            Navigator.of(context).pop();
+                            _onUnfocusKeyboardAndPop();
                           },
                   );
                 },
@@ -255,13 +212,38 @@ class _MainBodyState extends State<MainBody> {
       },
     );
   }
+
+  /// This helps when search enabled & show the filtered data in list.
+  _buildSearchList(String userSearchTerm) {
+    final results = widget.dropDown.dataList.where((element) => element.name.toLowerCase().contains(userSearchTerm.toLowerCase())).toList();
+    if (userSearchTerm.isEmpty) {
+      mainList = widget.dropDown.dataList;
+    } else {
+      mainList = results;
+    }
+    setState(() {});
+  }
+
+  /// This helps when want to clear text in search text field.
+  void _onClearTap() {
+    widget.dropDown.searchController.clear();
+    mainList = widget.dropDown.dataList;
+    setState(() {});
+  }
+
+  ///
+  _onUnfocusKeyboardAndPop() {
+    FocusScope.of(context).unfocus();
+    Navigator.of(context).pop();
+  }
 }
 
 class _AppTextField extends StatefulWidget {
   DropDown dropDown;
-  List<SelectedListItem> mainList = [];
+  Function(String) onTextChanged;
+  VoidCallback onClearTap;
 
-  _AppTextField({required this.dropDown, required this.mainList, Key? key}) : super(key: key);
+  _AppTextField({required this.dropDown, required this.onTextChanged, required this.onClearTap, Key? key}) : super(key: key);
 
   @override
   State<_AppTextField> createState() => _AppTextFieldState();
@@ -276,9 +258,7 @@ class _AppTextFieldState extends State<_AppTextField> {
         controller: widget.dropDown.searchController,
         cursorColor: Colors.black,
         onChanged: (value) {
-          setState(() {
-            _buildSearchList(value);
-          });
+          widget.onTextChanged(value);
         },
         decoration: InputDecoration(
           filled: true,
@@ -299,12 +279,7 @@ class _AppTextFieldState extends State<_AppTextField> {
             onPressed: null,
           ),
           suffixIcon: GestureDetector(
-            onTap: () {
-              setState(() {
-                widget.dropDown.searchController.clear();
-                widget.mainList = widget.dropDown.dataList;
-              });
-            },
+            onTap: widget.onClearTap,
             child: const Icon(
               Icons.cancel,
               color: Colors.grey,
@@ -313,15 +288,5 @@ class _AppTextFieldState extends State<_AppTextField> {
         ),
       ),
     );
-  }
-
-  /// This helps when search enabled & show the filtered data in list.
-  _buildSearchList(String userSearchTerm) {
-    final results = widget.dropDown.dataList.where((element) => element.name.toLowerCase().contains(userSearchTerm.toLowerCase())).toList();
-    if (userSearchTerm.isEmpty) {
-      widget.mainList = widget.dropDown.dataList;
-    } else {
-      widget.mainList = results;
-    }
   }
 }

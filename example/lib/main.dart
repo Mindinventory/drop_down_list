@@ -156,7 +156,7 @@ class _AppTextFieldState extends State<AppTextField> {
           ));
           widget.controller.text = selected;
         },
-        enableMultipleSelection: false,
+        enableMultipleSelection: true,
         searchController: searchController,
       ),
     ).showModal(context);

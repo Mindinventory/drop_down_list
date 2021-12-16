@@ -231,13 +231,14 @@ class _MainBodyState extends State<MainBody> {
     setState(() {});
   }
 
-  ///
+  /// This helps to unfocus the keyboard & pop from the bottom sheet.
   _onUnfocusKeyboardAndPop() {
     FocusScope.of(context).unfocus();
     Navigator.of(context).pop();
   }
 }
 
+/// This is search text field class.
 class _AppTextField extends StatefulWidget {
   DropDown dropDown;
   Function(String) onTextChanged;

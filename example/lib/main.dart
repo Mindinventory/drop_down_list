@@ -40,11 +40,21 @@ class _DropDownListExampleState extends State<DropDownListExample> {
   ];
 
   /// This is register text field controllers.
-  TextEditingController fullNameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController phoneNumberController = TextEditingController();
-  TextEditingController cityController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  final TextEditingController _fullNameTextEditingController = TextEditingController();
+  final TextEditingController _emailTextEditingController = TextEditingController();
+  final TextEditingController _phoneNumberTextEditingController = TextEditingController();
+  final TextEditingController _cityTextEditingController = TextEditingController();
+  final TextEditingController _passwordTextEditingController = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    _fullNameTextEditingController.dispose();
+    _emailTextEditingController.dispose();
+    _phoneNumberTextEditingController.dispose();
+    _cityTextEditingController.dispose();
+    _passwordTextEditingController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,34 +87,34 @@ class _DropDownListExampleState extends State<DropDownListExample> {
             height: 15.0,
           ),
           AppTextField(
-            controller: fullNameController,
-            strTextFiledTitle: kFullName,
-            strHint: kEnterYourName,
+            textEditingController: _fullNameTextEditingController,
+            title: kFullName,
+            hint: kEnterYourName,
             isCitySelected: false,
           ),
           AppTextField(
-            controller: emailController,
-            strTextFiledTitle: kEmail,
-            strHint: kEnterYourEmail,
+            textEditingController: _emailTextEditingController,
+            title: kEmail,
+            hint: kEnterYourEmail,
             isCitySelected: false,
           ),
           AppTextField(
-            controller: phoneNumberController,
-            strTextFiledTitle: kPhoneNumber,
-            strHint: kEnterYourPhoneNumber,
+            textEditingController: _phoneNumberTextEditingController,
+            title: kPhoneNumber,
+            hint: kEnterYourPhoneNumber,
             isCitySelected: false,
           ),
           AppTextField(
-            controller: cityController,
-            strTextFiledTitle: kCity,
-            strHint: kChooseYourCity,
+            textEditingController: _cityTextEditingController,
+            title: kCity,
+            hint: kChooseYourCity,
             isCitySelected: true,
-            listOfCities: _listOfCities,
+            cities: _listOfCities,
           ),
           AppTextField(
-            controller: passwordController,
-            strTextFiledTitle: kPassword,
-            strHint: kAddYourPassword,
+            textEditingController: _passwordTextEditingController,
+            title: kPassword,
+            hint: kAddYourPassword,
             isCitySelected: false,
           ),
           const SizedBox(
@@ -119,17 +129,17 @@ class _DropDownListExampleState extends State<DropDownListExample> {
 
 /// This is Common App textfiled class.
 class AppTextField extends StatefulWidget {
-  TextEditingController controller = TextEditingController();
-  final String strTextFiledTitle;
-  final String strHint;
+  TextEditingController textEditingController = TextEditingController();
+  final String title;
+  final String hint;
   final bool isCitySelected;
-  final List<SelectedListItem>? listOfCities;
+  final List<SelectedListItem>? cities;
   AppTextField({
-    required this.controller,
-    required this.strTextFiledTitle,
-    required this.strHint,
+    required this.textEditingController,
+    required this.title,
+    required this.hint,
     required this.isCitySelected,
-    this.listOfCities,
+    this.cities,
     Key? key,
   }) : super(key: key);
 
@@ -138,7 +148,7 @@ class AppTextField extends StatefulWidget {
 }
 
 class _AppTextFieldState extends State<AppTextField> {
-  TextEditingController searchController = TextEditingController();
+  TextEditingController _searchTextEditingController = TextEditingController();
 
   /// This is on text changed method which will display on city text field on changed.
   void onTextFieldTap() {
@@ -149,22 +159,26 @@ class _AppTextFieldState extends State<AppTextField> {
         searchHintText: kSearch,
         bottomSheetTitle: kCities,
         searchBackgroundColor: Colors.black12,
-        dataList: widget.listOfCities ?? [],
+        dataList: widget.cities ?? [],
         selectedItems: (List<dynamic> selectedList) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('$selectedList'),
-          ));
+          showSnackBar(selectedList.toString());
         },
         selectedItem: (String selected) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(selected),
-          ));
-          widget.controller.text = selected;
+          showSnackBar(selected);
+          widget.textEditingController.text = selected;
         },
-        enableMultipleSelection: false,
-        searchController: searchController,
+        enableMultipleSelection: true,
+        searchController: _searchTextEditingController,
       ),
     ).showModal(context);
+  }
+
+  void showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+      ),
+    );
   }
 
   @override
@@ -172,12 +186,12 @@ class _AppTextFieldState extends State<AppTextField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(widget.strTextFiledTitle),
+        Text(widget.title),
         const SizedBox(
           height: 5.0,
         ),
         TextFormField(
-          controller: widget.controller,
+          controller: widget.textEditingController,
           cursorColor: Colors.black,
           onTap: widget.isCitySelected
               ? () {
@@ -189,7 +203,7 @@ class _AppTextFieldState extends State<AppTextField> {
             filled: true,
             fillColor: Colors.black12,
             contentPadding: const EdgeInsets.only(left: 8, bottom: 0, top: 0, right: 15),
-            hintText: widget.strHint,
+            hintText: widget.hint,
             border: const OutlineInputBorder(
               borderSide: BorderSide(
                 width: 0,

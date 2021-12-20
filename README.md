@@ -10,10 +10,10 @@ The following examples are extracted from the example project available in the r
 # Samples of Dropdown list with choices
 
 ## Dropdown Multiple Selection
-![drop-down-list](https://github.com/mi-ghanshyam/drop_down_list/blob/main/assets/drop_down_multiple_selection.gif)
+![drop-down-list](https://github.com/Mindinventory/drop_down_list/blob/main/assets/drop_down_multiple_selection.gif)
 
 ## Dropdown Single Selection
-![drop-down-list](https://github.com/mi-ghanshyam/drop_down_list/blob/main/assets/drop_down_single_selection.gif)
+![drop-down-list](https://github.com/Mindinventory/drop_down_list/blob/main/assets/drop_down_single_selection.gif)
 
 # How to Use
 ```
@@ -41,7 +41,7 @@ DropDownState(
 
 # LICENSE!
 
-Dropdown list is [MIT-licensed](https://github.com/mi-ghanshyam/drop_down_list/blob/main/LICENSE "MIT-licensed").
+Dropdown list is [MIT-licensed](https://github.com/Mindinventory/drop_down_list/blob/main/LICENSE "MIT-licensed").
 
 # Let us know!
 

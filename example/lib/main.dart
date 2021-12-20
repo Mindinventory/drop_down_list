@@ -1,4 +1,4 @@
-import 'package:drop_down_plugin/drop_down_plugin.dart';
+import 'package:drop_down_list/drop_down_list.dart';
 import 'package:flutter/material.dart';
 
 import 'constants.dart';
@@ -40,11 +40,16 @@ class _DropDownListExampleState extends State<DropDownListExample> {
   ];
 
   /// This is register text field controllers.
-  final TextEditingController _fullNameTextEditingController = TextEditingController();
-  final TextEditingController _emailTextEditingController = TextEditingController();
-  final TextEditingController _phoneNumberTextEditingController = TextEditingController();
-  final TextEditingController _cityTextEditingController = TextEditingController();
-  final TextEditingController _passwordTextEditingController = TextEditingController();
+  final TextEditingController _fullNameTextEditingController =
+      TextEditingController();
+  final TextEditingController _emailTextEditingController =
+      TextEditingController();
+  final TextEditingController _phoneNumberTextEditingController =
+      TextEditingController();
+  final TextEditingController _cityTextEditingController =
+      TextEditingController();
+  final TextEditingController _passwordTextEditingController =
+      TextEditingController();
 
   @override
   void dispose() {
@@ -167,7 +172,7 @@ class _AppTextFieldState extends State<AppTextField> {
           showSnackBar(selected);
           widget.textEditingController.text = selected;
         },
-        enableMultipleSelection: true,
+        enableMultipleSelection: false,
         searchController: _searchTextEditingController,
       ),
     ).showModal(context);
@@ -202,7 +207,8 @@ class _AppTextFieldState extends State<AppTextField> {
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.black12,
-            contentPadding: const EdgeInsets.only(left: 8, bottom: 0, top: 0, right: 15),
+            contentPadding:
+                const EdgeInsets.only(left: 8, bottom: 0, top: 0, right: 15),
             hintText: widget.hint,
             border: const OutlineInputBorder(
               borderSide: BorderSide(

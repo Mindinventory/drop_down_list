@@ -115,14 +115,16 @@ class _MainBodyState extends State<MainBody> {
         return Column(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0),
+              padding:
+                  const EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   /// Bottom sheet title text
                   Text(
                     widget.dropDown.bottomSheetTitle ?? 'Title',
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 20.0),
                   ),
                   Expanded(
                     child: Container(),
@@ -135,24 +137,30 @@ class _MainBodyState extends State<MainBody> {
                       alignment: Alignment.centerRight,
                       child: ElevatedButton(
                           onPressed: () {
-                            List<SelectedListItem> selectedList = widget.dropDown.dataList.where((element) => element.isSelected == true).toList();
+                            List<SelectedListItem> selectedList = widget
+                                .dropDown.dataList
+                                .where((element) => element.isSelected == true)
+                                .toList();
                             List<String> selectedNameList = [];
 
                             for (var element in selectedList) {
                               selectedNameList.add(element.name);
                             }
 
-                            widget.dropDown.selectedItems?.call(selectedNameList);
+                            widget.dropDown.selectedItems
+                                ?.call(selectedNameList);
                             _onUnfocusKeyboardAndPop();
                           },
                           style: ElevatedButton.styleFrom(
-                            primary: widget.dropDown.submitButtonColor ?? Colors.blue,
+                            primary: widget.dropDown.submitButtonColor ??
+                                Colors.blue,
                             textStyle: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          child: Text(widget.dropDown.submitButtonText ?? 'Done')),
+                          child:
+                              Text(widget.dropDown.submitButtonText ?? 'Done')),
                     ),
                   ),
                 ],
@@ -185,10 +193,14 @@ class _MainBodyState extends State<MainBody> {
                               ? GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      mainList[index].isSelected = !mainList[index].isSelected;
+                                      mainList[index].isSelected =
+                                          !mainList[index].isSelected;
                                     });
                                   },
-                                  child: mainList[index].isSelected ? const Icon(Icons.check_box) : const Icon(Icons.check_box_outline_blank),
+                                  child: mainList[index].isSelected
+                                      ? const Icon(Icons.check_box)
+                                      : const Icon(
+                                          Icons.check_box_outline_blank),
                                 )
                               : const SizedBox(
                                   height: 0.0,
@@ -200,7 +212,8 @@ class _MainBodyState extends State<MainBody> {
                     onTap: widget.dropDown.enableMultipleSelection
                         ? null
                         : () {
-                            widget.dropDown.selectedItem?.call(mainList[index].name);
+                            widget.dropDown.selectedItem
+                                ?.call(mainList[index].name);
                             _onUnfocusKeyboardAndPop();
                           },
                   );
@@ -215,7 +228,10 @@ class _MainBodyState extends State<MainBody> {
 
   /// This helps when search enabled & show the filtered data in list.
   _buildSearchList(String userSearchTerm) {
-    final results = widget.dropDown.dataList.where((element) => element.name.toLowerCase().contains(userSearchTerm.toLowerCase())).toList();
+    final results = widget.dropDown.dataList
+        .where((element) =>
+            element.name.toLowerCase().contains(userSearchTerm.toLowerCase()))
+        .toList();
     if (userSearchTerm.isEmpty) {
       mainList = widget.dropDown.dataList;
     } else {
@@ -244,7 +260,12 @@ class _AppTextField extends StatefulWidget {
   Function(String) onTextChanged;
   VoidCallback onClearTap;
 
-  _AppTextField({required this.dropDown, required this.onTextChanged, required this.onClearTap, Key? key}) : super(key: key);
+  _AppTextField(
+      {required this.dropDown,
+      required this.onTextChanged,
+      required this.onClearTap,
+      Key? key})
+      : super(key: key);
 
   @override
   State<_AppTextField> createState() => _AppTextFieldState();
@@ -264,7 +285,8 @@ class _AppTextFieldState extends State<_AppTextField> {
         decoration: InputDecoration(
           filled: true,
           fillColor: widget.dropDown.searchBackgroundColor ?? Colors.black12,
-          contentPadding: const EdgeInsets.only(left: 0, bottom: 0, top: 0, right: 15),
+          contentPadding:
+              const EdgeInsets.only(left: 0, bottom: 0, top: 0, right: 15),
           hintText: widget.dropDown.searchHintText ?? 'Search',
           border: const OutlineInputBorder(
             borderSide: BorderSide(

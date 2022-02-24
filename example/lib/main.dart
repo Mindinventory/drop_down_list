@@ -25,9 +25,9 @@ class DropDownListExample extends StatefulWidget {
 class _DropDownListExampleState extends State<DropDownListExample> {
   /// This is list of city which will pass to the drop down.
   final List<SelectedListItem> _listOfCities = [
-    SelectedListItem(false, kTokyo),
-    SelectedListItem(false, kNewYork),
-    SelectedListItem(false, kLondon),
+    SelectedListItem(false, kTokyo, value: "TYO"),
+    SelectedListItem(false, kNewYork, value: "NY"),
+    SelectedListItem(false, kLondon, value: "LDN"),
     SelectedListItem(false, kParis),
     SelectedListItem(false, kMadrid),
     SelectedListItem(false, kDubai),

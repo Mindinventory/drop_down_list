@@ -80,8 +80,9 @@ class DropDownState {
 class SelectedListItem {
   bool isSelected;
   String name;
+  String ?value;
 
-  SelectedListItem(this.isSelected, this.name);
+  SelectedListItem( this.isSelected,  this.name, {this.value});
 }
 
 /// This is main class to display the bottom sheet body.
@@ -144,7 +145,7 @@ class _MainBodyState extends State<MainBody> {
                             List<String> selectedNameList = [];
 
                             for (var element in selectedList) {
-                              selectedNameList.add(element.name);
+                              selectedNameList.add(element.value ??  element.name);
                             }
 
                             widget.dropDown.selectedItems
@@ -213,7 +214,11 @@ class _MainBodyState extends State<MainBody> {
                         ? null
                         : () {
                             widget.dropDown.selectedItem
-                                ?.call(mainList[index].name);
+                                ?.call(
+                              (mainList[index].value != null) ?
+                                mainList[index].value ?? '' :
+                                  mainList[index].name
+                            );
                             _onUnfocusKeyboardAndPop();
                           },
                   );

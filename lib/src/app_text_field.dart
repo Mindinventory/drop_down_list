@@ -4,11 +4,10 @@ import 'drop_down.dart';
 
 /// This is search text field class.
 class AppTextField extends StatefulWidget {
-  DropDown dropDown;
-  Function(String) onTextChanged;
-  VoidCallback onClearTap;
+  final DropDown dropDown;
+  final Function(String) onTextChanged;
 
-  AppTextField({required this.dropDown, required this.onTextChanged, required this.onClearTap, Key? key})
+  const AppTextField({required this.dropDown, required this.onTextChanged, Key? key})
       : super(key: key);
 
   @override
@@ -16,19 +15,22 @@ class AppTextField extends StatefulWidget {
 }
 
 class _AppTextFieldState extends State<AppTextField> {
+
+  final TextEditingController _editingController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(12.0),
       child: TextFormField(
-        controller: widget.dropDown.searchController,
+        controller: _editingController,
         cursorColor: Colors.black,
         onChanged: (value) {
           widget.onTextChanged(value);
         },
         decoration: InputDecoration(
           filled: true,
-          fillColor: widget.dropDown.searchBackgroundColor,
+          fillColor: Colors.black12,
           contentPadding: const EdgeInsets.only(left: 0, bottom: 0, top: 0, right: 15),
           hintText: widget.dropDown.searchHintText,
           border: const OutlineInputBorder(
@@ -45,7 +47,7 @@ class _AppTextFieldState extends State<AppTextField> {
             onPressed: null,
           ),
           suffixIcon: GestureDetector(
-            onTap: widget.onClearTap,
+            onTap: onClearTap,
             child: const Icon(
               Icons.cancel,
               color: Colors.grey,
@@ -54,5 +56,9 @@ class _AppTextFieldState extends State<AppTextField> {
         ),
       ),
     );
+  }
+
+  void onClearTap() {
+    _editingController.clear();
   }
 }

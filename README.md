@@ -19,21 +19,31 @@ The following examples are extracted from the example project available in the r
 ```
 DropDownState(
       DropDown(
-        submitButtonText: kDone,
-        submitButtonColor: const Color.fromRGBO(70, 76, 222, 1),
-        searchHintText: kSearch,
-        bottomSheetTitle: kCities,
-        searchBackgroundColor: Colors.black12,
-        dataList: widget.cities ?? [],
+        bottomSheetTitle: const Text(
+          kCities,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20.0,
+          ),
+        ),
+        submitButtonChild: const Text(
+          'Done',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        data: widget.cities ?? [],
         selectedItems: (List<dynamic> selectedList) {
-          showSnackBar(selectedList.toString());
+          List<String> list = [];
+          for(var item in selectedList) {
+            if(item is SelectedListItem) {
+              list.add(item.name);
+            }
+          }
+          showSnackBar(list.toString());
         },
-        selectedItem: (String selected) {
-          showSnackBar(selected);
-          widget.textEditingController.text = selected;
-        },
-        enableMultipleSelection: false,
-        searchController: _searchTextEditingController,
+        enableMultipleSelection: true,
       ),
     ).showModal(context);
 ```

@@ -4,11 +4,6 @@ import '../model/selected_list_item.dart';
 import 'app_text_field.dart';
 
 class DropDown {
-  /// This gives the bottom sheet title.
-  final Widget? bottomSheetTitle;
-
-  /// You can set your custom submit button when the multiple selection is enabled.
-  final Widget? submitButtonChild;
 
   /// This will give the list of data.
   final List<SelectedListItem> data;
@@ -16,28 +11,34 @@ class DropDown {
   /// This will give the call back to the selected items from list.
   final Function(List<dynamic>)? selectedItems;
 
+  /// [listBuilder] will gives [index] as a function parameter and you can return your own widget based on [index].
+  final Widget Function(int index)? listBuilder;
+
   /// This will give selection choice for single or multiple for list.
   final bool enableMultipleSelection;
 
-  /// This will set the background color to the dropdown.
-  final Color dropDownBackgroundColor;
+  /// This gives the bottom sheet title.
+  final Widget? bottomSheetTitle;
 
-  /// [listBuilder] will gives [index] as a function parameter and you can return your own widget based on [index].
-  final Widget Function(int index)? listBuilder;
+  /// You can set your custom submit button when the multiple selection is enabled.
+  final Widget? submitButtonChild;
 
   /// [searchWidget] is use to show the text box for the searching.
   /// If you are passing your own widget then you must have to add [TextEditingController] for the [TextFormField].
   final TextFormField? searchWidget;
 
+  /// This will set the background color to the dropdown.
+  final Color dropDownBackgroundColor;
+
   DropDown({
     Key? key,
     required this.data,
+    this.selectedItems,
     this.listBuilder,
     this.enableMultipleSelection = false,
     this.bottomSheetTitle,
     this.submitButtonChild,
     this.searchWidget,
-    this.selectedItems,
     this.dropDownBackgroundColor = Colors.transparent,
   });
 }

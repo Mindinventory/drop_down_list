@@ -1,4 +1,5 @@
 import 'package:drop_down_list/drop_down_list.dart';
+import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
 
 import 'constants.dart';
@@ -25,31 +26,38 @@ class DropDownListExample extends StatefulWidget {
 class _DropDownListExampleState extends State<DropDownListExample> {
   /// This is list of city which will pass to the drop down.
   final List<SelectedListItem> _listOfCities = [
-    SelectedListItem(false, kTokyo, value: "TYO"),
-    SelectedListItem(false, kNewYork, value: "NY"),
-    SelectedListItem(false, kLondon, value: "LDN"),
-    SelectedListItem(false, kParis),
-    SelectedListItem(false, kMadrid),
-    SelectedListItem(false, kDubai),
-    SelectedListItem(false, kRome),
-    SelectedListItem(false, kBarcelona),
-    SelectedListItem(false, kCologne),
-    SelectedListItem(false, kMonteCarlo),
-    SelectedListItem(false, kPuebla),
-    SelectedListItem(false, kFlorence),
+    SelectedListItem(
+      name: kTokyo,
+      value: "TYO",
+      isSelected: false,
+    ),
+    SelectedListItem(
+      name: kNewYork,
+      value: "NY",
+      isSelected: false,
+    ),
+    SelectedListItem(
+      name: kLondon,
+      value: "LDN",
+      isSelected: false,
+    ),
+    SelectedListItem(name: kParis),
+    SelectedListItem(name: kMadrid),
+    SelectedListItem(name: kDubai),
+    SelectedListItem(name: kRome),
+    SelectedListItem(name: kBarcelona),
+    SelectedListItem(name: kCologne),
+    SelectedListItem(name: kMonteCarlo),
+    SelectedListItem(name: kPuebla),
+    SelectedListItem(name: kFlorence),
   ];
 
   /// This is register text field controllers.
-  final TextEditingController _fullNameTextEditingController =
-      TextEditingController();
-  final TextEditingController _emailTextEditingController =
-      TextEditingController();
-  final TextEditingController _phoneNumberTextEditingController =
-      TextEditingController();
-  final TextEditingController _cityTextEditingController =
-      TextEditingController();
-  final TextEditingController _passwordTextEditingController =
-      TextEditingController();
+  final TextEditingController _fullNameTextEditingController = TextEditingController();
+  final TextEditingController _emailTextEditingController = TextEditingController();
+  final TextEditingController _phoneNumberTextEditingController = TextEditingController();
+  final TextEditingController _cityTextEditingController = TextEditingController();
+  final TextEditingController _passwordTextEditingController = TextEditingController();
 
   @override
   void dispose() {
@@ -134,12 +142,13 @@ class _DropDownListExampleState extends State<DropDownListExample> {
 
 /// This is Common App textfiled class.
 class AppTextField extends StatefulWidget {
-  TextEditingController textEditingController = TextEditingController();
+  final TextEditingController textEditingController;
   final String title;
   final String hint;
   final bool isCitySelected;
   final List<SelectedListItem>? cities;
-  AppTextField({
+
+  const AppTextField({
     required this.textEditingController,
     required this.title,
     required this.hint,
@@ -153,37 +162,43 @@ class AppTextField extends StatefulWidget {
 }
 
 class _AppTextFieldState extends State<AppTextField> {
-  TextEditingController _searchTextEditingController = TextEditingController();
+  final TextEditingController _searchTextEditingController = TextEditingController();
 
   /// This is on text changed method which will display on city text field on changed.
   void onTextFieldTap() {
     DropDownState(
       DropDown(
-        submitButtonText: kDone,
-        submitButtonColor: const Color.fromRGBO(70, 76, 222, 1),
-        searchHintText: kSearch,
-        bottomSheetTitle: kCities,
-        searchBackgroundColor: Colors.black12,
-        dataList: widget.cities ?? [],
+        bottomSheetTitle: const Text(
+          kCities,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20.0,
+          ),
+        ),
+        submitButtonChild: const Text(
+          'Done',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        data: widget.cities ?? [],
         selectedItems: (List<dynamic> selectedList) {
-          showSnackBar(selectedList.toString());
+          List<String> list = [];
+          for(var item in selectedList) {
+            if(item is SelectedListItem) {
+              list.add(item.name);
+            }
+          }
+          showSnackBar(list.toString());
         },
-        selectedItem: (String selected) {
-          showSnackBar(selected);
-          widget.textEditingController.text = selected;
-        },
-        enableMultipleSelection: false,
-        searchController: _searchTextEditingController,
+        enableMultipleSelection: true,
       ),
     ).showModal(context);
   }
 
   void showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-      ),
-    );
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -207,8 +222,7 @@ class _AppTextFieldState extends State<AppTextField> {
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.black12,
-            contentPadding:
-                const EdgeInsets.only(left: 8, bottom: 0, top: 0, right: 15),
+            contentPadding: const EdgeInsets.only(left: 8, bottom: 0, top: 0, right: 15),
             hintText: widget.hint,
             border: const OutlineInputBorder(
               borderSide: BorderSide(

@@ -1,58 +1,51 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../model/selected_list_item.dart';
+import 'app_text_field.dart';
+
 class DropDown {
-  /// This gives the button text or it sets default text as 'click me'.
-  final String? buttonText;
-
-  /// This gives the bottom sheet title.
-  final String? bottomSheetTitle;
-
-  /// This will give the submit button text.
-  final String? submitButtonText;
-
-  /// This will give the submit button background color.
-  final Color? submitButtonColor;
-
-  /// This will give the hint to the search text filed.
-  final String? searchHintText;
-
-  /// This will give the background color to the search text filed.
-  final Color? searchBackgroundColor;
-
-  /// This will give the default search controller to the search text field.
-  final TextEditingController searchController;
 
   /// This will give the list of data.
-  final List<SelectedListItem> dataList;
+  final List<SelectedListItem> data;
 
-  /// This will give the call back to the selected items (multiple) from list.
+  /// This will give the call back to the selected items from list.
   final Function(List<dynamic>)? selectedItems;
 
-  /// This will give the call back to the selected item (single) from list.
-  final Function(String)? selectedItem;
+  /// [listBuilder] will gives [index] as a function parameter and you can return your own widget based on [index].
+  final Widget Function(int index)? listBuilder;
 
-  /// This will give selection choise for single or multiple for list.
+  /// This will give selection choice for single or multiple for list.
   final bool enableMultipleSelection;
+
+  /// This gives the bottom sheet title.
+  final Widget? bottomSheetTitle;
+
+  /// You can set your custom submit button when the multiple selection is enabled.
+  final Widget? submitButtonChild;
+
+  /// [searchWidget] is use to show the text box for the searching.
+  /// If you are passing your own widget then you must have to add [TextEditingController] for the [TextFormField].
+  final TextFormField? searchWidget;
+
+  /// This will set the background color to the dropdown.
+  final Color dropDownBackgroundColor;
 
   DropDown({
     Key? key,
-    this.buttonText,
-    this.bottomSheetTitle,
-    this.submitButtonText,
-    this.submitButtonColor,
-    this.searchHintText,
-    this.searchBackgroundColor,
-    required this.searchController,
-    required this.dataList,
+    required this.data,
     this.selectedItems,
-    this.selectedItem,
-    required this.enableMultipleSelection,
+    this.listBuilder,
+    this.enableMultipleSelection = false,
+    this.bottomSheetTitle,
+    this.submitButtonChild,
+    this.searchWidget,
+    this.dropDownBackgroundColor = Colors.transparent,
   });
 }
 
 class DropDownState {
   DropDown dropDown;
+
   DropDownState(this.dropDown);
 
   /// This gives the bottom sheet widget.
@@ -66,9 +59,7 @@ class DropDownState {
       builder: (context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
-            return MainBody(
-              dropDown: dropDown,
-            );
+            return MainBody(dropDown: dropDown);
           },
         );
       },
@@ -76,20 +67,11 @@ class DropDownState {
   }
 }
 
-/// This is Model class. Using this model class, you can add the list of data with title and its selection.
-class SelectedListItem {
-  bool isSelected;
-  String name;
-  String ?value;
-
-  SelectedListItem( this.isSelected,  this.name, {this.value});
-}
-
 /// This is main class to display the bottom sheet body.
 class MainBody extends StatefulWidget {
-  DropDown dropDown;
+  final DropDown dropDown;
 
-  MainBody({required this.dropDown, Key? key}) : super(key: key);
+  const MainBody({required this.dropDown, Key? key}) : super(key: key);
 
   @override
   State<MainBody> createState() => _MainBodyState();
@@ -102,7 +84,8 @@ class _MainBodyState extends State<MainBody> {
   @override
   void initState() {
     super.initState();
-    mainList = widget.dropDown.dataList;
+    mainList = widget.dropDown.data;
+    _setSearchWidgetListener();
   }
 
   @override
@@ -116,52 +99,35 @@ class _MainBodyState extends State<MainBody> {
         return Column(
           children: <Widget>[
             Padding(
-              padding:
-                  const EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0),
+              padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   /// Bottom sheet title text
-                  Text(
-                    widget.dropDown.bottomSheetTitle ?? 'Title',
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 20.0),
-                  ),
-                  Expanded(
-                    child: Container(),
-                  ),
+                  Expanded(child: widget.dropDown.bottomSheetTitle ?? Container()),
 
                   /// Done button
                   Visibility(
                     visible: widget.dropDown.enableMultipleSelection,
                     child: Align(
                       alignment: Alignment.centerRight,
-                      child: ElevatedButton(
+                      child: Material(
+                        child: ElevatedButton(
                           onPressed: () {
-                            List<SelectedListItem> selectedList = widget
-                                .dropDown.dataList
-                                .where((element) => element.isSelected == true)
-                                .toList();
-                            List<String> selectedNameList = [];
+                            List<SelectedListItem> selectedList =
+                                widget.dropDown.data.where((element) => element.isSelected == true).toList();
+                            List<dynamic> selectedNameList = [];
 
                             for (var element in selectedList) {
-                              selectedNameList.add(element.value ??  element.name);
+                              selectedNameList.add(element);
                             }
 
-                            widget.dropDown.selectedItems
-                                ?.call(selectedNameList);
-                            _onUnfocusKeyboardAndPop();
+                            widget.dropDown.selectedItems?.call(selectedNameList);
+                            _onUnFocusKeyboardAndPop();
                           },
-                          style: ElevatedButton.styleFrom(
-                            primary: widget.dropDown.submitButtonColor ??
-                                Colors.blue,
-                            textStyle: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          child:
-                              Text(widget.dropDown.submitButtonText ?? 'Done')),
+                          child: widget.dropDown.submitButtonChild ?? const Text('Done'),
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -169,11 +135,11 @@ class _MainBodyState extends State<MainBody> {
             ),
 
             /// A [TextField] that displays a list of suggestions as the user types with clear button.
-            _AppTextField(
-              dropDown: widget.dropDown,
-              onTextChanged: _buildSearchList,
-              onClearTap: _onClearTap,
-            ),
+            widget.dropDown.searchWidget ??
+                AppTextField(
+                  dropDown: widget.dropDown,
+                  onTextChanged: _buildSearchList,
+                ),
 
             /// Listview (list of data with check box for multiple selection & on tile tap single selection)
             Expanded(
@@ -181,27 +147,27 @@ class _MainBodyState extends State<MainBody> {
                 controller: scrollController,
                 itemCount: mainList.length,
                 itemBuilder: (context, index) {
+                  bool isSelected = mainList[index].isSelected ?? false;
                   return InkWell(
                     child: Container(
-                      color: Colors.white,
+                      color: widget.dropDown.dropDownBackgroundColor,
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
                         child: ListTile(
-                          title: Text(
-                            mainList[index].name,
-                          ),
+                          title: widget.dropDown.listBuilder?.call(index) ??
+                              Text(
+                                mainList[index].name,
+                              ),
                           trailing: widget.dropDown.enableMultipleSelection
                               ? GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      mainList[index].isSelected =
-                                          !mainList[index].isSelected;
+                                      mainList[index].isSelected = !isSelected;
                                     });
                                   },
-                                  child: mainList[index].isSelected
+                                  child: isSelected
                                       ? const Icon(Icons.check_box)
-                                      : const Icon(
-                                          Icons.check_box_outline_blank),
+                                      : const Icon(Icons.check_box_outline_blank),
                                 )
                               : const SizedBox(
                                   height: 0.0,
@@ -213,13 +179,8 @@ class _MainBodyState extends State<MainBody> {
                     onTap: widget.dropDown.enableMultipleSelection
                         ? null
                         : () {
-                            widget.dropDown.selectedItem
-                                ?.call(
-                              (mainList[index].value != null) ?
-                                mainList[index].value ?? '' :
-                                  mainList[index].name
-                            );
-                            _onUnfocusKeyboardAndPop();
+                            widget.dropDown.selectedItems?.call([mainList[index]]);
+                            _onUnFocusKeyboardAndPop();
                           },
                   );
                 },
@@ -233,88 +194,27 @@ class _MainBodyState extends State<MainBody> {
 
   /// This helps when search enabled & show the filtered data in list.
   _buildSearchList(String userSearchTerm) {
-    final results = widget.dropDown.dataList
-        .where((element) =>
-            element.name.toLowerCase().contains(userSearchTerm.toLowerCase()))
+    final results = widget.dropDown.data
+        .where((element) => element.name.toLowerCase().contains(userSearchTerm.toLowerCase()))
         .toList();
     if (userSearchTerm.isEmpty) {
-      mainList = widget.dropDown.dataList;
+      mainList = widget.dropDown.data;
     } else {
       mainList = results;
     }
     setState(() {});
   }
 
-  /// This helps when want to clear text in search text field.
-  void _onClearTap() {
-    widget.dropDown.searchController.clear();
-    mainList = widget.dropDown.dataList;
-    setState(() {});
-  }
-
-  /// This helps to unfocus the keyboard & pop from the bottom sheet.
-  _onUnfocusKeyboardAndPop() {
+  /// This helps to UnFocus the keyboard & pop from the bottom sheet.
+  _onUnFocusKeyboardAndPop() {
     FocusScope.of(context).unfocus();
     Navigator.of(context).pop();
   }
-}
 
-/// This is search text field class.
-class _AppTextField extends StatefulWidget {
-  DropDown dropDown;
-  Function(String) onTextChanged;
-  VoidCallback onClearTap;
-
-  _AppTextField(
-      {required this.dropDown,
-      required this.onTextChanged,
-      required this.onClearTap,
-      Key? key})
-      : super(key: key);
-
-  @override
-  State<_AppTextField> createState() => _AppTextFieldState();
-}
-
-class _AppTextFieldState extends State<_AppTextField> {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: TextFormField(
-        controller: widget.dropDown.searchController,
-        cursorColor: Colors.black,
-        onChanged: (value) {
-          widget.onTextChanged(value);
-        },
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: widget.dropDown.searchBackgroundColor ?? Colors.black12,
-          contentPadding:
-              const EdgeInsets.only(left: 0, bottom: 0, top: 0, right: 15),
-          hintText: widget.dropDown.searchHintText ?? 'Search',
-          border: const OutlineInputBorder(
-            borderSide: BorderSide(
-              width: 0,
-              style: BorderStyle.none,
-            ),
-            borderRadius: BorderRadius.all(
-              Radius.circular(8.0),
-            ),
-          ),
-          prefixIcon: const IconButton(
-            icon: Icon(Icons.search),
-            onPressed: null,
-          ),
-          suffixIcon: GestureDetector(
-            onTap: widget.onClearTap,
-            child: const Icon(
-              Icons.cancel,
-              color: Colors.grey,
-            ),
-          ),
-        ),
-      ),
-    );
+  void _setSearchWidgetListener() {
+    TextFormField? _searchField = (widget.dropDown.searchWidget as TextFormField?);
+    _searchField?.controller?.addListener(() {
+      _buildSearchList(_searchField.controller?.text ?? '');
+    });
   }
 }

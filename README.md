@@ -19,24 +19,62 @@ The following examples are extracted from the example project available in the r
 ```
 DropDownState(
       DropDown(
-        submitButtonText: kDone,
-        submitButtonColor: const Color.fromRGBO(70, 76, 222, 1),
-        searchHintText: kSearch,
-        bottomSheetTitle: kCities,
-        searchBackgroundColor: Colors.black12,
-        dataList: widget.cities ?? [],
+        bottomSheetTitle: const Text(
+          kCities,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20.0,
+          ),
+        ),
+        submitButtonChild: const Text(
+          'Done',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        data: widget.cities ?? [],
         selectedItems: (List<dynamic> selectedList) {
-          showSnackBar(selectedList.toString());
+          List<String> list = [];
+          for(var item in selectedList) {
+            if(item is SelectedListItem) {
+              list.add(item.name);
+            }
+          }
+          showSnackBar(list.toString());
         },
-        selectedItem: (String selected) {
-          showSnackBar(selected);
-          widget.textEditingController.text = selected;
-        },
-        enableMultipleSelection: false,
-        searchController: _searchTextEditingController,
+        enableMultipleSelection: true,
       ),
     ).showModal(context);
 ```
+
+### Required parameters
+
+##### data:
+This property takes List<SelectedListItem> as a parameter and it is useful to display items in drop down list.
+
+### Optional parameters
+
+##### listBuilder:
+This property takes int value as a parameter. This is use to set the initial segment from [segmentNames].
+
+##### enableMultipleSelection:
+This property takes Color value as a parameter. You can change the background color of animated segment. default value is `Color(0xff8AADFB)`
+
+##### bottomSheetTitle:
+This gives the bottom sheet title.
+
+##### submitButtonChild:
+You can set your custom submit button when the multiple selection is enabled.
+
+##### selectedItems:
+This will give the call back to the selected items from list.
+
+##### dropDownBackgroundColor:
+This will set the background color to the dropdown.
+
+##### searchWidget:
+This property takes TextFormField value as a parameter. [searchWidget] is use to show the text box for the searching. If you are passing your own widget then you must have to add [TextEditingController] for the [TextFormField].
 
 
 # LICENSE!

@@ -1,5 +1,4 @@
 import 'package:drop_down_list/drop_down_list.dart';
-import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
 
 import 'constants.dart';
@@ -140,7 +139,7 @@ class _DropDownListExampleState extends State<DropDownListExample> {
   }
 }
 
-/// This is Common App textfiled class.
+/// This is Common App TextField class.
 class AppTextField extends StatefulWidget {
   final TextEditingController textEditingController;
   final String title;
@@ -162,39 +161,35 @@ class AppTextField extends StatefulWidget {
 }
 
 class _AppTextFieldState extends State<AppTextField> {
-  final TextEditingController _searchTextEditingController = TextEditingController();
-
   /// This is on text changed method which will display on city text field on changed.
   void onTextFieldTap() {
-    DropDownState(
-      DropDown(
-        bottomSheetTitle: const Text(
-          kCities,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20.0,
-          ),
+    DropDownList(
+      bottomSheetTitle: const Text(
+        kCities,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 20.0,
         ),
-        submitButtonChild: const Text(
-          'Done',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        data: widget.cities ?? [],
-        selectedItems: (List<dynamic> selectedList) {
-          List<String> list = [];
-          for(var item in selectedList) {
-            if(item is SelectedListItem) {
-              list.add(item.name);
-            }
-          }
-          showSnackBar(list.toString());
-        },
-        enableMultipleSelection: true,
       ),
-    ).showModal(context);
+      submitButtonChild: const Text(
+        'Done',
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      data: widget.cities ?? [],
+      selectedItems: (List<dynamic> selectedList) {
+        List<String> list = [];
+        for (var item in selectedList) {
+          if (item is SelectedListItem) {
+            list.add(item.name);
+          }
+        }
+        showSnackBar(list.toString());
+      },
+      enableMultipleSelection: true,
+    ).show(context);
   }
 
   void showSnackBar(String message) {

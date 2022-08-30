@@ -1,3 +1,5 @@
+part of drop_down_list;
+
 /// This is Model class. Using this model class, you can add the list of data with title and its selection.
 class SelectedListItem {
   bool? isSelected;

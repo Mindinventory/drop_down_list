@@ -17,35 +17,33 @@ The following examples are extracted from the example project available in the r
 
 # How to Use
 ```
-DropDownState(
-      DropDown(
-        bottomSheetTitle: const Text(
-          kCities,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20.0,
-          ),
+DropDownList(
+      bottomSheetTitle: const Text(
+        kCities,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 20.0,
         ),
-        submitButtonChild: const Text(
-          'Done',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        data: widget.cities ?? [],
-        selectedItems: (List<dynamic> selectedList) {
-          List<String> list = [];
-          for(var item in selectedList) {
-            if(item is SelectedListItem) {
-              list.add(item.name);
-            }
-          }
-          showSnackBar(list.toString());
-        },
-        enableMultipleSelection: true,
       ),
-    ).showModal(context);
+      submitButtonChild: const Text(
+        'Done',
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      data: widget.cities ?? [],
+      selectedItems: (List<dynamic> selectedList) {
+        List<String> list = [];
+        for (var item in selectedList) {
+          if (item is SelectedListItem) {
+            list.add(item.name);
+          }
+        }
+        showSnackBar(list.toString());
+      },
+      enableMultipleSelection: true,
+    ).show(context);
 ```
 
 ### Required parameters

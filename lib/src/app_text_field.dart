@@ -1,21 +1,16 @@
-import 'package:flutter/material.dart';
-
-import 'drop_down.dart';
+part of drop_down_list;
 
 /// This is search text field class.
 class AppTextField extends StatefulWidget {
-  final DropDown dropDown;
   final Function(String) onTextChanged;
 
-  const AppTextField({required this.dropDown, required this.onTextChanged, Key? key})
-      : super(key: key);
+  const AppTextField({required this.onTextChanged, Key? key}) : super(key: key);
 
   @override
   State<AppTextField> createState() => _AppTextFieldState();
 }
 
 class _AppTextFieldState extends State<AppTextField> {
-
   final TextEditingController _editingController = TextEditingController();
 
   @override

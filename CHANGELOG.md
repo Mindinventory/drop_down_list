@@ -1,3 +1,7 @@
+## 0.0.4
+
+* Added support for search bar visibility.
+
 ## 0.0.3
 
 * Added support for widget customizations and dropdown background color.

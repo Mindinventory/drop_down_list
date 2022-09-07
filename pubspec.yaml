@@ -1,6 +1,6 @@
 name: drop_down_list
 description: A drop down list with single and multiple selection that will work with search.
-version: 0.0.3
+version: 0.0.4
 repository: https://github.com/Mindinventory/drop_down_list
 
 environment:

@@ -27,6 +27,10 @@ class DropDown {
   /// If you are passing your own widget then you must have to add [TextEditingController] for the [TextFormField].
   final TextFormField? searchWidget;
 
+  /// [isSearchVisible] flag use to manage the search widget visibility
+  /// by default it is [True] so widget will be visible.
+  final bool isSearchVisible;
+
   /// This will set the background color to the dropdown.
   final Color dropDownBackgroundColor;
 
@@ -39,6 +43,7 @@ class DropDown {
     this.bottomSheetTitle,
     this.submitButtonChild,
     this.searchWidget,
+    this.isSearchVisible = true,
     this.dropDownBackgroundColor = Colors.transparent,
   });
 }
@@ -135,11 +140,14 @@ class _MainBodyState extends State<MainBody> {
             ),
 
             /// A [TextField] that displays a list of suggestions as the user types with clear button.
-            widget.dropDown.searchWidget ??
-                AppTextField(
-                  dropDown: widget.dropDown,
-                  onTextChanged: _buildSearchList,
-                ),
+            Visibility(
+              visible: widget.dropDown.isSearchVisible,
+              child: widget.dropDown.searchWidget ??
+                  AppTextField(
+                    dropDown: widget.dropDown,
+                    onTextChanged: _buildSearchList,
+                  ),
+            ),
 
             /// Listview (list of data with check box for multiple selection & on tile tap single selection)
             Expanded(

@@ -76,6 +76,9 @@ This will set the background color to the dropdown.
 ##### searchWidget:
 This property takes TextFormField value as a parameter. [searchWidget] is use to show the text box for the searching. If you are passing your own widget then you must have to add [TextEditingController] for the [TextFormField].
 
+##### isSearchVisible:
+This property takes bool value as a parameter. [isSearchVisible] is use to manage the search widget visibility. by default it is [True] so widget will be visible.
+
 
 # LICENSE!
 

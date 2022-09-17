@@ -169,6 +169,7 @@ class _AppTextFieldState extends State<AppTextField> {
     DropDownState(
       DropDown(
         searchController: _searchTextEditingController,
+        onSearchTextChanged: (change) async { print("Search text changed $change"); },
         bottomSheetTitle: const Text(
           kCities,
           style: TextStyle(

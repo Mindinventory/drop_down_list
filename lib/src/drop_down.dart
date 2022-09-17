@@ -37,6 +37,9 @@ class DropDown {
   /// Provide a custom [TextEditingController] for the search widget.
   final TextEditingController? searchController;
 
+  /// Provide an async function to execute when the search text is changed.
+  final Future Function(String)? onSearchTextChanged;
+
   DropDown({
     Key? key,
     required this.data,
@@ -48,7 +51,8 @@ class DropDown {
     this.searchWidget,
     this.isSearchVisible = true,
     this.dropDownBackgroundColor = Colors.transparent,
-    this.searchController
+    this.searchController,
+    this.onSearchTextChanged,
   });
 }
 
@@ -149,7 +153,11 @@ class _MainBodyState extends State<MainBody> {
               child: widget.dropDown.searchWidget ??
                   AppTextField(
                     dropDown: widget.dropDown,
-                    onTextChanged: _buildSearchList,
+                    onTextChanged: (text) {
+                      widget.dropDown?.onSearchTextChanged?.call(text);
+
+                      _buildSearchList(text);
+                    },
                     editingController: widget.dropDown.searchController
                   ),
             ),

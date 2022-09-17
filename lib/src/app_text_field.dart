@@ -6,9 +6,9 @@ import 'drop_down.dart';
 class AppTextField extends StatefulWidget {
   final DropDown dropDown;
   final Function(String) onTextChanged;
+  final TextEditingController? editingController;
 
-  const AppTextField({required this.dropDown, required this.onTextChanged, Key? key})
-      : super(key: key);
+  AppTextField({required this.dropDown, required this.onTextChanged, Key? key, this.editingController}) : super(key: key);
 
   @override
   State<AppTextField> createState() => _AppTextFieldState();
@@ -16,14 +16,12 @@ class AppTextField extends StatefulWidget {
 
 class _AppTextFieldState extends State<AppTextField> {
 
-  final TextEditingController _editingController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(12.0),
       child: TextFormField(
-        controller: _editingController,
+        controller: widget.editingController,
         autofocus: true,
         cursorColor: Colors.black,
         onChanged: (value) {
@@ -60,6 +58,6 @@ class _AppTextFieldState extends State<AppTextField> {
   }
 
   void onClearTap() {
-    _editingController.clear();
+    widget.editingController?.clear();
   }
 }

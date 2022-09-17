@@ -34,6 +34,9 @@ class DropDown {
   /// This will set the background color to the dropdown.
   final Color dropDownBackgroundColor;
 
+  /// Provide a custom [TextEditingController] for the search widget.
+  final TextEditingController? searchController;
+
   DropDown({
     Key? key,
     required this.data,
@@ -45,6 +48,7 @@ class DropDown {
     this.searchWidget,
     this.isSearchVisible = true,
     this.dropDownBackgroundColor = Colors.transparent,
+    this.searchController
   });
 }
 
@@ -146,6 +150,7 @@ class _MainBodyState extends State<MainBody> {
                   AppTextField(
                     dropDown: widget.dropDown,
                     onTextChanged: _buildSearchList,
+                    editingController: widget.dropDown.searchController
                   ),
             ),
 

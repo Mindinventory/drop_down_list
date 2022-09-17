@@ -168,6 +168,7 @@ class _AppTextFieldState extends State<AppTextField> {
   void onTextFieldTap() {
     DropDownState(
       DropDown(
+        searchController: _searchTextEditingController,
         bottomSheetTitle: const Text(
           kCities,
           style: TextStyle(

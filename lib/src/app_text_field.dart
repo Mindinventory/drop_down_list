@@ -24,6 +24,7 @@ class _AppTextFieldState extends State<AppTextField> {
       padding: const EdgeInsets.all(12.0),
       child: TextFormField(
         controller: _editingController,
+        autofocus: true,
         cursorColor: Colors.black,
         onChanged: (value) {
           widget.onTextChanged(value);

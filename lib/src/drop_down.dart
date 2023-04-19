@@ -3,16 +3,20 @@ import 'package:flutter/material.dart';
 import '../model/selected_list_item.dart';
 import 'app_text_field.dart';
 
+typedef SelectedItemsCallBack = Function(List<dynamic> selectedItems);
+
+typedef ListItemBuilder = Widget Function(int index);
+
 class DropDown {
 
   /// This will give the list of data.
   final List<SelectedListItem> data;
 
   /// This will give the call back to the selected items from list.
-  final Function(List<dynamic>)? selectedItems;
+  final SelectedItemsCallBack? selectedItems;
 
   /// [listBuilder] will gives [index] as a function parameter and you can return your own widget based on [index].
-  final Widget Function(int index)? listBuilder;
+  final ListItemBuilder? listBuilder;
 
   /// This will give selection choice for single or multiple for list.
   final bool enableMultipleSelection;
@@ -220,7 +224,7 @@ class _MainBodyState extends State<MainBody> {
   }
 
   void _setSearchWidgetListener() {
-    TextFormField? _searchField = (widget.dropDown.searchWidget as TextFormField?);
+    TextFormField? _searchField = widget.dropDown.searchWidget;
     _searchField?.controller?.addListener(() {
       _buildSearchList(_searchField.controller?.text ?? '');
     });

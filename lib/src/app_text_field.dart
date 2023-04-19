@@ -59,6 +59,8 @@ class _AppTextFieldState extends State<AppTextField> {
   }
 
   void onClearTap() {
+    widget.onTextChanged("");
     _editingController.clear();
   }
+
 }

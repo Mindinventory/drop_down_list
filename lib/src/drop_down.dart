@@ -8,15 +8,14 @@ typedef SelectedItemsCallBack = Function(List<dynamic> selectedItems);
 typedef ListItemBuilder = Widget Function(int index);
 
 class DropDown {
-
   /// This will give the list of data.
   final List<SelectedListItem> data;
 
   /// This will give the call back to the selected items from list.
   final SelectedItemsCallBack? selectedItems;
 
-  /// [listBuilder] will gives [index] as a function parameter and you can return your own widget based on [index].
-  final ListItemBuilder? listBuilder;
+  /// [listItemBuilder] will gives [index] as a function parameter and you can return your own widget based on [index].
+  final ListItemBuilder? listItemBuilder;
 
   /// This will give selection choice for single or multiple for list.
   final bool enableMultipleSelection;
@@ -38,15 +37,20 @@ class DropDown {
   /// This will set the background color to the dropdown.
   final Color dropDownBackgroundColor;
 
+  /// [searchHintText] is use to show the hint text into the search widget.
+  /// by default it is [Search] text.
+  final String? searchHintText;
+
   DropDown({
     Key? key,
     required this.data,
     this.selectedItems,
-    this.listBuilder,
+    this.listItemBuilder,
     this.enableMultipleSelection = false,
     this.bottomSheetTitle,
     this.submitButtonChild,
     this.searchWidget,
+    this.searchHintText = 'Search',
     this.isSearchVisible = true,
     this.dropDownBackgroundColor = Colors.transparent,
   });
@@ -150,6 +154,7 @@ class _MainBodyState extends State<MainBody> {
                   AppTextField(
                     dropDown: widget.dropDown,
                     onTextChanged: _buildSearchList,
+                    searchHintText: widget.dropDown.searchHintText,
                   ),
             ),
 
@@ -166,7 +171,7 @@ class _MainBodyState extends State<MainBody> {
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
                         child: ListTile(
-                          title: widget.dropDown.listBuilder?.call(index) ??
+                          title: widget.dropDown.listItemBuilder?.call(index) ??
                               Text(
                                 mainList[index].name,
                               ),

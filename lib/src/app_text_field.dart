@@ -7,15 +7,22 @@ class AppTextField extends StatefulWidget {
   final DropDown dropDown;
   final Function(String) onTextChanged;
 
-  const AppTextField({required this.dropDown, required this.onTextChanged, Key? key})
-      : super(key: key);
+  // [searchHintText] is use to show the hint text into the search widget.
+  /// by default it is [Search] text.
+  final String? searchHintText;
+
+  const AppTextField({
+    required this.dropDown,
+    required this.onTextChanged,
+    this.searchHintText,
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<AppTextField> createState() => _AppTextFieldState();
 }
 
 class _AppTextFieldState extends State<AppTextField> {
-
   final TextEditingController _editingController = TextEditingController();
 
   @override
@@ -32,7 +39,7 @@ class _AppTextFieldState extends State<AppTextField> {
           filled: true,
           fillColor: Colors.black12,
           contentPadding: const EdgeInsets.only(left: 0, bottom: 0, top: 0, right: 15),
-          hintText: 'Search',
+          hintText: widget.searchHintText,
           border: const OutlineInputBorder(
             borderSide: BorderSide(
               width: 0,
@@ -62,5 +69,4 @@ class _AppTextFieldState extends State<AppTextField> {
     widget.onTextChanged("");
     _editingController.clear();
   }
-
 }

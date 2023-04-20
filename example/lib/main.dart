@@ -162,12 +162,12 @@ class AppTextField extends StatefulWidget {
 }
 
 class _AppTextFieldState extends State<AppTextField> {
-  final TextEditingController _searchTextEditingController = TextEditingController();
 
   /// This is on text changed method which will display on city text field on changed.
   void onTextFieldTap() {
     DropDownState(
       DropDown(
+        isDismissible: false,
         bottomSheetTitle: const Text(
           kCities,
           style: TextStyle(

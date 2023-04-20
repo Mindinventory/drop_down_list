@@ -82,6 +82,10 @@ This property takes bool value as a parameter. [isSearchVisible] is use to manag
 ##### searchHintText:
 This property takes String value as a parameter. [searchHintText] is use to show the hint text into the search widget. by default it is 'Search' text.
 
+##### isDismissible:
+This property takes bool value as a parameter. [isDismissible] Specifies whether the bottom sheet will be dismissed when user taps on the scrim. If true, the bottom sheet will be dismissed when user taps on the scrim. by default it is **True**.
+
+
 # LICENSE!
 
 Dropdown list is [MIT-licensed](https://github.com/Mindinventory/drop_down_list/blob/main/LICENSE "MIT-licensed").

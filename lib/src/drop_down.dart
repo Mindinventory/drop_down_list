@@ -41,6 +41,11 @@ class DropDown {
   /// by default it is [Search] text.
   final String? searchHintText;
 
+  /// [isDismissible] Specifies whether the bottom sheet will be dismissed when user taps on the scrim.
+  /// If true, the bottom sheet will be dismissed when user taps on the scrim.
+  /// by default it is [True].
+  final bool isDismissible;
+
   DropDown({
     Key? key,
     required this.data,
@@ -48,6 +53,7 @@ class DropDown {
     this.listItemBuilder,
     this.enableMultipleSelection = false,
     this.bottomSheetTitle,
+    this.isDismissible = true,
     this.submitButtonChild,
     this.searchWidget,
     this.searchHintText = 'Search',
@@ -65,6 +71,7 @@ class DropDownState {
   void showModal(context) {
     showModalBottomSheet(
       isScrollControlled: true,
+      isDismissible: dropDown.isDismissible,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(15.0)),
       ),

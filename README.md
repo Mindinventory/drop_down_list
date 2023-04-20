@@ -79,6 +79,8 @@ This property takes TextFormField value as a parameter. [searchWidget] is use to
 ##### isSearchVisible:
 This property takes bool value as a parameter. [isSearchVisible] is use to manage the search widget visibility. by default it is [True] so widget will be visible.
 
+##### searchHintText:
+This property takes String value as a parameter. [searchHintText] is use to show the hint text into the search widget. by default it is 'Search' text.
 
 # LICENSE!
 

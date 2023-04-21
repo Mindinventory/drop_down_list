@@ -1,7 +1,7 @@
 ## 0.0.5
 
-* Minor Bugs fixes
-* Minor improvements.
+* Resolved GitHub issues [#7, #8, #11, #12]
+* Minor improvements
 
 ## 0.0.4
 

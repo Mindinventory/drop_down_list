@@ -53,11 +53,16 @@ class _DropDownListExampleState extends State<DropDownListExample> {
   ];
 
   /// This is register text field controllers.
-  final TextEditingController _fullNameTextEditingController = TextEditingController();
-  final TextEditingController _emailTextEditingController = TextEditingController();
-  final TextEditingController _phoneNumberTextEditingController = TextEditingController();
-  final TextEditingController _cityTextEditingController = TextEditingController();
-  final TextEditingController _passwordTextEditingController = TextEditingController();
+  final TextEditingController _fullNameTextEditingController =
+      TextEditingController();
+  final TextEditingController _emailTextEditingController =
+      TextEditingController();
+  final TextEditingController _phoneNumberTextEditingController =
+      TextEditingController();
+  final TextEditingController _cityTextEditingController =
+      TextEditingController();
+  final TextEditingController _passwordTextEditingController =
+      TextEditingController();
 
   @override
   void dispose() {
@@ -162,12 +167,11 @@ class AppTextField extends StatefulWidget {
 }
 
 class _AppTextFieldState extends State<AppTextField> {
-  final TextEditingController _searchTextEditingController = TextEditingController();
-
   /// This is on text changed method which will display on city text field on changed.
   void onTextFieldTap() {
     DropDownState(
       DropDown(
+        isDismissible: true,
         bottomSheetTitle: const Text(
           kCities,
           style: TextStyle(
@@ -185,8 +189,8 @@ class _AppTextFieldState extends State<AppTextField> {
         data: widget.cities ?? [],
         selectedItems: (List<dynamic> selectedList) {
           List<String> list = [];
-          for(var item in selectedList) {
-            if(item is SelectedListItem) {
+          for (var item in selectedList) {
+            if (item is SelectedListItem) {
               list.add(item.name);
             }
           }
@@ -198,7 +202,8 @@ class _AppTextFieldState extends State<AppTextField> {
   }
 
   void showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -222,7 +227,8 @@ class _AppTextFieldState extends State<AppTextField> {
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.black12,
-            contentPadding: const EdgeInsets.only(left: 8, bottom: 0, top: 0, right: 15),
+            contentPadding:
+                const EdgeInsets.only(left: 8, bottom: 0, top: 0, right: 15),
             hintText: widget.hint,
             border: const OutlineInputBorder(
               borderSide: BorderSide(
@@ -257,7 +263,7 @@ class _AppElevatedButton extends StatelessWidget {
           style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.normal),
         ),
         style: ElevatedButton.styleFrom(
-          primary: const Color.fromRGBO(70, 76, 222, 1),
+          backgroundColor: const Color.fromRGBO(70, 76, 222, 1),
           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ),

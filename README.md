@@ -16,7 +16,7 @@ The following examples are extracted from the example project available in the r
 ![drop-down-list](https://github.com/Mindinventory/drop_down_list/blob/main/assets/drop_down_single_selection.gif)
 
 # How to Use
-```
+```dart
 DropDownState(
       DropDown(
         bottomSheetTitle: const Text(

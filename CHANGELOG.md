@@ -1,3 +1,8 @@
+## 0.0.5
+
+* Minor Bugs fixes
+* Minor improvements.
+
 ## 0.0.4
 
 * Added support for search bar visibility.

@@ -1,3 +1,8 @@
+## 0.0.5
+
+* Resolved gitHub issues [#7, #8, #11, #12]
+* Minor improvements
+
 ## 0.0.4
 
 * Added support for search bar visibility.

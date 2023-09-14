@@ -5,7 +5,7 @@ import 'app_text_field.dart';
 
 typedef SelectedItemsCallBack = Function(List<SelectedListItem> selectedItems);
 
-typedef ListItemBuilder = Widget Function(int index);
+typedef ListItemBuilder = Widget Function(SelectedListItem item);
 
 typedef BottomSheetListener = bool Function(DraggableScrollableNotification draggableScrollableNotification);
 
@@ -16,7 +16,7 @@ class DropDown {
   /// This will give the call back to the selected items from list.
   final SelectedItemsCallBack? selectedItems;
 
-  /// [listItemBuilder] will gives [index] as a function parameter and you can return your own widget based on [index].
+  /// [listItemBuilder] will give [SelectedItem] as a function parameter and you can return your own widget based on that item.
   final ListItemBuilder? listItemBuilder;
 
   /// This will give selection choice for single or multiple for list.
@@ -187,7 +187,7 @@ class _MainBodyState extends State<MainBody> {
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
                           child: ListTile(
-                            title: widget.dropDown.listItemBuilder?.call(index) ??
+                            title: widget.dropDown.listItemBuilder?.call(mainList[index]) ??
                                 Text(
                                   mainList[index].name,
                                 ),

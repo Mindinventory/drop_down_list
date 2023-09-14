@@ -16,7 +16,7 @@ class DropDown {
   /// This will give the call back to the selected items from list.
   final SelectedItemsCallBack? selectedItems;
 
-  /// [listItemBuilder] will give [SelectedItem] as a function parameter and you can return your own widget based on that item.
+  /// [listItemBuilder] will give [SelectedListItem] as a function parameter and you can return your own widget based on that item.
   final ListItemBuilder? listItemBuilder;
 
   /// This will give selection choice for single or multiple for list.

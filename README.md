@@ -56,7 +56,7 @@ This property takes List<SelectedListItem> as a parameter and it is useful to di
 ### Optional parameters
 
 ##### listItemBuilder:
-This property takes a builder function with `SelectedItem` as argument. It is used to customize the rendering of the list items.
+This property takes a builder function with `SelectedListItem` as argument. It is used to customize the rendering of the list items.
 
 ##### enableMultipleSelection:
 This property takes Color value as a parameter. You can change the background color of animated segment. default value is `Color(0xff8AADFB)`

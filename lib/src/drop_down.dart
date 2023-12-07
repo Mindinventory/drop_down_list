@@ -28,6 +28,9 @@ class DropDown {
   /// You can set your custom submit button when the multiple selection is enabled.
   final Widget? submitButtonChild;
 
+  /// You can set your custom clear button when the multiple selection is enabled.
+  final Widget? clearButtonChild;
+
   /// [searchWidget] is use to show the text box for the searching.
   /// If you are passing your own widget then you must have to add [TextEditingController] for the [TextFormField].
   final TextFormField? searchWidget;
@@ -60,6 +63,7 @@ class DropDown {
     this.bottomSheetTitle,
     this.isDismissible = true,
     this.submitButtonChild,
+    this.clearButtonChild,
     this.searchWidget,
     this.searchHintText = 'Search',
     this.isSearchVisible = true,
@@ -70,12 +74,14 @@ class DropDown {
 
 class DropDownState {
   DropDown dropDown;
+  double? heightOfBottomSheet;
 
-  DropDownState(this.dropDown);
+  DropDownState(this.dropDown, {this.heightOfBottomSheet = 600});
 
   /// This gives the bottom sheet widget.
   void showModal(context) {
     showModalBottomSheet(
+      constraints: BoxConstraints.loose(Size(MediaQuery.of(context).size.width, heightOfBottomSheet!)), // <= this is set to 3/4 of screen size.
       isScrollControlled: true,
       enableDrag: dropDown.isDismissible,
       isDismissible: dropDown.isDismissible,
@@ -125,26 +131,26 @@ class _MainBodyState extends State<MainBody> {
         maxChildSize: 0.9,
         expand: false,
         builder: (BuildContext context, ScrollController scrollController) {
-          return Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    /// Bottom sheet title text
-                    Expanded(child: widget.dropDown.bottomSheetTitle ?? Container()),
+          return Container(
+            color: widget.dropDown.dropDownBackgroundColor,
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      /// Bottom sheet title text
+                      Expanded(child: widget.dropDown.bottomSheetTitle ?? Container()),
 
-                    /// Done button
-                    Visibility(
-                      visible: widget.dropDown.enableMultipleSelection,
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Material(
+                      /// Done button
+                      Visibility(
+                        visible: widget.dropDown.enableMultipleSelection,
+                        child: Align(
+                          alignment: Alignment.centerRight,
                           child: ElevatedButton(
                             onPressed: () {
-                              List<SelectedListItem> selectedList =
-                                  widget.dropDown.data.where((element) => element.isSelected ?? false).toList();
+                              List<SelectedListItem> selectedList = widget.dropDown.data.where((element) => element.isSelected ?? false).toList();
                               List<SelectedListItem> selectedNameList = [];
 
                               for (var element in selectedList) {
@@ -158,68 +164,80 @@ class _MainBodyState extends State<MainBody> {
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                      widget.dropDown.enableMultipleSelection
+                          ? Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  mainList.forEach((element) {
+                                    element.isSelected = null;
+                                  });
+                                  setState(() {});
+                                },
+                                child: widget.dropDown.clearButtonChild ?? const Text('Clear'),
+                              ),
+                            )
+                          : const SizedBox.shrink(),
+                    ],
+                  ),
                 ),
-              ),
 
-              /// A [TextField] that displays a list of suggestions as the user types with clear button.
-              Visibility(
-                visible: widget.dropDown.isSearchVisible,
-                child: widget.dropDown.searchWidget ??
-                    AppTextField(
-                      dropDown: widget.dropDown,
-                      onTextChanged: _buildSearchList,
-                      searchHintText: widget.dropDown.searchHintText,
-                    ),
-              ),
+                /// A [TextField] that displays a list of suggestions as the user types with clear button.
+                Visibility(
+                  visible: widget.dropDown.isSearchVisible,
+                  child: widget.dropDown.searchWidget ??
+                      AppTextField(
+                        dropDown: widget.dropDown,
+                        onTextChanged: _buildSearchList,
+                        searchHintText: widget.dropDown.searchHintText,
+                      ),
+                ),
 
-              /// Listview (list of data with check box for multiple selection & on tile tap single selection)
-              Expanded(
-                child: ListView.builder(
-                  controller: scrollController,
-                  itemCount: mainList.length,
-                  itemBuilder: (context, index) {
-                    bool isSelected = mainList[index].isSelected ?? false;
-                    return InkWell(
-                      child: Container(
-                        color: widget.dropDown.dropDownBackgroundColor,
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-                          child: ListTile(
-                            title: widget.dropDown.listItemBuilder?.call(index) ??
-                                Text(
-                                  mainList[index].name,
-                                ),
-                            trailing: widget.dropDown.enableMultipleSelection
-                                ? GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        mainList[index].isSelected = !isSelected;
-                                      });
-                                    },
-                                    child: isSelected
-                                        ? const Icon(Icons.check_box)
-                                        : const Icon(Icons.check_box_outline_blank),
-                                  )
-                                : const SizedBox(
-                                    height: 0.0,
-                                    width: 0.0,
+                /// Listview (list of data with check box for multiple selection & on tile tap single selection)
+                Expanded(
+                  child: ListView.builder(
+                    controller: scrollController,
+                    itemCount: mainList.length,
+                    itemBuilder: (context, index) {
+                      bool isSelected = mainList[index].isSelected ?? false;
+                      return InkWell(
+                        child: Container(
+                          color: widget.dropDown.dropDownBackgroundColor,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                            child: ListTile(
+                              title: widget.dropDown.listItemBuilder?.call(index) ??
+                                  Text(
+                                    mainList[index].name,
                                   ),
+                              trailing: widget.dropDown.enableMultipleSelection
+                                  ? GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          mainList[index].isSelected = !isSelected;
+                                        });
+                                      },
+                                      child: isSelected ? const Icon(Icons.check_box) : const Icon(Icons.check_box_outline_blank),
+                                    )
+                                  : const SizedBox(
+                                      height: 0.0,
+                                      width: 0.0,
+                                    ),
+                            ),
                           ),
                         ),
-                      ),
-                      onTap: widget.dropDown.enableMultipleSelection
-                          ? null
-                          : () {
-                              widget.dropDown.selectedItems?.call([mainList[index]]);
-                              _onUnFocusKeyboardAndPop();
-                            },
-                    );
-                  },
+                        onTap: widget.dropDown.enableMultipleSelection
+                            ? null
+                            : () {
+                                widget.dropDown.selectedItems?.call([mainList[index]]);
+                                _onUnFocusKeyboardAndPop();
+                              },
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         },
       ),
@@ -228,9 +246,7 @@ class _MainBodyState extends State<MainBody> {
 
   /// This helps when search enabled & show the filtered data in list.
   _buildSearchList(String userSearchTerm) {
-    final results = widget.dropDown.data
-        .where((element) => element.name.toLowerCase().contains(userSearchTerm.toLowerCase()))
-        .toList();
+    final results = widget.dropDown.data.where((element) => element.name.toLowerCase().contains(userSearchTerm.toLowerCase())).toList();
     if (userSearchTerm.isEmpty) {
       mainList = widget.dropDown.data;
     } else {

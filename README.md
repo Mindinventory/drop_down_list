@@ -67,6 +67,9 @@ This gives the bottom sheet title.
 ##### submitButtonChild:
 You can set your custom submit button when the multiple selection is enabled.
 
+##### clearButtonChild:
+You can set your custom clear button when the multiple selection is enabled.
+
 ##### selectedItems:
 This will give the call back to the selected items from list.
 

@@ -1,3 +1,8 @@
+## 0.0.6
+
+* Resolved gitHub issues [#14, #18]
+* enhancement [#15, #13]
+
 ## 0.0.5
 
 * Resolved gitHub issues [#7, #8, #11, #12]

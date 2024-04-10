@@ -51,6 +51,10 @@ class DropDown {
   /// [bottomSheetListener] that listens for BottomSheet bubbling up the tree.
   final BottomSheetListener? bottomSheetListener;
 
+  // Specifies whether a modal bottom sheet should be displayed using the root navigator.
+  /// by default it is [False].
+  final bool useRootNavigator;
+
   DropDown({
     Key? key,
     required this.data,
@@ -65,6 +69,7 @@ class DropDown {
     this.isSearchVisible = true,
     this.dropDownBackgroundColor = Colors.transparent,
     this.bottomSheetListener,
+    this.useRootNavigator = false,
   });
 }
 
@@ -76,6 +81,7 @@ class DropDownState {
   /// This gives the bottom sheet widget.
   void showModal(context) {
     showModalBottomSheet(
+      useRootNavigator: dropDown.useRootNavigator,
       isScrollControlled: true,
       enableDrag: dropDown.isDismissible,
       isDismissible: dropDown.isDismissible,

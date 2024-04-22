@@ -51,7 +51,7 @@ class DropDown {
   /// [bottomSheetListener] that listens for BottomSheet bubbling up the tree.
   final BottomSheetListener? bottomSheetListener;
 
-  // Specifies whether a modal bottom sheet should be displayed using the root navigator.
+  /// Specifies whether a modal bottom sheet should be displayed using the root navigator.
   /// by default it is [False].
   final bool useRootNavigator;
 

@@ -16,8 +16,8 @@ void main() {
 
 class DropDownListExample extends StatefulWidget {
   const DropDownListExample({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<DropDownListExample> createState() => _DropDownListExampleState();
@@ -159,8 +159,8 @@ class AppTextField extends StatefulWidget {
     required this.hint,
     required this.isCitySelected,
     this.cities,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<AppTextField> createState() => _AppTextFieldState();

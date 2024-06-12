@@ -104,7 +104,7 @@ class DropDownState {
 class MainBody extends StatefulWidget {
   final DropDown dropDown;
 
-  const MainBody({required this.dropDown, Key? key}) : super(key: key);
+  const MainBody({required this.dropDown, super.key});
 
   @override
   State<MainBody> createState() => _MainBodyState();
@@ -188,6 +188,12 @@ class _MainBodyState extends State<MainBody> {
                   itemBuilder: (context, index) {
                     bool isSelected = mainList[index].isSelected ?? false;
                     return InkWell(
+                      onTap: widget.dropDown.enableMultipleSelection
+                          ? null
+                          : () {
+                              widget.dropDown.selectedItems?.call([mainList[index]]);
+                              _onUnFocusKeyboardAndPop();
+                            },
                       child: Container(
                         color: widget.dropDown.dropDownBackgroundColor,
                         child: Padding(
@@ -215,12 +221,6 @@ class _MainBodyState extends State<MainBody> {
                           ),
                         ),
                       ),
-                      onTap: widget.dropDown.enableMultipleSelection
-                          ? null
-                          : () {
-                              widget.dropDown.selectedItems?.call([mainList[index]]);
-                              _onUnFocusKeyboardAndPop();
-                            },
                     );
                   },
                 ),
@@ -252,9 +252,9 @@ class _MainBodyState extends State<MainBody> {
   }
 
   void _setSearchWidgetListener() {
-    TextFormField? _searchField = widget.dropDown.searchWidget;
-    _searchField?.controller?.addListener(() {
-      _buildSearchList(_searchField.controller?.text ?? '');
+    TextFormField? searchField = widget.dropDown.searchWidget;
+    searchField?.controller?.addListener(() {
+      _buildSearchList(searchField.controller?.text ?? '');
     });
   }
 }

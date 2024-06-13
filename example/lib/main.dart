@@ -16,11 +16,11 @@ void main() {
 
 class DropDownListExample extends StatefulWidget {
   const DropDownListExample({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
-  _DropDownListExampleState createState() => _DropDownListExampleState();
+  State<DropDownListExample> createState() => _DropDownListExampleState();
 }
 
 class _DropDownListExampleState extends State<DropDownListExample> {
@@ -159,11 +159,11 @@ class AppTextField extends StatefulWidget {
     required this.hint,
     required this.isCitySelected,
     this.cities,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
-  _AppTextFieldState createState() => _AppTextFieldState();
+  State<AppTextField> createState() => _AppTextFieldState();
 }
 
 class _AppTextFieldState extends State<AppTextField> {
@@ -258,13 +258,13 @@ class _AppElevatedButton extends StatelessWidget {
       height: 60.0,
       child: ElevatedButton(
         onPressed: () {},
-        child: const Text(
-          kREGISTER,
-          style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.normal),
-        ),
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color.fromRGBO(70, 76, 222, 1),
           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        child: const Text(
+          kREGISTER,
+          style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.normal),
         ),
       ),
     );

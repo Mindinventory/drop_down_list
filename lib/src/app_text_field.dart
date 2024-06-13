@@ -15,8 +15,8 @@ class AppTextField extends StatefulWidget {
     required this.dropDown,
     required this.onTextChanged,
     this.searchHintText,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<AppTextField> createState() => _AppTextFieldState();

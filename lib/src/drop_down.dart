@@ -46,6 +46,19 @@ class DropDown {
   /// by default it is [True] so widget will be visible.
   final bool isSearchVisible;
 
+  /// [isSelectAllVisible] flag use to manage the select all widget visibility.
+  /// by default it is [True] so widget will be visible.
+  /// Required [enableMultipleSelection] to be true.
+  final bool isSelectAllVisible;
+
+  /// [selectAllText] is use to show the text into the select all widget.
+  /// Required [enableMultipleSelection] and [isSelectAllVisible] to be true.
+  final String selectAllText;
+
+  /// [deselectAllText] is use to show the text into the deselect all widget.
+  /// Required [enableMultipleSelection] and [isSelectAllVisible] to be true.
+  final String deselectAllText;
+
   /// This will set the background color to the dropdown.
   final Color dropDownBackgroundColor;
 
@@ -83,6 +96,9 @@ class DropDown {
     this.searchWidget,
     this.searchHintText = 'Search',
     this.isSearchVisible = true,
+    this.isSelectAllVisible = true,
+    this.selectAllText = 'Select All',
+    this.deselectAllText = 'Deselect All',
     this.dropDownBackgroundColor = Colors.transparent,
     this.bottomSheetListener,
     this.useRootNavigator = false,
@@ -141,6 +157,7 @@ class _MainBodyState extends State<MainBody> {
 
   @override
   Widget build(BuildContext context) {
+    final isSelectAll = mainList.fold(true, (p, e) => p && (e.isSelected ?? false));
     return NotificationListener<DraggableScrollableNotification>(
       onNotification: widget.dropDown.bottomSheetListener,
       child: DraggableScrollableSheet(
@@ -219,6 +236,27 @@ class _MainBodyState extends State<MainBody> {
                 ),
 
               /// Listview (list of data with check box for multiple selection & on tile tap single selection)
+              if (widget.dropDown.enableMultipleSelection && widget.dropDown.isSelectAllVisible) Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: TextButton(
+                    onPressed: () => setState(() {
+                      for (var element in mainList) {
+                        if (isSelectAll) {
+                          element.isSelected = false;
+                        } else {
+                          element.isSelected = true;
+                        }
+                      }
+                    }),
+                    child: Text(
+                        isSelectAll
+                            ? widget.dropDown.deselectAllText : widget.dropDown.selectAllText
+                    ),
+                  ),
+                ),
+              ),
               Expanded(
                 child: ListView.builder(
                   controller: scrollController,

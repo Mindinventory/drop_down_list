@@ -6,10 +6,9 @@ import 'app_text_field.dart';
 typedef ItemSelectionCallBack = void Function(
     List<SelectedListItem> selectedItems);
 
-typedef ListItemBuilder = Widget Function(SelectedListItem item);
+typedef ListItemBuilder = Widget Function(int index);
 
-typedef BottomSheetListener = bool Function(
-    DraggableScrollableNotification draggableScrollableNotification);
+typedef BottomSheetListener = bool Function(DraggableScrollableNotification draggableScrollableNotification);
 
 class DropDown {
   /// This will give the list of data.
@@ -34,6 +33,9 @@ class DropDown {
 
   /// You can set your custom submit button when the multiple selection is enabled.
   final Widget? submitButtonChild;
+
+  /// You can set your custom clear button when the multiple selection is enabled.
+  final Widget? clearButtonChild;
 
   /// [searchWidget] is use to show the text box for the searching.
   /// If you are passing your own widget then you must have to add [TextEditingController] for the [TextFormField].
@@ -76,6 +78,7 @@ class DropDown {
     this.bottomSheetTitle,
     this.isDismissible = true,
     this.submitButtonChild,
+    this.clearButtonChild,
     this.searchWidget,
     this.searchHintText = 'Search',
     this.isSearchVisible = true,
@@ -87,13 +90,15 @@ class DropDown {
 
 class DropDownState {
   DropDown dropDown;
+  double? heightOfBottomSheet;
 
-  DropDownState(this.dropDown);
+  DropDownState(this.dropDown, {this.heightOfBottomSheet = 600});
 
   /// This gives the bottom sheet widget.
   void showModal(context) {
     showModalBottomSheet(
       useRootNavigator: dropDown.useRootNavigator,
+      constraints: BoxConstraints.loose(Size(MediaQuery.of(context).size.width, heightOfBottomSheet!)), // <= this is set to 3/4 of screen size.
       isScrollControlled: true,
       enableDrag: dropDown.isDismissible,
       isDismissible: dropDown.isDismissible,
@@ -143,24 +148,23 @@ class _MainBodyState extends State<MainBody> {
         maxChildSize: 0.9,
         expand: false,
         builder: (BuildContext context, ScrollController scrollController) {
-          return Column(
-            children: <Widget>[
-              Padding(
-                padding:
-                    const EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    /// Bottom sheet title text
-                    Expanded(
-                        child: widget.dropDown.bottomSheetTitle ?? Container()),
+          return Container(
+            color: widget.dropDown.dropDownBackgroundColor,
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      /// Bottom sheet title text
+                      Expanded(child: widget.dropDown.bottomSheetTitle ?? Container()),
 
-                    /// Done button
-                    Visibility(
-                      visible: widget.dropDown.enableMultipleSelection,
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Material(
+                      /// Done button
+                      Visibility(
+                        visible: widget.dropDown.enableMultipleSelection,
+                        child: Align(
+                          alignment: Alignment.centerRight,
                           child: ElevatedButton(
                             onPressed: () {
                               List<SelectedListItem> selectedList = widget
@@ -184,21 +188,34 @@ class _MainBodyState extends State<MainBody> {
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                      widget.dropDown.enableMultipleSelection
+                          ? Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  mainList.forEach((element) {
+                                    element.isSelected = null;
+                                  });
+                                  setState(() {});
+                                },
+                                child: widget.dropDown.clearButtonChild ?? const Text('Clear'),
+                              ),
+                            )
+                          : const SizedBox.shrink(),
+                    ],
+                  ),
                 ),
-              ),
 
-              /// A [TextField] that displays a list of suggestions as the user types with clear button.
-              Visibility(
-                visible: widget.dropDown.isSearchVisible,
-                child: widget.dropDown.searchWidget ??
-                    AppTextField(
-                      dropDown: widget.dropDown,
-                      onTextChanged: _buildSearchList,
-                      searchHintText: widget.dropDown.searchHintText,
-                    ),
-              ),
+                /// A [TextField] that displays a list of suggestions as the user types with clear button.
+                Visibility(
+                  visible: widget.dropDown.isSearchVisible,
+                  child: widget.dropDown.searchWidget ??
+                      AppTextField(
+                        dropDown: widget.dropDown,
+                        onTextChanged: _buildSearchList,
+                        searchHintText: widget.dropDown.searchHintText,
+                      ),
+                ),
 
               /// Listview (list of data with check box for multiple selection & on tile tap single selection)
               Expanded(
@@ -207,8 +224,8 @@ class _MainBodyState extends State<MainBody> {
                   itemCount: mainList.length,
                   itemBuilder: (context, index) {
                     bool isSelected = mainList[index].isSelected;
-                    return InkWell(
-                      onTap: widget.dropDown.enableMultipleSelection
+                      return InkWell(
+                        onTap: widget.dropDown.enableMultipleSelection
                           ? null
                           : () {
                               // ignore: deprecated_member_use_from_same_package
@@ -224,13 +241,13 @@ class _MainBodyState extends State<MainBody> {
                           child: ListTile(
                             title: widget.dropDown.listItemBuilder
                                     ?.call(mainList[index]) ??
-                                Text(
-                                  mainList[index].name,
-                                ),
-                            trailing: widget.dropDown.enableMultipleSelection
-                                ? GestureDetector(
-                                    onTap: () {
-                                      if (!isSelected &&
+                                  Text(
+                                    mainList[index].name,
+                                  ),
+                              trailing: widget.dropDown.enableMultipleSelection
+                                  ? GestureDetector(
+                                      onTap: () {
+                                        if (!isSelected &&
                                           widget.dropDown.maxSelectedItems !=
                                               null) {
                                         if (mainList
@@ -254,11 +271,12 @@ class _MainBodyState extends State<MainBody> {
                           ),
                         ),
                       ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         },
       ),
@@ -266,11 +284,8 @@ class _MainBodyState extends State<MainBody> {
   }
 
   /// This helps when search enabled & show the filtered data in list.
-  void _buildSearchList(String userSearchTerm) {
-    final results = widget.dropDown.data
-        .where((element) =>
-            element.name.toLowerCase().contains(userSearchTerm.toLowerCase()))
-        .toList();
+  _buildSearchList(String userSearchTerm) {
+    final results = widget.dropDown.data.where((element) => element.name.toLowerCase().contains(userSearchTerm.toLowerCase())).toList();
     if (userSearchTerm.isEmpty) {
       mainList = widget.dropDown.data;
     } else {

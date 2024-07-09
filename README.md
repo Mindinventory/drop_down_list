@@ -70,6 +70,9 @@ You can set your custom submit button when the multiple selection is enabled.
 ##### onSelected:
 This will give the call back to the selected items from list.
 
+##### clearButtonChild:
+You can set your custom clear button when the multiple selection is enabled.
+
 ##### dropDownBackgroundColor:
 This will set the background color to the dropdown.
 

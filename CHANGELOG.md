@@ -1,8 +1,13 @@
-## 0.0.6
+## 0.0.7
 
 * Resolved github issue [#19]
 * Merged PR #21
 * Refactored code
+
+## 0.0.6
+
+* Resolved gitHub issues [#14, #18]
+* enhancement [#15, #13]
 
 ## 0.0.5
 

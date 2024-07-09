@@ -184,6 +184,13 @@ class _AppTextFieldState extends State<AppTextField> {
           ),
         ),
         maxSelectedItems: 3,
+        clearButtonChild: const Text(
+          'Clear',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         data: widget.cities ?? [],
         onSelected: (List<dynamic> selectedList) {
           List<String> list = [];

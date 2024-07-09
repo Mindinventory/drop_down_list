@@ -34,7 +34,7 @@ DropDownState(
           ),
         ),
         data: widget.cities ?? [],
-        selectedItems: (List<dynamic> selectedList) {
+        onSelected: (List<dynamic> selectedList) {
           List<String> list = [];
           for(var item in selectedList) {
             if(item is SelectedListItem) {

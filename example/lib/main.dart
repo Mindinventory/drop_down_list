@@ -29,17 +29,14 @@ class _DropDownListExampleState extends State<DropDownListExample> {
     SelectedListItem(
       name: kTokyo,
       value: "TYO",
-      isSelected: false,
     ),
     SelectedListItem(
       name: kNewYork,
       value: "NY",
-      isSelected: false,
     ),
     SelectedListItem(
       name: kLondon,
       value: "LDN",
-      isSelected: false,
     ),
     SelectedListItem(name: kParis),
     SelectedListItem(name: kMadrid),
@@ -186,8 +183,9 @@ class _AppTextFieldState extends State<AppTextField> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        maxSelectedItems: 3,
         data: widget.cities ?? [],
-        selectedItems: (List<dynamic> selectedList) {
+        onSelected: (List<dynamic> selectedList) {
           List<String> list = [];
           for (var item in selectedList) {
             if (item is SelectedListItem) {
@@ -264,7 +262,11 @@ class _AppElevatedButton extends StatelessWidget {
         ),
         child: const Text(
           kREGISTER,
-          style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.normal),
+          style: TextStyle(
+            fontSize: 14.0,
+            fontWeight: FontWeight.normal,
+            color: Colors.white,
+          ),
         ),
       ),
     );

@@ -34,7 +34,7 @@ DropDownState(
           ),
         ),
         data: widget.cities ?? [],
-        selectedItems: (List<dynamic> selectedList) {
+        onSelected: (List<dynamic> selectedList) {
           List<String> list = [];
           for(var item in selectedList) {
             if(item is SelectedListItem) {
@@ -67,11 +67,14 @@ This gives the bottom sheet title.
 ##### submitButtonChild:
 You can set your custom submit button when the multiple selection is enabled.
 
-##### selectedItems:
+##### onSelected:
 This will give the call back to the selected items from list.
 
 ##### dropDownBackgroundColor:
 This will set the background color to the dropdown.
+
+##### maxSelectedItems
+Number of items that can be selected when multiple selection is enabled
 
 ##### searchWidget:
 This property takes TextFormField value as a parameter. [searchWidget] is use to show the text box for the searching. If you are passing your own widget then you must have to add [TextEditingController] for the [TextFormField].

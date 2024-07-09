@@ -3,18 +3,25 @@ import 'package:flutter/material.dart';
 
 import 'app_text_field.dart';
 
-typedef SelectedItemsCallBack = Function(List<SelectedListItem> selectedItems);
+typedef ItemSelectionCallBack = void Function(
+    List<SelectedListItem> selectedItems);
 
 typedef ListItemBuilder = Widget Function(SelectedListItem item);
 
-typedef BottomSheetListener = bool Function(DraggableScrollableNotification draggableScrollableNotification);
+typedef BottomSheetListener = bool Function(
+    DraggableScrollableNotification draggableScrollableNotification);
 
 class DropDown {
   /// This will give the list of data.
   final List<SelectedListItem> data;
 
   /// This will give the call back to the selected items from list.
-  final SelectedItemsCallBack? selectedItems;
+  /// TODO: Remove [selectedItems] in next release
+
+  @Deprecated('Change to onSelected')
+  final ItemSelectionCallBack? selectedItems;
+
+  final ItemSelectionCallBack? onSelected;
 
   /// [listItemBuilder] will give [SelectedListItem] as a function parameter and you can return your own widget based on that item.
   final ListItemBuilder? listItemBuilder;
@@ -55,10 +62,15 @@ class DropDown {
   /// by default it is [False].
   final bool useRootNavigator;
 
+  /// Number of items that can be selected when multiple selection is enabled.
+  final int? maxSelectedItems;
+
   DropDown({
     Key? key,
     required this.data,
+    this.maxSelectedItems,
     this.selectedItems,
+    this.onSelected,
     this.listItemBuilder,
     this.enableMultipleSelection = false,
     this.bottomSheetTitle,
@@ -134,12 +146,14 @@ class _MainBodyState extends State<MainBody> {
           return Column(
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0),
+                padding:
+                    const EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     /// Bottom sheet title text
-                    Expanded(child: widget.dropDown.bottomSheetTitle ?? Container()),
+                    Expanded(
+                        child: widget.dropDown.bottomSheetTitle ?? Container()),
 
                     /// Done button
                     Visibility(
@@ -149,18 +163,24 @@ class _MainBodyState extends State<MainBody> {
                         child: Material(
                           child: ElevatedButton(
                             onPressed: () {
-                              List<SelectedListItem> selectedList =
-                                  widget.dropDown.data.where((element) => element.isSelected ?? false).toList();
+                              List<SelectedListItem> selectedList = widget
+                                  .dropDown.data
+                                  .where((element) => element.isSelected)
+                                  .toList();
                               List<SelectedListItem> selectedNameList = [];
 
                               for (var element in selectedList) {
                                 selectedNameList.add(element);
                               }
 
-                              widget.dropDown.selectedItems?.call(selectedNameList);
+                              // ignore: deprecated_member_use_from_same_package
+                              (widget.dropDown.selectedItems ??
+                                      widget.dropDown.onSelected)
+                                  ?.call(selectedNameList);
                               _onUnFocusKeyboardAndPop();
                             },
-                            child: widget.dropDown.submitButtonChild ?? const Text('Done'),
+                            child: widget.dropDown.submitButtonChild ??
+                                const Text('Done'),
                           ),
                         ),
                       ),
@@ -186,12 +206,15 @@ class _MainBodyState extends State<MainBody> {
                   controller: scrollController,
                   itemCount: mainList.length,
                   itemBuilder: (context, index) {
-                    bool isSelected = mainList[index].isSelected ?? false;
+                    bool isSelected = mainList[index].isSelected;
                     return InkWell(
                       onTap: widget.dropDown.enableMultipleSelection
                           ? null
                           : () {
-                              widget.dropDown.selectedItems?.call([mainList[index]]);
+                              // ignore: deprecated_member_use_from_same_package
+                              (widget.dropDown.selectedItems ??
+                                      widget.dropDown.onSelected)
+                                  ?.call([mainList[index]]);
                               _onUnFocusKeyboardAndPop();
                             },
                       child: Container(
@@ -199,25 +222,35 @@ class _MainBodyState extends State<MainBody> {
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
                           child: ListTile(
-                            title: widget.dropDown.listItemBuilder?.call(mainList[index]) ??
+                            title: widget.dropDown.listItemBuilder
+                                    ?.call(mainList[index]) ??
                                 Text(
                                   mainList[index].name,
                                 ),
                             trailing: widget.dropDown.enableMultipleSelection
                                 ? GestureDetector(
                                     onTap: () {
+                                      if (!isSelected &&
+                                          widget.dropDown.maxSelectedItems !=
+                                              null) {
+                                        if (mainList
+                                                .where((e) => e.isSelected)
+                                                .length >=
+                                            widget.dropDown.maxSelectedItems!) {
+                                          return;
+                                        }
+                                      }
                                       setState(() {
-                                        mainList[index].isSelected = !isSelected;
+                                        mainList[index].isSelected =
+                                            !isSelected;
                                       });
                                     },
                                     child: isSelected
                                         ? const Icon(Icons.check_box)
-                                        : const Icon(Icons.check_box_outline_blank),
+                                        : const Icon(
+                                            Icons.check_box_outline_blank),
                                   )
-                                : const SizedBox(
-                                    height: 0.0,
-                                    width: 0.0,
-                                  ),
+                                : const SizedBox.shrink(),
                           ),
                         ),
                       ),
@@ -233,9 +266,10 @@ class _MainBodyState extends State<MainBody> {
   }
 
   /// This helps when search enabled & show the filtered data in list.
-  _buildSearchList(String userSearchTerm) {
+  void _buildSearchList(String userSearchTerm) {
     final results = widget.dropDown.data
-        .where((element) => element.name.toLowerCase().contains(userSearchTerm.toLowerCase()))
+        .where((element) =>
+            element.name.toLowerCase().contains(userSearchTerm.toLowerCase()))
         .toList();
     if (userSearchTerm.isEmpty) {
       mainList = widget.dropDown.data;

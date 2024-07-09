@@ -22,7 +22,7 @@ class DropDown {
 
   final ItemSelectionCallBack? onSelected;
 
-  /// [listItemBuilder] will give [SelectedListItem] as a function parameter and you can return your own widget based on that item.
+  /// [listItemBuilder] will gives [index] as a function parameter and you can return your own widget based on that item.
   final ListItemBuilder? listItemBuilder;
 
   /// This will give selection choice for single or multiple for list.
@@ -193,9 +193,9 @@ class _MainBodyState extends State<MainBody> {
                               padding: const EdgeInsets.only(left: 8.0),
                               child: ElevatedButton(
                                 onPressed: () {
-                                  mainList.forEach((element) {
-                                    element.isSelected = null;
-                                  });
+                                  for (final element in mainList) {
+                                    element.isSelected = false;
+                                  }
                                   setState(() {});
                                 },
                                 child: widget.dropDown.clearButtonChild ?? const Text('Clear'),
@@ -240,7 +240,7 @@ class _MainBodyState extends State<MainBody> {
                           padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
                           child: ListTile(
                             title: widget.dropDown.listItemBuilder
-                                    ?.call(mainList[index]) ??
+                                    ?.call(index) ??
                                   Text(
                                     mainList[index].name,
                                   ),

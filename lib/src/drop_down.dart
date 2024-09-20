@@ -3,13 +3,11 @@ import 'package:flutter/material.dart';
 
 import 'app_text_field.dart';
 
-typedef ItemSelectionCallBack = void Function(
-    List<SelectedListItem> selectedItems);
+typedef ItemSelectionCallBack = void Function(List<SelectedListItem> selectedItems);
 
 typedef ListItemBuilder = Widget Function(int index);
 
-typedef BottomSheetListener = bool Function(
-    DraggableScrollableNotification draggableScrollableNotification);
+typedef BottomSheetListener = bool Function(DraggableScrollableNotification draggableScrollableNotification);
 
 class DropDown {
   /// This will give the list of data.
@@ -51,13 +49,11 @@ class DropDown {
   /// Required [enableMultipleSelection] to be true.
   final bool isSelectAllVisible;
 
-  /// [selectAllText] is use to show the text into the select all widget.
-  /// Required [enableMultipleSelection] and [isSelectAllVisible] to be true.
-  final String selectAllText;
+  /// You can set your custom select all text button when the multiple selection and isSelectAllVisible is enabled.
+  final Widget? selectAllTextButtonChild;
 
-  /// [deselectAllText] is use to show the text into the deselect all widget.
-  /// Required [enableMultipleSelection] and [isSelectAllVisible] to be true.
-  final String deselectAllText;
+  /// You can set your custom deselect all text button when the multiple selection and isSelectAllVisible is enabled.
+  final Widget? deSelectAllTextButtonChild;
 
   /// This will set the background color to the dropdown.
   final Color dropDownBackgroundColor;
@@ -97,8 +93,8 @@ class DropDown {
     this.searchHintText = 'Search',
     this.isSearchVisible = true,
     this.isSelectAllVisible = true,
-    this.selectAllText = 'Select All',
-    this.deselectAllText = 'Deselect All',
+    this.selectAllTextButtonChild,
+    this.deSelectAllTextButtonChild,
     this.dropDownBackgroundColor = Colors.transparent,
     this.bottomSheetListener,
     this.useRootNavigator = false,
@@ -115,7 +111,8 @@ class DropDownState {
   void showModal(context) {
     showModalBottomSheet(
       useRootNavigator: dropDown.useRootNavigator,
-      constraints: BoxConstraints.loose(Size(MediaQuery.of(context).size.width, heightOfBottomSheet!)), // <= this is set to 3/4 of screen size.
+      constraints: BoxConstraints.loose(Size(MediaQuery.of(context).size.width, heightOfBottomSheet!)),
+      // <= this is set to 3/4 of screen size.
       isScrollControlled: true,
       enableDrag: dropDown.isDismissible,
       isDismissible: dropDown.isDismissible,
@@ -157,7 +154,7 @@ class _MainBodyState extends State<MainBody> {
 
   @override
   Widget build(BuildContext context) {
-    final isSelectAll = mainList.fold(true, (p, e) => p && (e.isSelected ?? false));
+    final isSelectAll = mainList.fold(true, (p, e) => p && (e.isSelected));
     return NotificationListener<DraggableScrollableNotification>(
       onNotification: widget.dropDown.bottomSheetListener,
       child: DraggableScrollableSheet(
@@ -185,10 +182,8 @@ class _MainBodyState extends State<MainBody> {
                           alignment: Alignment.centerRight,
                           child: ElevatedButton(
                             onPressed: () {
-                              List<SelectedListItem> selectedList = widget
-                                  .dropDown.data
-                                  .where((element) => element.isSelected)
-                                  .toList();
+                              List<SelectedListItem> selectedList =
+                                  widget.dropDown.data.where((element) => element.isSelected).toList();
                               List<SelectedListItem> selectedNameList = [];
 
                               for (var element in selectedList) {
@@ -196,13 +191,10 @@ class _MainBodyState extends State<MainBody> {
                               }
 
                               // ignore: deprecated_member_use_from_same_package
-                              (widget.dropDown.selectedItems ??
-                                      widget.dropDown.onSelected)
-                                  ?.call(selectedNameList);
+                              (widget.dropDown.selectedItems ?? widget.dropDown.onSelected)?.call(selectedNameList);
                               _onUnFocusKeyboardAndPop();
                             },
-                            child: widget.dropDown.submitButtonChild ??
-                                const Text('Done'),
+                            child: widget.dropDown.submitButtonChild ?? const Text('Done'),
                           ),
                         ),
                       ),
@@ -235,35 +227,33 @@ class _MainBodyState extends State<MainBody> {
                       ),
                 ),
 
-              /// Listview (list of data with check box for multiple selection & on tile tap single selection)
-              if (widget.dropDown.enableMultipleSelection && widget.dropDown.isSelectAllVisible) Align(
-                alignment: Alignment.centerRight,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: TextButton(
-                    onPressed: () => setState(() {
-                      for (var element in mainList) {
-                        if (isSelectAll) {
-                          element.isSelected = false;
-                        } else {
-                          element.isSelected = true;
-                        }
-                      }
-                    }),
-                    child: Text(
-                        isSelectAll
-                            ? widget.dropDown.deselectAllText : widget.dropDown.selectAllText
+                /// Select or Deselect TextButton when enableMultipleSelection is enabled
+                if (widget.dropDown.enableMultipleSelection && widget.dropDown.isSelectAllVisible)
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: TextButton(
+                        onPressed: () => setState(() {
+                          for (var element in mainList) {
+                            element.isSelected = !isSelectAll;
+                          }
+                        }),
+                        child: isSelectAll
+                            ? widget.dropDown.deSelectAllTextButtonChild ?? const Text('Deselect All')
+                            : widget.dropDown.selectAllTextButtonChild ?? const Text('Select All'),
+                      ),
                     ),
                   ),
-                ),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  controller: scrollController,
-                  itemCount: mainList.length,
-                  itemBuilder: (context, index) {
-                    bool isSelected = mainList[index].isSelected;
-                    return Container(
+
+                /// Listview (list of data with check box for multiple selection & on tile tap single selection)
+                Expanded(
+                  child: ListView.builder(
+                    controller: scrollController,
+                    itemCount: mainList.length,
+                    itemBuilder: (context, index) {
+                      bool isSelected = mainList[index].isSelected;
+                      return Container(
                         color: widget.dropDown.dropDownBackgroundColor,
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
@@ -309,7 +299,9 @@ class _MainBodyState extends State<MainBody> {
 
   /// This helps when search enabled & show the filtered data in list.
   _buildSearchList(String userSearchTerm) {
-    final results = widget.dropDown.data.where((element) => element.name.toLowerCase().contains(userSearchTerm.toLowerCase())).toList();
+    final results = widget.dropDown.data
+        .where((element) => element.name.toLowerCase().contains(userSearchTerm.toLowerCase()))
+        .toList();
     if (userSearchTerm.isEmpty) {
       mainList = widget.dropDown.data;
     } else {

@@ -8,7 +8,8 @@ typedef ItemSelectionCallBack = void Function(
 
 typedef ListItemBuilder = Widget Function(int index);
 
-typedef BottomSheetListener = bool Function(DraggableScrollableNotification draggableScrollableNotification);
+typedef BottomSheetListener = bool Function(
+    DraggableScrollableNotification draggableScrollableNotification);
 
 class DropDown {
   /// This will give the list of data.
@@ -224,53 +225,38 @@ class _MainBodyState extends State<MainBody> {
                   itemCount: mainList.length,
                   itemBuilder: (context, index) {
                     bool isSelected = mainList[index].isSelected;
-                      return InkWell(
-                        onTap: widget.dropDown.enableMultipleSelection
-                          ? null
-                          : () {
-                              // ignore: deprecated_member_use_from_same_package
-                              (widget.dropDown.selectedItems ??
-                                      widget.dropDown.onSelected)
-                                  ?.call([mainList[index]]);
-                              _onUnFocusKeyboardAndPop();
-                            },
-                      child: Container(
+                    return Container(
                         color: widget.dropDown.dropDownBackgroundColor,
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
                           child: ListTile(
-                            title: widget.dropDown.listItemBuilder
-                                    ?.call(index) ??
-                                  Text(
-                                    mainList[index].name,
-                                  ),
-                              trailing: widget.dropDown.enableMultipleSelection
-                                  ? GestureDetector(
-                                      onTap: () {
-                                        if (!isSelected &&
-                                          widget.dropDown.maxSelectedItems !=
-                                              null) {
-                                        if (mainList
-                                                .where((e) => e.isSelected)
-                                                .length >=
-                                            widget.dropDown.maxSelectedItems!) {
-                                          return;
-                                        }
-                                      }
-                                      setState(() {
-                                        mainList[index].isSelected =
-                                            !isSelected;
-                                      });
-                                    },
-                                    child: isSelected
-                                        ? const Icon(Icons.check_box)
-                                        : const Icon(
-                                            Icons.check_box_outline_blank),
-                                  )
+                            onTap: () {
+                              if (widget.dropDown.enableMultipleSelection) {
+                                if (!isSelected && widget.dropDown.maxSelectedItems != null) {
+                                  if (mainList.where((e) => e.isSelected).length >= widget.dropDown.maxSelectedItems!) {
+                                    return;
+                                  }
+                                }
+                                setState(() {
+                                  mainList[index].isSelected = !isSelected;
+                                });
+                              } else {
+                                // ignore: deprecated_member_use_from_same_package
+                                (widget.dropDown.selectedItems ?? widget.dropDown.onSelected)?.call([mainList[index]]);
+                                _onUnFocusKeyboardAndPop();
+                              }
+                            },
+                            title: widget.dropDown.listItemBuilder?.call(index) ??
+                                Text(
+                                  mainList[index].name,
+                                ),
+                            trailing: widget.dropDown.enableMultipleSelection
+                                ? isSelected
+                                    ? const Icon(Icons.check_box)
+                                    : const Icon(Icons.check_box_outline_blank)
                                 : const SizedBox.shrink(),
                           ),
                         ),
-                      ),
                       );
                     },
                   ),

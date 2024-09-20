@@ -246,7 +246,7 @@ class _MainBodyState extends State<MainBody> {
 
 
                 /// Select or Deselect TextButton when enableMultipleSelection is enabled
-                if (widget.dropDown.enableMultipleSelection && widget.dropDown.isSelectAllVisible)
+                if (widget.dropDown.enableMultipleSelection && widget.dropDown.isSelectAllVisible && mainList.isNotEmpty)
                   Align(
                     alignment: Alignment.centerRight,
                     child: Padding(

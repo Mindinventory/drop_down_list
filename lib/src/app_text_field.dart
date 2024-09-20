@@ -10,11 +10,15 @@ class AppTextField extends StatefulWidget {
   // [searchHintText] is use to show the hint text into the search widget.
   /// by default it is [Search] text.
   final String? searchHintText;
+  final Color? searchFillColor;
+  final Color? searchCursorColor;
 
   const AppTextField({
     required this.dropDown,
     required this.onTextChanged,
     this.searchHintText,
+    this.searchFillColor,
+    this.searchCursorColor,
     super.key,
   });
 
@@ -31,13 +35,13 @@ class _AppTextFieldState extends State<AppTextField> {
       padding: const EdgeInsets.all(12.0),
       child: TextFormField(
         controller: _editingController,
-        cursorColor: Colors.black,
+        cursorColor: widget.searchCursorColor,
         onChanged: (value) {
           widget.onTextChanged(value);
         },
         decoration: InputDecoration(
           filled: true,
-          fillColor: Colors.black12,
+          fillColor: widget.searchFillColor,
           contentPadding:
               const EdgeInsets.only(left: 0, bottom: 0, top: 0, right: 15),
           hintText: widget.searchHintText,

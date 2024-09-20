@@ -7,7 +7,8 @@ typedef ItemSelectionCallBack = void Function(List<SelectedListItem> selectedIte
 
 typedef ListItemBuilder = Widget Function(int index);
 
-typedef BottomSheetListener = bool Function(DraggableScrollableNotification draggableScrollableNotification);
+typedef BottomSheetListener = bool Function(
+    DraggableScrollableNotification draggableScrollableNotification);
 
 class DropDown {
   /// This will give the list of data.
@@ -62,6 +63,14 @@ class DropDown {
   /// by default it is [Search] text.
   final String? searchHintText;
 
+  /// This will be the fill color to the input.
+  /// by default it is [Colors.black12] color.
+  final Color? searchFillColor;
+
+  /// This will be the cursor color to the input.
+  /// by default it is [Colors.black] color.
+  final Color? searchCursorColor;
+
   /// [isDismissible] Specifies whether the bottom sheet will be dismissed when user taps on the scrim.
   /// If true, the bottom sheet will be dismissed when user taps on the scrim.
   /// by default it is [True].
@@ -91,6 +100,8 @@ class DropDown {
     this.clearButtonChild,
     this.searchWidget,
     this.searchHintText = 'Search',
+    this.searchFillColor = Colors.black12,
+    this.searchCursorColor = Colors.black,
     this.isSearchVisible = true,
     this.isSelectAllVisible = true,
     this.selectAllTextButtonChild,
@@ -168,12 +179,15 @@ class _MainBodyState extends State<MainBody> {
             child: Column(
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0),
+                  padding:
+                      const EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       /// Bottom sheet title text
-                      Expanded(child: widget.dropDown.bottomSheetTitle ?? Container()),
+                      Expanded(
+                          child:
+                              widget.dropDown.bottomSheetTitle ?? Container()),
 
                       /// Done button
                       Visibility(
@@ -208,7 +222,8 @@ class _MainBodyState extends State<MainBody> {
                                   }
                                   setState(() {});
                                 },
-                                child: widget.dropDown.clearButtonChild ?? const Text('Clear'),
+                                child: widget.dropDown.clearButtonChild ??
+                                    const Text('Clear'),
                               ),
                             )
                           : const SizedBox.shrink(),
@@ -224,8 +239,11 @@ class _MainBodyState extends State<MainBody> {
                         dropDown: widget.dropDown,
                         onTextChanged: _buildSearchList,
                         searchHintText: widget.dropDown.searchHintText,
+                        searchFillColor: widget.dropDown.searchFillColor,
+                        searchCursorColor: widget.dropDown.searchCursorColor,
                       ),
                 ),
+
 
                 /// Select or Deselect TextButton when enableMultipleSelection is enabled
                 if (widget.dropDown.enableMultipleSelection && widget.dropDown.isSelectAllVisible)

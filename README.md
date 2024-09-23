@@ -1,21 +1,51 @@
-# Dropdown List Choices
+# drop_down_list
+
+<a href="https://flutter.dev/"><img src="https://img.shields.io/badge/flutter-website-deepskyblue.svg" alt="Flutter Website"></a>
+<a href="https://dart.dev"><img src="https://img.shields.io/badge/dart-website-deepskyblue.svg" alt="Dart Website"></a>
+<a href="https://developer.android.com" style="pointer-events: stroke;" target="_blank">
+<img src="https://img.shields.io/badge/platform-Android-deepskyblue">
+</a>
+<a href="https://developer.apple.com/ios/" style="pointer-events: stroke;" target="_blank">
+<img src="https://img.shields.io/badge/platform-iOS-deepskyblue">
+</a>
+<a href="" style="pointer-events: stroke;" target="_blank">
+<img src="https://img.shields.io/badge/platform-Web-deepskyblue">
+</a>
+<a href="" style="pointer-events: stroke;" target="_blank">
+<img src="https://img.shields.io/badge/platform-Mac-deepskyblue">
+</a>
+<a href="" style="pointer-events: stroke;" target="_blank">
+<img src="https://img.shields.io/badge/platform-Linux-deepskyblue">
+</a>
+<a href="" style="pointer-events: stroke;" target="_blank">
+<img src="https://img.shields.io/badge/platform-Windows-deepskyblue">
+</a>
+<a href=""><img src="https://app.codacy.com/project/badge/Grade/dc683c9cc61b499fa7cdbf54e4d9ff35"/></a>
+<a href="https://github.com/Mindinventory/drop_down_list/blob/master/LICENSE" style="pointer-events: stroke;" target="_blank">
+<img src="https://img.shields.io/github/license/Mindinventory/drop_down_list"></a>
+<a href="https://pub.dev/packages/drop_down_list"><img src="https://img.shields.io/pub/v/drop_down_list?color=as&label=drop_down_list&logo=as1&logoColor=blue&style=social"></a>
+<a href="https://github.com/Mindinventory/drop_down_list"><img src="https://img.shields.io/github/stars/Mindinventory/drop_down_list?style=social" alt="MIT License"></a>
+
 Highly versatile Widget to search through a single or multiple choices from bottom sheet list in a dialog box or a menu.
 
-# Platforms
-This plugin has been successfully tested on iOS, Android & web.
+# Preview
 
-# Examples
-The following examples are extracted from the example project available in the repository. More examples are available in this project.
+## Dropdown with Multiple Selection
+![drop-down-list](https://github.com/Mindinventory/drop_down_list/blob/main/assets/drop_down_multiple_selection.gif?raw=true)
 
-# Samples of Dropdown list with choices
-
-## Dropdown Multiple Selection
-![drop-down-list](https://github.com/Mindinventory/drop_down_list/blob/main/assets/drop_down_multiple_selection.gif)
-
-## Dropdown Single Selection
-![drop-down-list](https://github.com/Mindinventory/drop_down_list/blob/main/assets/drop_down_single_selection.gif)
+## Dropdown with Single Selection
+![drop-down-list](https://github.com/Mindinventory/drop_down_list/blob/main/assets/drop_down_single_selection.gif?raw=true)
 
 # How to Use
+
+Import it to your project file
+
+```dart
+import 'package:drop_down_list/drop_down_list.dart';
+```
+
+And add it in its most basic form like it:
+
 ```dart
 DropDownState(
       DropDown(
@@ -94,11 +124,36 @@ This property takes bool value as a parameter. [isDismissible] Specifies whether
 ##### bottomSheetListener:
 [bottomSheetListener] that listens for BottomSheet bubbling up the tree.
 
+## Guideline for contributors
 
-# LICENSE!
+* Contribution towards our repository is always welcome, we request contributors to create a pull
+  request for development.
 
-Dropdown list is [MIT-licensed](https://github.com/Mindinventory/drop_down_list/blob/main/LICENSE "MIT-licensed").
+## Guideline to report an issue/feature request
 
-# Let us know!
+It would be great for us if the reporter can share the below things to understand the root cause of
+the issue.
 
-We’d be really happy if you send us links to your projects where you use our component. Just send an email to sales@mindinventory.com and do let us know if you have any questions or suggestion regarding our work.
+* Library version
+* Code snippet
+* Logs if applicable
+* Device specification like (Manufacturer, OS version, etc)
+* Screenshot/video with steps to reproduce the issue
+* Library used
+
+## LICENSE!
+
+**drop_down_list** is [MIT-licensed.](https://github.com/Mindinventory/drop_down_list/blob/main/LICENSE)
+
+## Let us know!
+
+We’d be really happy if you send us links to your projects where you use our open-source libraries.
+Just send an email to [sales@mindinventory.com](mailto:sales@mindinventory.com) And do let us know
+if you have any questions or suggestion regarding our work.
+
+Visit our website [mindinventory.com.](https://www.mindinventory.com)
+
+Let us know if you are interested to building Apps or Designing Products.
+<p><a href="https://www.mindinventory.com/contact-us.php?utm_source=gthb&utm_medium=repo&utm_campaign=drop_down_list" target="__blank">
+<img src="https://github.com/Mindinventory/drop_down_list/blob/main/assets/have_a_project_button.png?raw=true" width="203" height="43"  alt="flutter app development">
+</a></p>

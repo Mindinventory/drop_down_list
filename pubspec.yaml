@@ -1,12 +1,12 @@
 name: drop_down_list
 description: A drop down list with single and multiple selection that will work with search.
-version: 0.0.7
+version: 0.0.8
 repository: https://github.com/Mindinventory/drop_down_list
 issue_tracker: https://github.com/Mindinventory/drop_down_list/issues
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
-  flutter: '>=1.17.0'
+  sdk: '>=3.2.0 <4.0.0'
+  flutter: '>=3.16.0' # Build using this version
 
 dependencies:
   flutter:

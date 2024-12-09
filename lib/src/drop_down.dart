@@ -1,4 +1,4 @@
-import 'package:drop_down_list/model/selected_list_item.dart';
+import 'package:drop_down_bottom_sheet/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
 
 import 'app_text_field.dart';
@@ -15,12 +15,6 @@ class DropDown {
   /// This will give the list of data.
   final List<SelectedListItem> data;
 
-  /// This will give the call back to the selected items from list.
-  /// TODO: Remove [selectedItems] in next release
-
-  @Deprecated('Change to onSelected')
-  final ItemSelectionCallBack? selectedItems;
-
   final ItemSelectionCallBack? onSelected;
 
   /// [listItemBuilder] will gives [index] as a function parameter and you can return your own widget based on that item.
@@ -32,11 +26,17 @@ class DropDown {
   /// This gives the bottom sheet title.
   final Widget? bottomSheetTitle;
 
-  /// You can set your custom submit button when the multiple selection is enabled.
-  final Widget? submitButtonChild;
+  /// Submit Button
+  final Widget? submitButton;
 
-  /// You can set your custom clear button when the multiple selection is enabled.
-  final Widget? clearButtonChild;
+  /// Submit button text when the multiple selection is enabled. (Only used if [submitButton] is not provided)
+  final String? submitButtonText;
+
+  /// Clear Button
+  final Widget? clearButton;
+
+  /// clear button text when the multiple selection is enabled. (Only used if [clearButton] is not provided)
+  final String? clearButtonText;
 
   /// [searchWidget] is use to show the text box for the searching.
   /// If you are passing your own widget then you must have to add [TextEditingController] for the [TextFormField].
@@ -84,21 +84,22 @@ class DropDown {
   /// by default it is [False].
   final bool useRootNavigator;
 
-  /// Number of items that can be selected when multiple selection is enabled.
+  /// Number of items that can be selected when mu selection is enabled.
   final int? maxSelectedItems;
 
   DropDown({
     Key? key,
     required this.data,
     this.maxSelectedItems,
-    this.selectedItems,
     this.onSelected,
     this.listItemBuilder,
     this.enableMultipleSelection = false,
     this.bottomSheetTitle,
     this.isDismissible = true,
-    this.submitButtonChild,
-    this.clearButtonChild,
+    this.submitButton,
+    this.submitButtonText,
+    this.clearButton,
+    this.clearButtonText,
     this.searchWidget,
     this.searchHintText = 'Search',
     this.searchFillColor = Colors.black12,
@@ -165,9 +166,41 @@ class _MainBodyState extends State<MainBody> {
     _setSearchWidgetListener();
   }
 
+  void onDonePressed() {
+    List<SelectedListItem> selectedList =
+        widget.dropDown.data.where((element) => element.isSelected).toList();
+    List<SelectedListItem> selectedNameList = [];
+
+    for (var element in selectedList) {
+      selectedNameList.add(element);
+    }
+
+    widget.dropDown.onSelected?.call(selectedNameList);
+    _onUnFocusKeyboardAndPop();
+  }
+
+  void onClerPressed() {
+    for (final element in mainList) {
+      element.isSelected = false;
+    }
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
+    final doneButton = widget.dropDown.submitButton ??
+        TextButton(
+          onPressed: onDonePressed,
+          child: Text(widget.dropDown.submitButtonText ?? 'Done'),
+        );
+
+    final clearButton = widget.dropDown.clearButton ??
+        TextButton(
+          onPressed: onClerPressed,
+          child: Text(widget.dropDown.clearButtonText ?? 'Clear'),
+        );
     final isSelectAll = mainList.fold(true, (p, e) => p && (e.isSelected));
+
     return NotificationListener<DraggableScrollableNotification>(
       onNotification: widget.dropDown.bottomSheetListener,
       child: DraggableScrollableSheet(
@@ -188,50 +221,21 @@ class _MainBodyState extends State<MainBody> {
                     children: [
                       /// Bottom sheet title text
                       Expanded(
-                          child:
-                              widget.dropDown.bottomSheetTitle ?? Container()),
+                        child: widget.dropDown.bottomSheetTitle ?? Container(),
+                      ),
 
                       /// Done button
                       Visibility(
                         visible: widget.dropDown.enableMultipleSelection,
                         child: Align(
                           alignment: Alignment.centerRight,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              List<SelectedListItem> selectedList = widget
-                                  .dropDown.data
-                                  .where((element) => element.isSelected)
-                                  .toList();
-                              List<SelectedListItem> selectedNameList = [];
-
-                              for (var element in selectedList) {
-                                selectedNameList.add(element);
-                              }
-
-                              // ignore: deprecated_member_use_from_same_package
-                              (widget.dropDown.selectedItems ??
-                                      widget.dropDown.onSelected)
-                                  ?.call(selectedNameList);
-                              _onUnFocusKeyboardAndPop();
-                            },
-                            child: widget.dropDown.submitButtonChild ??
-                                const Text('Done'),
-                          ),
+                          child: doneButton,
                         ),
                       ),
                       widget.dropDown.enableMultipleSelection
                           ? Padding(
                               padding: const EdgeInsets.only(left: 8.0),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  for (final element in mainList) {
-                                    element.isSelected = false;
-                                  }
-                                  setState(() {});
-                                },
-                                child: widget.dropDown.clearButtonChild ??
-                                    const Text('Clear'),
-                              ),
+                              child: clearButton,
                             )
                           : const SizedBox.shrink(),
                     ],
@@ -281,10 +285,18 @@ class _MainBodyState extends State<MainBody> {
                     itemCount: mainList.length,
                     itemBuilder: (context, index) {
                       bool isSelected = mainList[index].isSelected;
-                      return Container(
-                        color: widget.dropDown.dropDownBackgroundColor,
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+
+                      return Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: widget.dropDown.dropDownBackgroundColor,
+                            border: const Border(
+                              bottom: BorderSide(
+                                color: Colors.black12,
+                              ),
+                            ),
+                          ),
                           child: ListTile(
                             onTap: () {
                               if (widget.dropDown.enableMultipleSelection) {
@@ -301,9 +313,7 @@ class _MainBodyState extends State<MainBody> {
                                   mainList[index].isSelected = !isSelected;
                                 });
                               } else {
-                                // ignore: deprecated_member_use_from_same_package
-                                (widget.dropDown.selectedItems ??
-                                        widget.dropDown.onSelected)
+                                widget.dropDown.onSelected
                                     ?.call([mainList[index]]);
                                 _onUnFocusKeyboardAndPop();
                               }
@@ -313,11 +323,10 @@ class _MainBodyState extends State<MainBody> {
                                     Text(
                                       mainList[index].name,
                                     ),
-                            trailing: widget.dropDown.enableMultipleSelection
-                                ? isSelected
-                                    ? const Icon(Icons.check_box)
-                                    : const Icon(Icons.check_box_outline_blank)
+                            trailing: isSelected
+                                ? const Icon(Icons.check)
                                 : const SizedBox.shrink(),
+                            contentPadding: const EdgeInsets.all(0),
                           ),
                         ),
                       );

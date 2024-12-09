@@ -1,5 +1,5 @@
-import 'package:drop_down_list/drop_down_list.dart';
-import 'package:drop_down_list/model/selected_list_item.dart';
+import 'package:drop_down_bottom_sheet/drop_down_list.dart';
+import 'package:drop_down_bottom_sheet/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
 
 import 'constants.dart';
@@ -167,6 +167,7 @@ class _AppTextFieldState extends State<AppTextField> {
   /// This is on text changed method which will display on city text field on changed.
   void onTextFieldTap() {
     DropDownState(
+      heightOfBottomSheet: 1000,
       DropDown(
         isDismissible: true,
         bottomSheetTitle: const Text(
@@ -176,21 +177,9 @@ class _AppTextFieldState extends State<AppTextField> {
             fontSize: 20.0,
           ),
         ),
-        submitButtonChild: const Text(
-          'Done',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        submitButtonText: 'Save',
         maxSelectedItems: 3,
-        clearButtonChild: const Text(
-          'Clear',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        clearButtonText: 'Clear',
         data: widget.cities ?? [],
         onSelected: (List<dynamic> selectedList) {
           List<String> list = [];

@@ -1,4 +1,4 @@
-# drop_down_list
+# drop_down_bottom_sheet
 
 <a href="https://flutter.dev/"><img src="https://img.shields.io/badge/flutter-website-deepskyblue.svg" alt="Flutter Website"></a>
 <a href="https://dart.dev"><img src="https://img.shields.io/badge/dart-website-deepskyblue.svg" alt="Dart Website"></a>
@@ -21,10 +21,10 @@
 <img src="https://img.shields.io/badge/platform-Windows-deepskyblue">
 </a>
 <a href=""><img src="https://app.codacy.com/project/badge/Grade/dc683c9cc61b499fa7cdbf54e4d9ff35"/></a>
-<a href="https://github.com/Mindinventory/drop_down_list/blob/master/LICENSE" style="pointer-events: stroke;" target="_blank">
+<a href="https://github.com/raulgarciaalcaraz-zero/drop_down_list/blob/master/LICENSE" style="pointer-events: stroke;" target="_blank">
 <img src="https://img.shields.io/github/license/Mindinventory/drop_down_list"></a>
 <a href="https://pub.dev/packages/drop_down_list"><img src="https://img.shields.io/pub/v/drop_down_list?color=as&label=drop_down_list&logo=as1&logoColor=blue&style=social"></a>
-<a href="https://github.com/Mindinventory/drop_down_list"><img src="https://img.shields.io/github/stars/Mindinventory/drop_down_list?style=social" alt="MIT License"></a>
+<a href="https://github.com/raulgarciaalcaraz-zero/drop_down_list"><img src="https://img.shields.io/github/stars/Mindinventory/drop_down_list?style=social" alt="MIT License"></a>
 
 Highly versatile Widget to search through a single or multiple choices from bottom sheet list in a dialog box or a menu.
 
@@ -41,7 +41,7 @@ Highly versatile Widget to search through a single or multiple choices from bott
 Import it to your project file
 
 ```dart
-import 'package:drop_down_list/drop_down_list.dart';
+import 'package:drop_down_bottom_sheed/drop_down_list.dart';
 ```
 
 And add it in its most basic form like it:
@@ -144,16 +144,3 @@ the issue.
 ## LICENSE!
 
 **drop_down_list** is [MIT-licensed.](https://github.com/Mindinventory/drop_down_list/blob/main/LICENSE)
-
-## Let us know!
-
-We’d be really happy if you send us links to your projects where you use our open-source libraries.
-Just send an email to [sales@mindinventory.com](mailto:sales@mindinventory.com) And do let us know
-if you have any questions or suggestion regarding our work.
-
-Visit our website [mindinventory.com.](https://www.mindinventory.com)
-
-Let us know if you are interested to building Apps or Designing Products.
-<p><a href="https://www.mindinventory.com/contact-us.php?utm_source=gthb&utm_medium=repo&utm_campaign=drop_down_list" target="__blank">
-<img src="https://github.com/Mindinventory/drop_down_list/blob/main/assets/have_a_project_button.png?raw=true" width="203" height="43"  alt="flutter app development">
-</a></p>

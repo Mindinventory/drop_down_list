@@ -21,10 +21,9 @@
 <img src="https://img.shields.io/badge/platform-Windows-deepskyblue">
 </a>
 <a href=""><img src="https://app.codacy.com/project/badge/Grade/dc683c9cc61b499fa7cdbf54e4d9ff35"/></a>
-<a href="https://github.com/raulgarciaalcaraz-zero/drop_down_list/blob/master/LICENSE" style="pointer-events: stroke;" target="_blank">
-<img src="https://img.shields.io/github/license/Mindinventory/drop_down_list"></a>
-<a href="https://pub.dev/packages/drop_down_list"><img src="https://img.shields.io/pub/v/drop_down_list?color=as&label=drop_down_list&logo=as1&logoColor=blue&style=social"></a>
-<a href="https://github.com/raulgarciaalcaraz-zero/drop_down_list"><img src="https://img.shields.io/github/stars/Mindinventory/drop_down_list?style=social" alt="MIT License"></a>
+<a href="https://github.com/raulgarciaalcaraz-zero/drop_down_list/blob/master/LICENSE" style="pointer-events: stroke;" target="_blank"><img src="https://img.shields.io/github/license/Mindinventory/drop_down_list"></a>
+<a href="https://pub.dev/packages/drop_down_list"><img src="https://img.shields.io/pub/v/drop_down_list?color=as&label=drop_down_bottom_sheet&logo=as1&logoColor=blue&style=social"></a>
+<a href="https://github.com/raulgarciaalcaraz-zero/drop_down_list"><img src="https://img.shields.io/github/stars/raulgarciaalcaraz-zero/drop_down_list?style=social" alt="MIT License"></a>
 
 Highly versatile Widget to search through a single or multiple choices from bottom sheet list in a dialog box or a menu.
 

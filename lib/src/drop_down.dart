@@ -87,6 +87,8 @@ class DropDown {
   /// Number of items that can be selected when mu selection is enabled.
   final int? maxSelectedItems;
 
+  final Widget? checkIcon;
+
   DropDown({
     Key? key,
     required this.data,
@@ -111,6 +113,7 @@ class DropDown {
     this.dropDownBackgroundColor = Colors.transparent,
     this.bottomSheetListener,
     this.useRootNavigator = false,
+    this.checkIcon = const Icon(Icons.check),
   });
 }
 
@@ -324,7 +327,7 @@ class _MainBodyState extends State<MainBody> {
                                       mainList[index].name,
                                     ),
                             trailing: isSelected
-                                ? const Icon(Icons.check)
+                                ? widget.dropDown.checkIcon
                                 : const SizedBox.shrink(),
                             contentPadding: const EdgeInsets.all(0),
                           ),

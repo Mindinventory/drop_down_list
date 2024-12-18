@@ -87,6 +87,12 @@ class DropDown {
   /// Number of items that can be selected when mu selection is enabled.
   final int? maxSelectedItems;
 
+  /// This will give the check icon when the item is selected.
+  final Widget? checkIcon;
+
+  /// This will give the border bottom to the list tile.
+  final bool showBorderBottom;
+
   DropDown({
     Key? key,
     required this.data,
@@ -111,6 +117,8 @@ class DropDown {
     this.dropDownBackgroundColor = Colors.transparent,
     this.bottomSheetListener,
     this.useRootNavigator = false,
+    this.checkIcon = const Icon(Icons.check),
+    this.showBorderBottom = true,
   });
 }
 
@@ -291,11 +299,13 @@ class _MainBodyState extends State<MainBody> {
                         child: Container(
                           decoration: BoxDecoration(
                             color: widget.dropDown.dropDownBackgroundColor,
-                            border: const Border(
-                              bottom: BorderSide(
-                                color: Colors.black12,
-                              ),
-                            ),
+                            border: widget.dropDown.showBorderBottom
+                                ? const Border(
+                                    bottom: BorderSide(
+                                      color: Colors.black12,
+                                    ),
+                                  )
+                                : null,
                           ),
                           child: ListTile(
                             onTap: () {

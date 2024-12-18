@@ -334,7 +334,7 @@ class _MainBodyState extends State<MainBody> {
                                       mainList[index].name,
                                     ),
                             trailing: isSelected
-                                ? const Icon(Icons.check)
+                                ? widget.dropDown.checkIcon
                                 : const SizedBox.shrink(),
                             contentPadding: const EdgeInsets.all(0),
                           ),

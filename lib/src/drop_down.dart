@@ -16,11 +16,6 @@ class DropDown {
   final List<SelectedListItem> data;
 
   /// This will give the call back to the selected items from list.
-  /// TODO: Remove [selectedItems] in next release
-
-  @Deprecated('Change to onSelected')
-  final ItemSelectionCallBack? selectedItems;
-
   final ItemSelectionCallBack? onSelected;
 
   /// [listItemBuilder] will gives [index] as a function parameter and you can return your own widget based on that item.
@@ -32,11 +27,23 @@ class DropDown {
   /// This gives the bottom sheet title.
   final Widget? bottomSheetTitle;
 
-  /// You can set your custom submit button when the multiple selection is enabled.
+  /// Defines a custom widget to display as the child of the submit button
+  /// when multiple selection is enabled. Typically used with an ElevatedButton.
   final Widget? submitButtonChild;
 
-  /// You can set your custom clear button when the multiple selection is enabled.
+  /// Specifies the text displayed on the submit button when multiple selection is enabled.
+  /// This is only used if a custom [submitButtonChild] widget is not provided.
+  /// Default Value: [Submit]
+  final String submitButtonText;
+
+  /// Defines a custom widget to display as the child of the clear button
+  /// when multiple selection is enabled. Typically used with an ElevatedButton.
   final Widget? clearButtonChild;
+
+  /// Specifies the text displayed on the clear button when multiple selection is enabled.
+  /// This is only used if a custom [clearButtonChild] widget is not provided.
+  /// Default Value: [Clear]
+  final String clearButtonText;
 
   /// [searchWidget] is use to show the text box for the searching.
   /// If you are passing your own widget then you must have to add [TextEditingController] for the [TextFormField].
@@ -87,18 +94,25 @@ class DropDown {
   /// Number of items that can be selected when multiple selection is enabled.
   final int? maxSelectedItems;
 
+  /// This will give the check icon when the item is selected.
+  final Widget? checkIcon;
+
+  /// This will give the border bottom to the list tile.
+  final bool showBorderBottom;
+
   DropDown({
     Key? key,
     required this.data,
     this.maxSelectedItems,
-    this.selectedItems,
     this.onSelected,
     this.listItemBuilder,
     this.enableMultipleSelection = false,
     this.bottomSheetTitle,
     this.isDismissible = true,
     this.submitButtonChild,
+    this.submitButtonText = 'Submit',
     this.clearButtonChild,
+    this.clearButtonText = 'Clear',
     this.searchWidget,
     this.searchHintText = 'Search',
     this.searchFillColor = Colors.black12,
@@ -110,6 +124,8 @@ class DropDown {
     this.dropDownBackgroundColor = Colors.transparent,
     this.bottomSheetListener,
     this.useRootNavigator = false,
+    this.checkIcon = const Icon(Icons.check),
+    this.showBorderBottom = true,
   });
 }
 
@@ -188,8 +204,8 @@ class _MainBodyState extends State<MainBody> {
                     children: [
                       /// Bottom sheet title text
                       Expanded(
-                          child:
-                              widget.dropDown.bottomSheetTitle ?? Container()),
+                        child: widget.dropDown.bottomSheetTitle ?? Container(),
+                      ),
 
                       /// Done button
                       Visibility(
@@ -197,25 +213,8 @@ class _MainBodyState extends State<MainBody> {
                         child: Align(
                           alignment: Alignment.centerRight,
                           child: ElevatedButton(
-                            onPressed: () {
-                              List<SelectedListItem> selectedList = widget
-                                  .dropDown.data
-                                  .where((element) => element.isSelected)
-                                  .toList();
-                              List<SelectedListItem> selectedNameList = [];
-
-                              for (var element in selectedList) {
-                                selectedNameList.add(element);
-                              }
-
-                              // ignore: deprecated_member_use_from_same_package
-                              (widget.dropDown.selectedItems ??
-                                      widget.dropDown.onSelected)
-                                  ?.call(selectedNameList);
-                              _onUnFocusKeyboardAndPop();
-                            },
-                            child: widget.dropDown.submitButtonChild ??
-                                const Text('Done'),
+                            onPressed: onSubmitButtonPressed,
+                            child: widget.dropDown.submitButtonChild ?? Text(widget.dropDown.submitButtonText),
                           ),
                         ),
                       ),
@@ -223,14 +222,8 @@ class _MainBodyState extends State<MainBody> {
                           ? Padding(
                               padding: const EdgeInsets.only(left: 8.0),
                               child: ElevatedButton(
-                                onPressed: () {
-                                  for (final element in mainList) {
-                                    element.isSelected = false;
-                                  }
-                                  setState(() {});
-                                },
-                                child: widget.dropDown.clearButtonChild ??
-                                    const Text('Clear'),
+                                onPressed: onClearButtonPressed,
+                                child: widget.dropDown.clearButtonChild ?? Text(widget.dropDown.clearButtonText),
                               ),
                             )
                           : const SizedBox.shrink(),
@@ -281,10 +274,19 @@ class _MainBodyState extends State<MainBody> {
                     itemCount: mainList.length,
                     itemBuilder: (context, index) {
                       bool isSelected = mainList[index].isSelected;
-                      return Container(
-                        color: widget.dropDown.dropDownBackgroundColor,
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                      return Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: widget.dropDown.dropDownBackgroundColor,
+                            border: widget.dropDown.showBorderBottom
+                                ? const Border(
+                                    bottom: BorderSide(
+                                      color: Colors.black12,
+                                    ),
+                                  )
+                                : null,
+                          ),
                           child: ListTile(
                             onTap: () {
                               if (widget.dropDown.enableMultipleSelection) {
@@ -301,9 +303,7 @@ class _MainBodyState extends State<MainBody> {
                                   mainList[index].isSelected = !isSelected;
                                 });
                               } else {
-                                // ignore: deprecated_member_use_from_same_package
-                                (widget.dropDown.selectedItems ??
-                                        widget.dropDown.onSelected)
+                                widget.dropDown.onSelected
                                     ?.call([mainList[index]]);
                                 _onUnFocusKeyboardAndPop();
                               }
@@ -313,11 +313,10 @@ class _MainBodyState extends State<MainBody> {
                                     Text(
                                       mainList[index].name,
                                     ),
-                            trailing: widget.dropDown.enableMultipleSelection
-                                ? isSelected
-                                    ? const Icon(Icons.check_box)
-                                    : const Icon(Icons.check_box_outline_blank)
+                            trailing: isSelected
+                                ? widget.dropDown.checkIcon
                                 : const SizedBox.shrink(),
+                            contentPadding: const EdgeInsets.all(0),
                           ),
                         ),
                       );
@@ -330,6 +329,25 @@ class _MainBodyState extends State<MainBody> {
         },
       ),
     );
+  }
+
+  void onSubmitButtonPressed() {
+    List<SelectedListItem> selectedList = widget.dropDown.data.where((element) => element.isSelected).toList();
+    List<SelectedListItem> selectedNameList = [];
+
+    for (var element in selectedList) {
+      selectedNameList.add(element);
+    }
+
+    widget.dropDown.onSelected?.call(selectedNameList);
+    _onUnFocusKeyboardAndPop();
+  }
+
+  void onClearButtonPressed() {
+    for (final element in mainList) {
+      element.isSelected = false;
+    }
+    setState(() {});
   }
 
   /// This helps when search enabled & show the filtered data in list.

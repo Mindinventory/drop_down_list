@@ -167,7 +167,7 @@ class _AppTextFieldState extends State<AppTextField> {
   /// This is on text changed method which will display on city text field on changed.
   void onTextFieldTap() {
     DropDownState(
-      DropDown(
+      dropDown: DropDown(
         isDismissible: true,
         bottomSheetTitle: const Text(
           kCities,

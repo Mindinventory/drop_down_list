@@ -4,12 +4,16 @@ import 'package:flutter/material.dart';
 import 'app_text_field.dart';
 
 typedef ItemSelectionCallBack = void Function(
-    List<SelectedListItem> selectedItems);
+  List<SelectedListItem> selectedItems,
+);
 
-typedef ListItemBuilder = Widget Function(int index);
+typedef ListItemBuilder = Widget Function(
+  int index,
+);
 
 typedef BottomSheetListener = bool Function(
-    DraggableScrollableNotification draggableScrollableNotification);
+  DraggableScrollableNotification draggableScrollableNotification,
+);
 
 class DropDown {
   /// This will give the list of data.
@@ -163,20 +167,29 @@ class DropDownState {
   DropDown dropDown;
   double? heightOfBottomSheet;
 
-  DropDownState(this.dropDown, {this.heightOfBottomSheet = 600});
+  DropDownState({
+    required this.dropDown,
+    this.heightOfBottomSheet = 600,
+  });
 
   /// This gives the bottom sheet widget.
   void showModal(context) {
     showModalBottomSheet(
       useRootNavigator: dropDown.useRootNavigator,
       constraints: BoxConstraints.loose(
-          Size(MediaQuery.of(context).size.width, heightOfBottomSheet!)),
+        Size(
+          MediaQuery.of(context).size.width,
+          heightOfBottomSheet!,
+        ),
+      ),
       // <= this is set to 3/4 of screen size.
       isScrollControlled: true,
       enableDrag: dropDown.isDismissible,
       isDismissible: dropDown.isDismissible,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(15.0)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(15.0),
+        ),
       ),
       context: context,
       clipBehavior: Clip.hardEdge,
@@ -195,7 +208,10 @@ class DropDownState {
 class MainBody extends StatefulWidget {
   final DropDown dropDown;
 
-  const MainBody({required this.dropDown, super.key});
+  const MainBody({
+    required this.dropDown,
+    super.key,
+  });
 
   @override
   State<MainBody> createState() => _MainBodyState();
@@ -233,8 +249,11 @@ class _MainBodyState extends State<MainBody> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
-                  padding:
-                      const EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0),
+                  padding: const EdgeInsets.only(
+                    left: 15.0,
+                    right: 15.0,
+                    top: 10.0,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -401,7 +420,7 @@ class _MainBodyState extends State<MainBody> {
   }
 
   /// This helps when search enabled & show the filtered data in list.
-  _buildSearchList(String userSearchTerm) {
+  void _buildSearchList(String userSearchTerm) {
     final results = widget.dropDown.data
         .where((element) =>
             element.name.toLowerCase().contains(userSearchTerm.toLowerCase()))
@@ -415,7 +434,7 @@ class _MainBodyState extends State<MainBody> {
   }
 
   /// This helps to UnFocus the keyboard & pop from the bottom sheet.
-  _onUnFocusKeyboardAndPop() {
+  void _onUnFocusKeyboardAndPop() {
     FocusScope.of(context).unfocus();
     Navigator.of(context).pop();
   }

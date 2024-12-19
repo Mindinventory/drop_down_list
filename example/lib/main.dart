@@ -211,6 +211,7 @@ class _AppTextFieldState extends State<AppTextField> {
         TextFormField(
           controller: widget.textEditingController,
           cursorColor: Colors.black,
+          readOnly: widget.isCitySelected,
           onTap: widget.isCitySelected
               ? () {
                   FocusScope.of(context).unfocus();

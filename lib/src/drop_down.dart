@@ -94,8 +94,15 @@ class DropDown {
   /// Number of items that can be selected when multiple selection is enabled.
   final int? maxSelectedItems;
 
-  /// This will give the check icon when the item is selected.
-  final Widget? checkIcon;
+  /// The widget displayed as a trailing icon when an list item is selected.
+  /// Used only when multiple selection is enabled.
+  /// Default Value: [Icon(Icons.check_box)]
+  final Widget selectedListTileTrailingWidget;
+
+  /// The widget displayed as a trailing icon when an list item is not selected.
+  /// Used only when multiple selection is enabled.
+  /// Default Value: [Icon(Icons.check_box_outline_blank)]
+  final Widget deSelectedListTileTrailingWidget;
 
   /// This will give the border bottom to the list tile.
   final bool showBorderBottom;
@@ -124,7 +131,12 @@ class DropDown {
     this.dropDownBackgroundColor = Colors.transparent,
     this.bottomSheetListener,
     this.useRootNavigator = false,
-    this.checkIcon = const Icon(Icons.check),
+    this.selectedListTileTrailingWidget = const Icon(
+      Icons.check_box,
+    ),
+    this.deSelectedListTileTrailingWidget = const Icon(
+      Icons.check_box_outline_blank,
+    ),
     this.showBorderBottom = true,
   });
 }
@@ -214,7 +226,10 @@ class _MainBodyState extends State<MainBody> {
                           alignment: Alignment.centerRight,
                           child: ElevatedButton(
                             onPressed: onSubmitButtonPressed,
-                            child: widget.dropDown.submitButtonChild ?? Text(widget.dropDown.submitButtonText),
+                            child: widget.dropDown.submitButtonChild ??
+                                Text(
+                                  widget.dropDown.submitButtonText,
+                                ),
                           ),
                         ),
                       ),
@@ -223,7 +238,10 @@ class _MainBodyState extends State<MainBody> {
                               padding: const EdgeInsets.only(left: 8.0),
                               child: ElevatedButton(
                                 onPressed: onClearButtonPressed,
-                                child: widget.dropDown.clearButtonChild ?? Text(widget.dropDown.clearButtonText),
+                                child: widget.dropDown.clearButtonChild ??
+                                    Text(
+                                      widget.dropDown.clearButtonText,
+                                    ),
                               ),
                             )
                           : const SizedBox.shrink(),
@@ -313,8 +331,12 @@ class _MainBodyState extends State<MainBody> {
                                     Text(
                                       mainList[index].name,
                                     ),
-                            trailing: isSelected
-                                ? widget.dropDown.checkIcon
+                            trailing: widget.dropDown.enableMultipleSelection
+                                ? isSelected
+                                    ? widget
+                                        .dropDown.selectedListTileTrailingWidget
+                                    : widget.dropDown
+                                        .deSelectedListTileTrailingWidget
                                 : const SizedBox.shrink(),
                             contentPadding: const EdgeInsets.all(0),
                           ),
@@ -332,7 +354,8 @@ class _MainBodyState extends State<MainBody> {
   }
 
   void onSubmitButtonPressed() {
-    List<SelectedListItem> selectedList = widget.dropDown.data.where((element) => element.isSelected).toList();
+    List<SelectedListItem> selectedList =
+        widget.dropDown.data.where((element) => element.isSelected).toList();
     List<SelectedListItem> selectedNameList = [];
 
     for (var element in selectedList) {

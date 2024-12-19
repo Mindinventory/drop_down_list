@@ -104,8 +104,22 @@ class DropDown {
   /// Default Value: [Icon(Icons.check_box_outline_blank)]
   final Widget deSelectedListTileTrailingWidget;
 
-  /// This will give the border bottom to the list tile.
-  final bool showBorderBottom;
+  /// The padding applied to the dropdown container.
+  final EdgeInsets? dropDownPadding;
+
+  /// The padding applied to the `ListView` containing the dropdown items.
+  final EdgeInsets? listViewPadding;
+
+  /// The widget used as a separator between items in the dropdown list.
+  /// Can be any widget such as a `Divider` or `SizedBox`.
+  final Widget? listViewSeparatorWidget;
+
+  /// The padding applied to the content of each `ListTile` in the dropdown list.
+  final EdgeInsets? listTileContentPadding;
+
+  /// Defines the background color of `ListTile` in the dropdown list.
+  /// Default Value: [Colors.transparent]
+  final Color listTileColor;
 
   DropDown({
     Key? key,
@@ -137,7 +151,11 @@ class DropDown {
     this.deSelectedListTileTrailingWidget = const Icon(
       Icons.check_box_outline_blank,
     ),
-    this.showBorderBottom = true,
+    this.dropDownPadding,
+    this.listViewPadding,
+    this.listViewSeparatorWidget,
+    this.listTileContentPadding,
+    this.listTileColor = Colors.transparent,
   });
 }
 
@@ -161,6 +179,7 @@ class DropDownState {
         borderRadius: BorderRadius.vertical(top: Radius.circular(15.0)),
       ),
       context: context,
+      clipBehavior: Clip.hardEdge,
       builder: (context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
@@ -206,8 +225,13 @@ class _MainBodyState extends State<MainBody> {
         builder: (BuildContext context, ScrollController scrollController) {
           return Container(
             color: widget.dropDown.dropDownBackgroundColor,
+            padding: widget.dropDown.dropDownPadding ??
+                EdgeInsets.only(
+                  bottom: MediaQuery.of(context).padding.bottom,
+                ),
             child: Column(
-              children: <Widget>[
+              mainAxisSize: MainAxisSize.min,
+              children: [
                 Padding(
                   padding:
                       const EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0),
@@ -286,63 +310,59 @@ class _MainBodyState extends State<MainBody> {
                   ),
 
                 /// Listview (list of data with check box for multiple selection & on tile tap single selection)
-                Expanded(
-                  child: ListView.builder(
+                Flexible(
+                  child: ListView.separated(
                     controller: scrollController,
                     itemCount: mainList.length,
+                    padding: widget.dropDown.listViewPadding ?? EdgeInsets.zero,
+                    shrinkWrap: true,
                     itemBuilder: (context, index) {
                       bool isSelected = mainList[index].isSelected;
-                      return Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: widget.dropDown.dropDownBackgroundColor,
-                            border: widget.dropDown.showBorderBottom
-                                ? const Border(
-                                    bottom: BorderSide(
-                                      color: Colors.black12,
-                                    ),
-                                  )
-                                : null,
-                          ),
-                          child: ListTile(
-                            onTap: () {
-                              if (widget.dropDown.enableMultipleSelection) {
-                                if (!isSelected &&
-                                    widget.dropDown.maxSelectedItems != null) {
-                                  if (mainList
-                                          .where((e) => e.isSelected)
-                                          .length >=
-                                      widget.dropDown.maxSelectedItems!) {
-                                    return;
-                                  }
+                      return Material(
+                        color: Colors.transparent,
+                        clipBehavior: Clip.hardEdge,
+                        child: ListTile(
+                          onTap: () {
+                            if (widget.dropDown.enableMultipleSelection) {
+                              if (!isSelected &&
+                                  widget.dropDown.maxSelectedItems != null) {
+                                if (mainList
+                                        .where((e) => e.isSelected)
+                                        .length >=
+                                    widget.dropDown.maxSelectedItems!) {
+                                  return;
                                 }
-                                setState(() {
-                                  mainList[index].isSelected = !isSelected;
-                                });
-                              } else {
-                                widget.dropDown.onSelected
-                                    ?.call([mainList[index]]);
-                                _onUnFocusKeyboardAndPop();
                               }
-                            },
-                            title:
-                                widget.dropDown.listItemBuilder?.call(index) ??
-                                    Text(
-                                      mainList[index].name,
-                                    ),
-                            trailing: widget.dropDown.enableMultipleSelection
-                                ? isSelected
-                                    ? widget
-                                        .dropDown.selectedListTileTrailingWidget
-                                    : widget.dropDown
-                                        .deSelectedListTileTrailingWidget
-                                : const SizedBox.shrink(),
-                            contentPadding: const EdgeInsets.all(0),
-                          ),
+                              setState(() {
+                                mainList[index].isSelected = !isSelected;
+                              });
+                            } else {
+                              widget.dropDown.onSelected
+                                  ?.call([mainList[index]]);
+                              _onUnFocusKeyboardAndPop();
+                            }
+                          },
+                          title: widget.dropDown.listItemBuilder?.call(index) ??
+                              Text(
+                                mainList[index].name,
+                              ),
+                          trailing: widget.dropDown.enableMultipleSelection
+                              ? isSelected
+                                  ? widget
+                                      .dropDown.selectedListTileTrailingWidget
+                                  : widget
+                                      .dropDown.deSelectedListTileTrailingWidget
+                              : const SizedBox.shrink(),
+                          contentPadding:
+                              widget.dropDown.listTileContentPadding ??
+                                  const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                  ),
+                          tileColor: widget.dropDown.listTileColor,
                         ),
                       );
                     },
+                    separatorBuilder: (context, index) => getSeparatorWidget,
                   ),
                 ),
               ],
@@ -352,6 +372,13 @@ class _MainBodyState extends State<MainBody> {
       ),
     );
   }
+
+  Widget get getSeparatorWidget =>
+      widget.dropDown.listViewSeparatorWidget ??
+      const Divider(
+        color: Colors.black12,
+        height: 0,
+      );
 
   void onSubmitButtonPressed() {
     List<SelectedListItem> selectedList =

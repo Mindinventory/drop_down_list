@@ -168,7 +168,6 @@ class _AppTextFieldState extends State<AppTextField> {
   void onTextFieldTap() {
     DropDownState(
       DropDown(
-        heightOfBottomSheet: 1000,
         isDismissible: true,
         bottomSheetTitle: const Text(
           kCities,

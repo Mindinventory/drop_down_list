@@ -15,6 +15,7 @@ class DropDown {
   /// This will give the list of data.
   final List<SelectedListItem> data;
 
+  /// This will give the call back to the selected items from list.
   final ItemSelectionCallBack? onSelected;
 
   /// [listItemBuilder] will gives [index] as a function parameter and you can return your own widget based on that item.
@@ -26,17 +27,23 @@ class DropDown {
   /// This gives the bottom sheet title.
   final Widget? bottomSheetTitle;
 
-  /// Submit Button
-  final Widget? submitButton;
+  /// Defines a custom widget to display as the child of the submit button
+  /// when multiple selection is enabled. Typically used with an ElevatedButton.
+  final Widget? submitButtonChild;
 
-  /// Submit button text when the multiple selection is enabled. (Only used if [submitButton] is not provided)
-  final String? submitButtonText;
+  /// Specifies the text displayed on the submit button when multiple selection is enabled.
+  /// This is only used if a custom [submitButtonChild] widget is not provided.
+  /// Default Value: [Submit]
+  final String submitButtonText;
 
-  /// Clear Button
-  final Widget? clearButton;
+  /// Defines a custom widget to display as the child of the clear button
+  /// when multiple selection is enabled. Typically used with an ElevatedButton.
+  final Widget? clearButtonChild;
 
-  /// clear button text when the multiple selection is enabled. (Only used if [clearButton] is not provided)
-  final String? clearButtonText;
+  /// Specifies the text displayed on the clear button when multiple selection is enabled.
+  /// This is only used if a custom [clearButtonChild] widget is not provided.
+  /// Default Value: [Clear]
+  final String clearButtonText;
 
   /// [searchWidget] is use to show the text box for the searching.
   /// If you are passing your own widget then you must have to add [TextEditingController] for the [TextFormField].
@@ -84,7 +91,7 @@ class DropDown {
   /// by default it is [False].
   final bool useRootNavigator;
 
-  /// Number of items that can be selected when mu selection is enabled.
+  /// Number of items that can be selected when multiple selection is enabled.
   final int? maxSelectedItems;
 
   /// This will give the check icon when the item is selected.
@@ -102,10 +109,10 @@ class DropDown {
     this.enableMultipleSelection = false,
     this.bottomSheetTitle,
     this.isDismissible = true,
-    this.submitButton,
-    this.submitButtonText,
-    this.clearButton,
-    this.clearButtonText,
+    this.submitButtonChild,
+    this.submitButtonText = 'Submit',
+    this.clearButtonChild,
+    this.clearButtonText = 'Clear',
     this.searchWidget,
     this.searchHintText = 'Search',
     this.searchFillColor = Colors.black12,
@@ -174,41 +181,9 @@ class _MainBodyState extends State<MainBody> {
     _setSearchWidgetListener();
   }
 
-  void onDonePressed() {
-    List<SelectedListItem> selectedList =
-        widget.dropDown.data.where((element) => element.isSelected).toList();
-    List<SelectedListItem> selectedNameList = [];
-
-    for (var element in selectedList) {
-      selectedNameList.add(element);
-    }
-
-    widget.dropDown.onSelected?.call(selectedNameList);
-    _onUnFocusKeyboardAndPop();
-  }
-
-  void onClerPressed() {
-    for (final element in mainList) {
-      element.isSelected = false;
-    }
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
-    final doneButton = widget.dropDown.submitButton ??
-        TextButton(
-          onPressed: onDonePressed,
-          child: Text(widget.dropDown.submitButtonText ?? 'Done'),
-        );
-
-    final clearButton = widget.dropDown.clearButton ??
-        TextButton(
-          onPressed: onClerPressed,
-          child: Text(widget.dropDown.clearButtonText ?? 'Clear'),
-        );
     final isSelectAll = mainList.fold(true, (p, e) => p && (e.isSelected));
-
     return NotificationListener<DraggableScrollableNotification>(
       onNotification: widget.dropDown.bottomSheetListener,
       child: DraggableScrollableSheet(
@@ -237,13 +212,19 @@ class _MainBodyState extends State<MainBody> {
                         visible: widget.dropDown.enableMultipleSelection,
                         child: Align(
                           alignment: Alignment.centerRight,
-                          child: doneButton,
+                          child: ElevatedButton(
+                            onPressed: onSubmitButtonPressed,
+                            child: widget.dropDown.submitButtonChild ?? Text(widget.dropDown.submitButtonText),
+                          ),
                         ),
                       ),
                       widget.dropDown.enableMultipleSelection
                           ? Padding(
                               padding: const EdgeInsets.only(left: 8.0),
-                              child: clearButton,
+                              child: ElevatedButton(
+                                onPressed: onClearButtonPressed,
+                                child: widget.dropDown.clearButtonChild ?? Text(widget.dropDown.clearButtonText),
+                              ),
                             )
                           : const SizedBox.shrink(),
                     ],
@@ -293,7 +274,6 @@ class _MainBodyState extends State<MainBody> {
                     itemCount: mainList.length,
                     itemBuilder: (context, index) {
                       bool isSelected = mainList[index].isSelected;
-
                       return Padding(
                         padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
                         child: Container(
@@ -349,6 +329,25 @@ class _MainBodyState extends State<MainBody> {
         },
       ),
     );
+  }
+
+  void onSubmitButtonPressed() {
+    List<SelectedListItem> selectedList = widget.dropDown.data.where((element) => element.isSelected).toList();
+    List<SelectedListItem> selectedNameList = [];
+
+    for (var element in selectedList) {
+      selectedNameList.add(element);
+    }
+
+    widget.dropDown.onSelected?.call(selectedNameList);
+    _onUnFocusKeyboardAndPop();
+  }
+
+  void onClearButtonPressed() {
+    for (final element in mainList) {
+      element.isSelected = false;
+    }
+    setState(() {});
   }
 
   /// This helps when search enabled & show the filtered data in list.

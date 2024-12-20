@@ -1,196 +1,333 @@
 import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
 
-import 'app_text_field.dart';
+import 'search_text_field.dart';
 
+/// A callback function that is invoked when items are selected
 typedef ItemSelectionCallBack = void Function(
   List<SelectedListItem> selectedItems,
 );
 
+/// A function type definition for building a widget for a specific list item
 typedef ListItemBuilder = Widget Function(
   int index,
 );
 
+/// A function type definition for handling notifications from a draggable bottom sheet
 typedef BottomSheetListener = bool Function(
   DraggableScrollableNotification draggableScrollableNotification,
 );
 
+/// A customizable dropdown widget with support for single and multiple selections,
+/// a searchable list, and advanced configuration options
+///
+/// The `DropDown` widget provides a flexible way to display a list of items
+/// in a bottom sheet with optional features such as search, select all, and
+/// multiple selection
 class DropDown {
-  /// This will give the list of data.
+  /// The list of data items to be displayed in the dropdown
   final List<SelectedListItem> data;
 
-  /// This will give the call back to the selected items from list.
+  /// A callback function triggered when items are selected from the list
   final ItemSelectionCallBack? onSelected;
 
-  /// [listItemBuilder] will gives [index] as a function parameter and you can return your own widget based on that item.
+  /// A function that takes an [index] as a parameter and returns a custom widget
+  /// to display for the list item at that index
   final ListItemBuilder? listItemBuilder;
 
-  /// This will give selection choice for single or multiple for list.
+  /// Enables single or multiple selection for the drop down list items
+  /// Set to `true` to allow multiple items to be selected at once
+  ///
+  /// Default Value: [false]
   final bool enableMultipleSelection;
 
-  /// This gives the bottom sheet title.
+  /// The maximum number of items that can be selected when [enableMultipleSelection] is true
+  final int? maxSelectedItems;
+
+  /// The padding applied to the `ListView` that contains the dropdown items
+  ///
+  /// If not provided (i.e., null), [EdgeInsets.zero] will be applied
+  final EdgeInsets? listViewPadding;
+
+  /// The widget used as a separator between items in the dropdown list
+  ///
+  /// This can be any widget, such as a `Divider` or `SizedBox`
+  ///
+  /// If not provided (i.e., null), a default `Divider` with a color of
+  /// [Colors.black12] and a height of 0 will be applied
+  final Widget? listViewSeparatorWidget;
+
+  /// The padding applied to the content of each `ListTile` in the dropdown list
+  ///
+  /// If not provided (i.e., null), the default padding of
+  /// [EdgeInsets.symmetric(horizontal: 20)] will be applied
+  final EdgeInsets? listTileContentPadding;
+
+  /// Defines the background color of each `ListTile` in the dropdown list
+  /// Default Value: [Colors.transparent]
+  final Color listTileColor;
+
+  /// The widget displayed as a trailing icon when a list item is selected
+  ///
+  /// This is used only when [enableMultipleSelection] is true
+  ///
+  /// Default Value: [Icon(Icons.check_box)]
+  final Widget selectedListTileTrailingWidget;
+
+  /// The widget displayed as a trailing icon when a list item is not selected
+  ///
+  /// This is used only when [enableMultipleSelection] is true
+  ///
+  /// Default Value: [Icon(Icons.check_box_outline_blank)]
+  final Widget deSelectedListTileTrailingWidget;
+
+  /// Specifies whether a modal bottom sheet should be displayed using the root navigator
+  ///
+  /// Default Value: [false]
+  final bool useRootNavigator;
+
+  /// Specifies whether the bottom sheet can be dragged up and down and dismissed by swiping downwards
+  ///
+  /// Default Value: [true]
+  final bool enableDrag;
+
+  /// Specifies whether the bottom sheet will be dismissed when the user taps on the scrim
+  ///
+  /// Default Value: [true]
+  final bool isDismissible;
+
+  /// The initial fractional value of the parent container's height to use when
+  /// displaying the [DropDown] widget in [DraggableScrollableSheet]
+  ///
+  /// Default Value: [0.7]
+  final double initialChildSize;
+
+  /// The minimum fractional value of the parent container's height to use when
+  /// displaying the [DropDown] widget in [DraggableScrollableSheet]
+  ///
+  /// Default Value: [0.3]
+  final double minChildSize;
+
+  /// The maximum fractional value of the parent container's height to use when
+  /// displaying the [DropDown] widget in [DraggableScrollableSheet]
+  ///
+  /// Default Value: [0.9]
+  final double maxChildSize;
+
+  /// A listener that monitors events bubbling up from the BottomSheet
+  ///
+  /// The [bottomSheetListener] is triggered with a [DraggableScrollableNotification]
+  /// when changes occur in the BottomSheet's draggable scrollable area
+  final BottomSheetListener? bottomSheetListener;
+
+  /// Sets the background color of the dropdown
+  ///
+  /// Default Value: [Colors.transparent]
+  final Color dropDownBackgroundColor;
+
+  /// The padding applied to the dropdown container
+  ///
+  /// If not provided (i.e., null), the default value will be
+  /// [EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom)]
+  final EdgeInsets? dropDownPadding;
+
+  /// The padding applied to the dropdown header
+  ///
+  /// If not provided (i.e., null), the default value will be
+  /// [EdgeInsets.only(left: 20.0, right: 20.0, top: 10.0)]
+  final EdgeInsets? dropDownHeaderPadding;
+
+  /// The widget displayed as the title of the bottom sheet
+  /// This allows customization of the title content
+  ///
+  /// If not provided, no title will be displayed
   final Widget? bottomSheetTitle;
 
   /// Defines a custom widget to display as the child of the submit button
-  /// when multiple selection is enabled. Typically used with an ElevatedButton.
+  /// when [enableMultipleSelection] is true
+  ///
+  /// This is typically used with an [ElevatedButton]
+  /// If not provided, a default button child will be used
   final Widget? submitButtonChild;
 
-  /// Specifies the text displayed on the submit button when multiple selection is enabled.
-  /// This is only used if a custom [submitButtonChild] widget is not provided.
+  /// Specifies the text displayed on the submit button when [enableMultipleSelection] is true
+  ///
+  /// This is only used if a custom [submitButtonChild] widget is not provided
+  ///
   /// Default Value: [Submit]
   final String submitButtonText;
 
   /// Defines a custom widget to display as the child of the clear button
-  /// when multiple selection is enabled. Typically used with an ElevatedButton.
+  /// when [enableMultipleSelection] is true
+  ///
+  /// This is typically used with an [ElevatedButton]
+  /// If not provided, a default button child will be used
   final Widget? clearButtonChild;
 
-  /// Specifies the text displayed on the clear button when multiple selection is enabled.
-  /// This is only used if a custom [clearButtonChild] widget is not provided.
+  /// Specifies the text displayed on the clear button when [enableMultipleSelection] is true
+  ///
+  /// This is only used if a custom [clearButtonChild] widget is not provided
+  ///
   /// Default Value: [Clear]
   final String clearButtonText;
 
-  /// [searchWidget] is use to show the text box for the searching.
-  /// If you are passing your own widget then you must have to add [TextEditingController] for the [TextFormField].
-  final TextFormField? searchWidget;
-
-  /// [isSearchVisible] flag use to manage the search widget visibility
-  /// by default it is [True] so widget will be visible.
+  /// Controls the visibility of the search widget
+  ///
+  /// Default Value: [true], The widget will be visible by default
+  /// Set to [false] to hide the widget
   final bool isSearchVisible;
 
-  /// [isSelectAllVisible] flag use to manage the select all widget visibility.
-  /// by default it is [True] so widget will be visible.
-  /// Required [enableMultipleSelection] to be true.
-  final bool isSelectAllVisible;
+  /// The padding applied to the search text field
+  ///
+  /// If not provided (i.e., null), the default value will be
+  /// [EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0)]
+  final EdgeInsets? searchTextFieldPadding;
 
-  /// You can set your custom select all text button when the multiple selection and isSelectAllVisible is enabled.
-  final Widget? selectAllTextButtonChild;
+  /// Defines a custom widget to display the text box for searching
+  ///
+  /// If you provide a custom widget, you must include a [TextEditingController]
+  /// for the [TextFormField] to manage the input
+  ///
+  /// If null, the default [SearchTextField] widget will be used
+  final TextFormField? searchWidget;
 
-  /// You can set your custom deselect all text button when the multiple selection and isSelectAllVisible is enabled.
-  final Widget? deSelectAllTextButtonChild;
-
-  /// This will set the background color to the dropdown.
-  final Color dropDownBackgroundColor;
-
-  /// [searchHintText] is use to show the hint text into the search widget.
-  /// by default it is [Search] text.
+  /// Specifies the text displayed on the search widget as hint text
+  ///
+  /// Default Value: [Search]
   final String? searchHintText;
 
-  /// This will be the fill color to the input.
-  /// by default it is [Colors.black12] color.
+  /// This is the fill color for the input field
+  ///
+  /// Default Value: [Colors.black12]
   final Color? searchFillColor;
 
-  /// This will be the cursor color to the input.
-  /// by default it is [Colors.black] color.
+  /// This is the cursor color for the input field
+  ///
+  /// Default Value: [Colors.black]
   final Color? searchCursorColor;
 
-  /// [isDismissible] Specifies whether the bottom sheet will be dismissed when user taps on the scrim.
-  /// If true, the bottom sheet will be dismissed when user taps on the scrim.
-  /// by default it is [True].
-  final bool isDismissible;
+  /// Controls the visibility of the "select all" widget when [enableMultipleSelection] is true
+  ///
+  /// Default Value: [true]
+  final bool isSelectAllVisible;
 
-  /// [bottomSheetListener] that listens for BottomSheet bubbling up the tree.
-  final BottomSheetListener? bottomSheetListener;
+  /// The padding applied to the "select all" and "deselect all" TextButtons
+  ///
+  /// If null, [EdgeInsets.zero] will be applied as the default padding
+  final EdgeInsets? selectAllTextButtonPadding;
 
-  /// Specifies whether a modal bottom sheet should be displayed using the root navigator.
-  /// by default it is [False].
-  final bool useRootNavigator;
+  /// Defines a custom widget to display as the child of the selectAll text button
+  /// when [enableMultipleSelection] and [isSelectAllVisible] is true
+  ///
+  /// This is typically used with an [TextButton]
+  /// If not provided, a default text button child will be used
+  final Widget? selectAllTextButtonChild;
 
-  /// Number of items that can be selected when multiple selection is enabled.
-  final int? maxSelectedItems;
+  /// Specifies the text displayed on the selectAll text button
+  /// when [enableMultipleSelection] and [isSelectAllVisible] is true
+  ///
+  /// This is only used if a custom [selectAllTextButtonChild] widget is not provided
+  ///
+  /// Default Value: [Select All]
+  final String selectAllButtonText;
 
-  /// The widget displayed as a trailing icon when an list item is selected.
-  /// Used only when multiple selection is enabled.
-  /// Default Value: [Icon(Icons.check_box)]
-  final Widget selectedListTileTrailingWidget;
+  /// Defines a custom widget to display as the child of the deSelectAll text button
+  /// when [enableMultipleSelection] and [isSelectAllVisible] is true
+  ///
+  /// This is typically used with an [TextButton]
+  /// If not provided, a default text button child will be used
+  final Widget? deSelectAllTextButtonChild;
 
-  /// The widget displayed as a trailing icon when an list item is not selected.
-  /// Used only when multiple selection is enabled.
-  /// Default Value: [Icon(Icons.check_box_outline_blank)]
-  final Widget deSelectedListTileTrailingWidget;
-
-  /// The padding applied to the dropdown container.
-  final EdgeInsets? dropDownPadding;
-
-  /// The padding applied to the `ListView` containing the dropdown items.
-  final EdgeInsets? listViewPadding;
-
-  /// The widget used as a separator between items in the dropdown list.
-  /// Can be any widget such as a `Divider` or `SizedBox`.
-  final Widget? listViewSeparatorWidget;
-
-  /// The padding applied to the content of each `ListTile` in the dropdown list.
-  final EdgeInsets? listTileContentPadding;
-
-  /// Defines the background color of `ListTile` in the dropdown list.
-  /// Default Value: [Colors.transparent]
-  final Color listTileColor;
+  /// Specifies the text displayed on the deSelectAll text button
+  /// when [enableMultipleSelection] and [isSelectAllVisible] is true
+  ///
+  /// This is only used if a custom [deSelectAllTextButtonChild] widget is not provided
+  ///
+  /// Default Value: [Deselect All]
+  final String deSelectAllButtonText;
 
   DropDown({
     Key? key,
     required this.data,
-    this.maxSelectedItems,
     this.onSelected,
     this.listItemBuilder,
     this.enableMultipleSelection = false,
-    this.bottomSheetTitle,
-    this.isDismissible = true,
-    this.submitButtonChild,
-    this.submitButtonText = 'Submit',
-    this.clearButtonChild,
-    this.clearButtonText = 'Clear',
-    this.searchWidget,
-    this.searchHintText = 'Search',
-    this.searchFillColor = Colors.black12,
-    this.searchCursorColor = Colors.black,
-    this.isSearchVisible = true,
-    this.isSelectAllVisible = true,
-    this.selectAllTextButtonChild,
-    this.deSelectAllTextButtonChild,
-    this.dropDownBackgroundColor = Colors.transparent,
-    this.bottomSheetListener,
-    this.useRootNavigator = false,
+    this.maxSelectedItems,
+    this.listViewPadding,
+    this.listViewSeparatorWidget,
+    this.listTileContentPadding,
+    this.listTileColor = Colors.transparent,
     this.selectedListTileTrailingWidget = const Icon(
       Icons.check_box,
     ),
     this.deSelectedListTileTrailingWidget = const Icon(
       Icons.check_box_outline_blank,
     ),
+    this.useRootNavigator = false,
+    this.enableDrag = true,
+    this.isDismissible = true,
+    this.initialChildSize = 0.7,
+    this.minChildSize = 0.3,
+    this.maxChildSize = 0.9,
+    this.bottomSheetListener,
+    this.dropDownBackgroundColor = Colors.transparent,
     this.dropDownPadding,
-    this.listViewPadding,
-    this.listViewSeparatorWidget,
-    this.listTileContentPadding,
-    this.listTileColor = Colors.transparent,
+    this.dropDownHeaderPadding,
+    this.bottomSheetTitle,
+    this.submitButtonChild,
+    this.submitButtonText = 'Submit',
+    this.clearButtonChild,
+    this.clearButtonText = 'Clear',
+    this.isSearchVisible = true,
+    this.searchTextFieldPadding,
+    this.searchWidget,
+    this.searchHintText = 'Search',
+    this.searchFillColor = Colors.black12,
+    this.searchCursorColor = Colors.black,
+    this.isSelectAllVisible = true,
+    this.selectAllTextButtonPadding,
+    this.selectAllTextButtonChild,
+    this.selectAllButtonText = 'Select All',
+    this.deSelectAllTextButtonChild,
+    this.deSelectAllButtonText = 'Deselect All',
   });
 }
 
+/// Manages the state and behavior of a dropdown
+/// This includes configuring and displaying a modal bottom sheet containing the dropdown items
 class DropDownState {
-  DropDown dropDown;
-  double? heightOfBottomSheet;
+  /// The `DropDown` configuration object that defines the behavior, appearance,
+  /// and other properties of the dropdown menu
+  final DropDown dropDown;
+
+  /// The shape of the bottom sheet
+  ///
+  /// If not provided (i.e., null), the default value will be
+  /// [RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(15.0)))]
+  final ShapeBorder? shapeBorder;
 
   DropDownState({
     required this.dropDown,
-    this.heightOfBottomSheet = 600,
+    this.shapeBorder,
   });
 
-  /// This gives the bottom sheet widget.
-  void showModal(context) {
+  /// Displays the dropdown menu as a modal bottom sheet
+  ///
+  /// [context] is the BuildContext used to display the modal bottom sheet
+  ///
+  /// This method uses the configurations defined in the `dropDown` object
+  void showModal(BuildContext context) {
     showModalBottomSheet(
       useRootNavigator: dropDown.useRootNavigator,
-      constraints: BoxConstraints.loose(
-        Size(
-          MediaQuery.of(context).size.width,
-          heightOfBottomSheet!,
-        ),
-      ),
-      // <= this is set to 3/4 of screen size.
       isScrollControlled: true,
-      enableDrag: dropDown.isDismissible,
+      enableDrag: dropDown.enableDrag,
       isDismissible: dropDown.isDismissible,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(15.0),
-        ),
-      ),
+      shape: shapeBorder ??
+          const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(15.0),
+            ),
+          ),
       context: context,
       clipBehavior: Clip.hardEdge,
       builder: (context) {
@@ -204,8 +341,10 @@ class DropDownState {
   }
 }
 
-/// This is main class to display the bottom sheet body.
+/// This is main class to display the bottom sheet body
 class MainBody extends StatefulWidget {
+  /// The `DropDown` configuration object that defines the behavior, appearance,
+  /// and other properties of the dropdown menu
   final DropDown dropDown;
 
   const MainBody({
@@ -218,7 +357,7 @@ class MainBody extends StatefulWidget {
 }
 
 class _MainBodyState extends State<MainBody> {
-  /// This list will set when the list of data is not available.
+  /// This list will set when the list of data is not available
   List<SelectedListItem> mainList = [];
 
   @override
@@ -234,9 +373,9 @@ class _MainBodyState extends State<MainBody> {
     return NotificationListener<DraggableScrollableNotification>(
       onNotification: widget.dropDown.bottomSheetListener,
       child: DraggableScrollableSheet(
-        initialChildSize: 0.7,
-        minChildSize: 0.13,
-        maxChildSize: 0.9,
+        initialChildSize: widget.dropDown.initialChildSize,
+        minChildSize: widget.dropDown.minChildSize,
+        maxChildSize: widget.dropDown.maxChildSize,
         expand: false,
         builder: (BuildContext context, ScrollController scrollController) {
           return Container(
@@ -249,61 +388,65 @@ class _MainBodyState extends State<MainBody> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(
-                    left: 15.0,
-                    right: 15.0,
-                    top: 10.0,
-                  ),
+                  padding: widget.dropDown.dropDownHeaderPadding ??
+                      const EdgeInsets.only(
+                        left: 20.0,
+                        right: 20.0,
+                        top: 10.0,
+                      ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       /// Bottom sheet title text
-                      Expanded(
-                        child: widget.dropDown.bottomSheetTitle ?? Container(),
-                      ),
+                      (widget.dropDown.bottomSheetTitle != null)
+                          ? Expanded(
+                              child: widget.dropDown.bottomSheetTitle!,
+                            )
+                          : const Spacer(),
 
-                      /// Done button
-                      Visibility(
-                        visible: widget.dropDown.enableMultipleSelection,
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: ElevatedButton(
-                            onPressed: onSubmitButtonPressed,
-                            child: widget.dropDown.submitButtonChild ??
-                                Text(
-                                  widget.dropDown.submitButtonText,
-                                ),
-                          ),
-                        ),
-                      ),
-                      widget.dropDown.enableMultipleSelection
-                          ? Padding(
+                      /// Submit Elevated Button
+                      if (widget.dropDown.enableMultipleSelection)
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ElevatedButton(
+                              onPressed: onSubmitButtonPressed,
+                              child: widget.dropDown.submitButtonChild ??
+                                  Text(widget.dropDown.submitButtonText),
+                            ),
+
+                            /// Clear Elevated Button
+                            Padding(
                               padding: const EdgeInsets.only(left: 8.0),
                               child: ElevatedButton(
                                 onPressed: onClearButtonPressed,
                                 child: widget.dropDown.clearButtonChild ??
-                                    Text(
-                                      widget.dropDown.clearButtonText,
-                                    ),
+                                    Text(widget.dropDown.clearButtonText),
                               ),
-                            )
-                          : const SizedBox.shrink(),
+                            ),
+                          ],
+                        ),
                     ],
                   ),
                 ),
 
                 /// A [TextField] that displays a list of suggestions as the user types with clear button.
-                Visibility(
-                  visible: widget.dropDown.isSearchVisible,
-                  child: widget.dropDown.searchWidget ??
-                      AppTextField(
-                        dropDown: widget.dropDown,
-                        onTextChanged: _buildSearchList,
-                        searchHintText: widget.dropDown.searchHintText,
-                        searchFillColor: widget.dropDown.searchFillColor,
-                        searchCursorColor: widget.dropDown.searchCursorColor,
-                      ),
-                ),
+                if (widget.dropDown.isSearchVisible)
+                  Padding(
+                    padding: widget.dropDown.searchTextFieldPadding ??
+                        const EdgeInsets.symmetric(
+                          horizontal: 20.0,
+                          vertical: 10.0,
+                        ),
+                    child: widget.dropDown.searchWidget ??
+                        SearchTextField(
+                          dropDown: widget.dropDown,
+                          onTextChanged: _buildSearchList,
+                          searchHintText: widget.dropDown.searchHintText,
+                          searchFillColor: widget.dropDown.searchFillColor,
+                          searchCursorColor: widget.dropDown.searchCursorColor,
+                        ),
+                  ),
 
                 /// Select or Deselect TextButton when enableMultipleSelection is enabled
                 if (widget.dropDown.enableMultipleSelection &&
@@ -312,7 +455,8 @@ class _MainBodyState extends State<MainBody> {
                   Align(
                     alignment: Alignment.centerRight,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      padding: widget.dropDown.selectAllTextButtonPadding ??
+                          EdgeInsets.zero,
                       child: TextButton(
                         onPressed: () => setState(() {
                           for (var element in mainList) {
@@ -321,9 +465,9 @@ class _MainBodyState extends State<MainBody> {
                         }),
                         child: isSelectAll
                             ? widget.dropDown.deSelectAllTextButtonChild ??
-                                const Text('Deselect All')
+                                Text(widget.dropDown.deSelectAllButtonText)
                             : widget.dropDown.selectAllTextButtonChild ??
-                                const Text('Select All'),
+                                Text(widget.dropDown.selectAllButtonText),
                       ),
                     ),
                   ),
@@ -399,6 +543,7 @@ class _MainBodyState extends State<MainBody> {
         height: 0,
       );
 
+  /// Handle the submit button pressed
   void onSubmitButtonPressed() {
     List<SelectedListItem> selectedList =
         widget.dropDown.data.where((element) => element.isSelected).toList();
@@ -412,6 +557,7 @@ class _MainBodyState extends State<MainBody> {
     _onUnFocusKeyboardAndPop();
   }
 
+  /// Handle the clear button pressed
   void onClearButtonPressed() {
     for (final element in mainList) {
       element.isSelected = false;
@@ -439,6 +585,7 @@ class _MainBodyState extends State<MainBody> {
     Navigator.of(context).pop();
   }
 
+  /// This helps to add listener on search field controller
   void _setSearchWidgetListener() {
     TextFormField? searchField = widget.dropDown.searchWidget;
     searchField?.controller?.addListener(() {

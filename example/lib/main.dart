@@ -4,27 +4,30 @@ import 'package:flutter/material.dart';
 
 import 'constants.dart';
 
-void main() {
-  runApp(
-    const MaterialApp(
-      title: kTitle,
-      home: DropDownListExample(),
-      debugShowCheckedModeBanner: false,
-    ),
-  );
-}
+void main() => runApp(const MyApp());
 
-class DropDownListExample extends StatefulWidget {
-  const DropDownListExample({
-    super.key,
-  });
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
-  State<DropDownListExample> createState() => _DropDownListExampleState();
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      title: kTitle,
+      home: MyHomePage(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
 }
 
-class _DropDownListExampleState extends State<DropDownListExample> {
-  /// This is list of city which will pass to the drop down.
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  /// This is list of city which will pass to the drop down
   final List<SelectedListItem> _listOfCities = [
     SelectedListItem(
       name: kTokyo,
@@ -49,7 +52,7 @@ class _DropDownListExampleState extends State<DropDownListExample> {
     SelectedListItem(name: kFlorence),
   ];
 
-  /// This is register text field controllers.
+  /// This is register text field controllers
   final TextEditingController _fullNameTextEditingController =
       TextEditingController();
   final TextEditingController _emailTextEditingController =
@@ -76,73 +79,62 @@ class _DropDownListExampleState extends State<DropDownListExample> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
-        child: _mainBody(),
-      ),
-    );
-  }
-
-  /// This is Main Body widget.
-  Widget _mainBody() {
-    return Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 30.0,
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 30.0),
+              const Text(
+                kRegister,
+                style: TextStyle(
+                  fontSize: 34.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 15.0),
+              AppTextField(
+                textEditingController: _fullNameTextEditingController,
+                title: kFullName,
+                hint: kEnterYourName,
+                isCitySelected: false,
+              ),
+              AppTextField(
+                textEditingController: _emailTextEditingController,
+                title: kEmail,
+                hint: kEnterYourEmail,
+                isCitySelected: false,
+              ),
+              AppTextField(
+                textEditingController: _phoneNumberTextEditingController,
+                title: kPhoneNumber,
+                hint: kEnterYourPhoneNumber,
+                isCitySelected: false,
+              ),
+              AppTextField(
+                textEditingController: _cityTextEditingController,
+                title: kCity,
+                hint: kChooseYourCity,
+                isCitySelected: true,
+                cities: _listOfCities,
+              ),
+              AppTextField(
+                textEditingController: _passwordTextEditingController,
+                title: kPassword,
+                hint: kAddYourPassword,
+                isCitySelected: false,
+              ),
+              const SizedBox(height: 15.0),
+              const AppElevatedButton(),
+            ],
           ),
-          const Text(
-            kRegister,
-            style: TextStyle(
-              fontSize: 34.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(
-            height: 15.0,
-          ),
-          AppTextField(
-            textEditingController: _fullNameTextEditingController,
-            title: kFullName,
-            hint: kEnterYourName,
-            isCitySelected: false,
-          ),
-          AppTextField(
-            textEditingController: _emailTextEditingController,
-            title: kEmail,
-            hint: kEnterYourEmail,
-            isCitySelected: false,
-          ),
-          AppTextField(
-            textEditingController: _phoneNumberTextEditingController,
-            title: kPhoneNumber,
-            hint: kEnterYourPhoneNumber,
-            isCitySelected: false,
-          ),
-          AppTextField(
-            textEditingController: _cityTextEditingController,
-            title: kCity,
-            hint: kChooseYourCity,
-            isCitySelected: true,
-            cities: _listOfCities,
-          ),
-          AppTextField(
-            textEditingController: _passwordTextEditingController,
-            title: kPassword,
-            hint: kAddYourPassword,
-            isCitySelected: false,
-          ),
-          const SizedBox(
-            height: 15.0,
-          ),
-          _AppElevatedButton(),
-        ],
+        ),
       ),
     );
   }
 }
 
-/// This is Common App textfiled class.
+/// This is Common App text field class
 class AppTextField extends StatefulWidget {
   final TextEditingController textEditingController;
   final String title;
@@ -164,50 +156,13 @@ class AppTextField extends StatefulWidget {
 }
 
 class _AppTextFieldState extends State<AppTextField> {
-  /// This is on text changed method which will display on city text field on changed.
-  void onTextFieldTap() {
-    DropDownState(
-      dropDown: DropDown(
-        isDismissible: true,
-        bottomSheetTitle: const Text(
-          kCities,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20.0,
-          ),
-        ),
-        submitButtonText: 'Save',
-        maxSelectedItems: 3,
-        clearButtonText: 'Clear',
-        data: widget.cities ?? [],
-        onSelected: (List<dynamic> selectedList) {
-          List<String> list = [];
-          for (var item in selectedList) {
-            if (item is SelectedListItem) {
-              list.add(item.name);
-            }
-          }
-          showSnackBar(list.toString());
-        },
-        enableMultipleSelection: true,
-      ),
-    ).showModal(context);
-  }
-
-  void showSnackBar(String message) {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(message)));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(widget.title),
-        const SizedBox(
-          height: 5.0,
-        ),
+        const SizedBox(height: 5.0),
         TextFormField(
           controller: widget.textEditingController,
           cursorColor: Colors.black,
@@ -221,8 +176,12 @@ class _AppTextFieldState extends State<AppTextField> {
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.black12,
-            contentPadding:
-                const EdgeInsets.only(left: 8, bottom: 0, top: 0, right: 15),
+            contentPadding: const EdgeInsets.only(
+              left: 8,
+              bottom: 0,
+              top: 0,
+              right: 15,
+            ),
             hintText: widget.hint,
             border: const OutlineInputBorder(
               borderSide: BorderSide(
@@ -235,16 +194,51 @@ class _AppTextFieldState extends State<AppTextField> {
             ),
           ),
         ),
-        const SizedBox(
-          height: 15.0,
-        ),
+        const SizedBox(height: 15.0),
       ],
     );
   }
+
+  /// This is on text changed method which will display on city text field on changed
+  void onTextFieldTap() {
+    DropDownState(
+      dropDown: DropDown(
+        isDismissible: true,
+        bottomSheetTitle: const Text(
+          kCities,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20.0,
+          ),
+        ),
+        submitButtonText: 'Save',
+        clearButtonText: 'Clear',
+        data: widget.cities ?? [],
+        onSelected: (List<dynamic> selectedList) {
+          List<String> list = [];
+          for (var item in selectedList) {
+            if (item is SelectedListItem) {
+              list.add(item.name);
+            }
+          }
+          showSnackBar(list.toString());
+        },
+        enableMultipleSelection: true,
+        maxSelectedItems: 3,
+      ),
+    ).showModal(context);
+  }
+
+  void showSnackBar(String message) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
+  }
 }
 
-/// This is common class for 'REGISTER' elevated button.
-class _AppElevatedButton extends StatelessWidget {
+/// This is common class for 'REGISTER' elevated button
+class AppElevatedButton extends StatelessWidget {
+  const AppElevatedButton({super.key});
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(

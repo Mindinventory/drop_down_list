@@ -37,8 +37,8 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
 
-  # Highly versatile Widget to search through a single or multiple choices from bottom sheet
-  # list in a dialog box or a menu.
+  # A dropdown widget with rich customization options, supporting single or multiple selection,
+  # an integrated search feature in a bottom sheet.
   # https://pub.dev/packages/drop_down_list
   drop_down_list:
     path: ../

@@ -44,6 +44,12 @@ class DropDown {
   /// The maximum number of items that can be selected when [enableMultipleSelection] is true
   final int? maxSelectedItems;
 
+  /// A callback function triggered when the maximum selection limit is reached
+  ///
+  /// This callback is called when the number of selected items exceeds or reaches
+  /// the value specified by [maxSelectedItems]
+  final VoidCallback? onMaxSelectionReached;
+
   /// The padding applied to the `ListView` that contains the dropdown items
   ///
   /// If not provided (i.e., null), [EdgeInsets.zero] will be applied
@@ -253,6 +259,7 @@ class DropDown {
     this.listItemBuilder,
     this.enableMultipleSelection = false,
     this.maxSelectedItems,
+    this.onMaxSelectionReached,
     this.listViewPadding,
     this.listViewSeparatorWidget,
     this.listTileContentPadding,
@@ -493,6 +500,7 @@ class _MainBodyState extends State<MainBody> {
                                         .where((e) => e.isSelected)
                                         .length >=
                                     widget.dropDown.maxSelectedItems!) {
+                                  widget.dropDown.onMaxSelectionReached?.call();
                                   return;
                                 }
                               }

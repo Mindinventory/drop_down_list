@@ -200,17 +200,17 @@ class DropDown {
   /// Specifies the text displayed on the search widget as hint text
   ///
   /// Default Value: [Search]
-  final String? searchHintText;
+  final String searchHintText;
 
   /// This is the fill color for the input field
   ///
   /// Default Value: [Colors.black12]
-  final Color? searchFillColor;
+  final Color searchFillColor;
 
   /// This is the cursor color for the input field
   ///
   /// Default Value: [Colors.black]
-  final Color? searchCursorColor;
+  final Color searchCursorColor;
 
   /// Controls the visibility of the "select all" widget when [enableMultipleSelection] is true
   ///

@@ -1,3 +1,17 @@
+## 2.0.0
+
+* **BREAKING CHANGE**: Changed `SelectedListItem` class from a non-generic to a generic class: The
+  `SelectedListItem` now accepts a type parameter `T` to represent the data it holds.
+* Due to this change, relevant callbacks and properties where `SelectedListItem` is used also need
+  to be updated or refactored to accommodate the generic type.
+* Added `SearchDelegate` to enable flexible search functionality based on a user-provided query.
+* Revised the example code to reflect the change of `SelectedListItem` from a non-generic to a
+  generic class.
+* Fixed the issue.
+    - [#31](https://github.com/Mindinventory/drop_down_list/issues/31) - error: The argument type
+      List<Object> can't be assigned to the parameter type List<SelectedListItem>.
+* Updated the library details.
+
 ## 1.0.0
 
 * Added `initial`, `minimum` and `maximum` fractional values of the DraggableScrollableSheet.

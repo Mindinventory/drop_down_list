@@ -8,13 +8,13 @@
 * Revised the example code to reflect the change of `SelectedListItem` from a non-generic to a
   generic class.
 * Fixed the issue.
-    - [#31](https://github.com/Mindinventory/drop_down_list/issues/31) - error: The argument type
-      List<Object> can't be assigned to the parameter type List<SelectedListItem>.
+    - [#31](https://github.com/Mindinventory/drop_down_list/issues/31) - Error the argument type
+      `List<Object>` can't be assigned to the parameter type `List<SelectedListItem>`.
 * Updated the library details.
 
 ## 1.0.0
 
-* Added `initial`, `minimum` and `maximum` fractional values of the DraggableScrollableSheet.
+* Added `initial`, `minimum` and `maximum` fractional values of the `DraggableScrollableSheet`.
 * Added customizable trailing widgets for selected and deselected list items in multiple selection
   mode.
 * Added `separator` widget for list views to enhance item separation.

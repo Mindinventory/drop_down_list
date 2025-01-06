@@ -76,76 +76,76 @@ DropDownState<String>(
 
 ## Required parameters of DropDown
 
-| Parameter                      | Description                                                    |
-|--------------------------------|----------------------------------------------------------------|
-| List<SelectedListItem<T>> data | The list of generic data items to be displayed in the dropdown |
+| Parameter                        | Description                                                    |
+|----------------------------------|----------------------------------------------------------------|
+| `List<SelectedListItem<T>> data` | The list of generic data items to be displayed in the dropdown |
 
 ## Optional parameters of DropDown
 
-| Parameter                                | Description                                                                                                                                    |
-|------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------|
-| ItemSelectionCallBack<T>? onSelected     | A callback function triggered when items are selected from the list                                                                            |
-| ListItemBuilder<T>? listItemBuilder      | A function that takes an [index] and [dataItem] as a parameter and returns a custom widget to display for the list item at that index          |
-| int? maxSelectedItems                    | The maximum number of items that can be selected when [enableMultipleSelection] is true                                                        |
-| VoidCallback? onMaxSelectionReached      | A callback function triggered when the maximum selection limit is reached                                                                      |
-| EdgeInsets? listViewPadding              | The padding applied to the `ListView` that contains the dropdown items                                                                         |
-| Widget? listViewSeparatorWidget          | The widget used as a separator between items in the dropdown list                                                                              |
-| EdgeInsets? listTileContentPadding       | The padding applied to the content of each `ListTile` in the dropdown list                                                                     |
-| BottomSheetListener? bottomSheetListener | A listener that monitors events bubbling up from the BottomSheet                                                                               |
-| EdgeInsets? dropDownPadding              | The padding applied to the dropdown container                                                                                                  |
-| EdgeInsets? dropDownHeaderPadding        | The padding applied to the dropdown header                                                                                                     |
-| Widget? bottomSheetTitle                 | The widget displayed as the title of the bottom sheet                                                                                          |
-| Widget? submitButtonChild                | Defines a custom widget to display as the child of the submit button when [enableMultipleSelection] is true                                    |
-| Widget? clearButtonChild                 | Defines a custom widget to display as the child of the clear button when [enableMultipleSelection] is true                                     |
-| EdgeInsets? searchTextFieldPadding       | The padding applied to the search text field                                                                                                   |
-| TextFormField? searchWidget              | Defines a custom widget to display the text box for searching                                                                                  |
-| EdgeInsets? selectAllTextButtonPadding   | The padding applied to the "select all" and "deselect all" TextButtons                                                                         |
-| Widget? selectAllTextButtonChild         | Defines a custom widget to display as the child of the selectAll text button when [enableMultipleSelection] and [isSelectAllVisible] is true   |
-| Widget? deSelectAllTextButtonChild       | Defines a custom widget to display as the child of the deSelectAll text button when [enableMultipleSelection] and [isSelectAllVisible] is true |
-| SearchDelegate<T>? searchDelegate        | A delegate used to configure the custom search functionality in the dropdown                                                                   |
+| Parameter                                  | Description                                                                                                                                        |
+|--------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `ItemSelectionCallBack<T>? onSelected`     | A callback function triggered when items are selected from the list                                                                                |
+| `ListItemBuilder<T>? listItemBuilder`      | A function that takes an `[index]` and `[dataItem]` as a parameter and returns a custom widget to display for the list item at that index          |
+| `int? maxSelectedItems`                    | The maximum number of items that can be selected when `[enableMultipleSelection]` is true                                                          |
+| `VoidCallback? onMaxSelectionReached`      | A callback function triggered when the maximum selection limit is reached                                                                          |
+| `EdgeInsets? listViewPadding`              | The padding applied to the `ListView` that contains the dropdown items                                                                             |
+| `Widget? listViewSeparatorWidget`          | The widget used as a separator between items in the dropdown list                                                                                  |
+| `EdgeInsets? listTileContentPadding`       | The padding applied to the content of each `ListTile` in the dropdown list                                                                         |
+| `BottomSheetListener? bottomSheetListener` | A listener that monitors events bubbling up from the BottomSheet                                                                                   |
+| `EdgeInsets? dropDownPadding`              | The padding applied to the dropdown container                                                                                                      |
+| `EdgeInsets? dropDownHeaderPadding`        | The padding applied to the dropdown header                                                                                                         |
+| `Widget? bottomSheetTitle`                 | The widget displayed as the title of the bottom sheet                                                                                              |
+| `Widget? submitButtonChild`                | Defines a custom widget to display as the child of the submit button when `[enableMultipleSelection]` is true                                      |
+| `Widget? clearButtonChild`                 | Defines a custom widget to display as the child of the clear button when `[enableMultipleSelection]` is true                                       |
+| `EdgeInsets? searchTextFieldPadding`       | The padding applied to the search text field                                                                                                       |
+| `TextFormField? searchWidget`              | Defines a custom widget to display the text box for searching                                                                                      |
+| `EdgeInsets? selectAllTextButtonPadding`   | The padding applied to the "select all" and "deselect all" TextButtons                                                                             |
+| `Widget? selectAllTextButtonChild`         | Defines a custom widget to display as the child of the selectAll text button when `[enableMultipleSelection]` and `[isSelectAllVisible]` is true   |
+| `Widget? deSelectAllTextButtonChild`       | Defines a custom widget to display as the child of the deSelectAll text button when `[enableMultipleSelection]` and `[isSelectAllVisible]` is true |
+| `SearchDelegate<T>? searchDelegate`        | A delegate used to configure the custom search functionality in the dropdown                                                                       |
 
 ## Optional parameters of DropDown with Default value
 
-| Parameter                               | Default                             | Description                                                                                                                 |
-|-----------------------------------------|-------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
-| bool enableMultipleSelection            | false                               | Enables single or multiple selection for the drop down list items                                                           |
-| Color listTileColor                     | Colors.transparent                  | Defines the background color of each `ListTile` in the dropdown list                                                        |
-| Widget selectedListTileTrailingWidget   | Icon(Icons.check_box)               | The widget displayed as a trailing icon when a list item is selected                                                        |
-| Widget deSelectedListTileTrailingWidget | Icon(Icons.check_box_outline_blank) | The widget displayed as a trailing icon when a list item is not selected                                                    |
-| bool useRootNavigator                   | false                               | Specifies whether a modal bottom sheet should be displayed using the root navigator                                         |
-| bool enableDrag                         | true                                | Specifies whether the bottom sheet can be dragged up and down and dismissed by swiping downwards                            |
-| bool isDismissible                      | true                                | Specifies whether the bottom sheet will be dismissed when the user taps on the scrim                                        |
-| double initialChildSize                 | 0.7                                 | The initial fractional value of DraggableScrollableSheet                                                                    |
-| double minChildSize                     | 0.3                                 | The minimum fractional value of DraggableScrollableSheet                                                                    |
-| double maxChildSize                     | 0.9                                 | The maximum fractional value of DraggableScrollableSheet                                                                    |
-| Color dropDownBackgroundColor           | Colors.transparent                  | Sets the background color of the dropdown                                                                                   |
-| String submitButtonText                 | 'Submit'                            | Specifies the text displayed on the submit button when [enableMultipleSelection] is true                                    |
-| String clearButtonText                  | 'Clear'                             | Specifies the text displayed on the clear button when [enableMultipleSelection] is true                                     |
-| bool isSearchVisible                    | true                                | Controls the visibility of the search widget                                                                                |
-| String searchHintText                   | 'Search'                            | Specifies the text displayed on the search widget as hint text                                                              |
-| Color searchFillColor                   | Colors.black12                      | This is the fill color for the input field                                                                                  |
-| Color searchCursorColor                 | Colors.black                        | This is the cursor color for the input field                                                                                |
-| bool isSelectAllVisible                 | true                                | Controls the visibility of the "select all" widget when [enableMultipleSelection] is true                                   |
-| String selectAllButtonText              | 'Select All'                        | Specifies the text displayed on the selectAll text button when [enableMultipleSelection] and [isSelectAllVisible] is true   |
-| String deSelectAllButtonText            | 'Deselect All'                      | Specifies the text displayed on the deSelectAll text button when [enableMultipleSelection] and [isSelectAllVisible] is true |
+| Parameter                                 | Default                             | Description                                                                                                                     |
+|-------------------------------------------|-------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
+| `bool enableMultipleSelection`            | false                               | Enables single or multiple selection for the drop down list items                                                               |
+| `Color listTileColor`                     | Colors.transparent                  | Defines the background color of each `ListTile` in the dropdown list                                                            |
+| `Widget selectedListTileTrailingWidget`   | Icon(Icons.check_box)               | The widget displayed as a trailing icon when a list item is selected                                                            |
+| `Widget deSelectedListTileTrailingWidget` | Icon(Icons.check_box_outline_blank) | The widget displayed as a trailing icon when a list item is not selected                                                        |
+| `bool useRootNavigator`                   | false                               | Specifies whether a modal bottom sheet should be displayed using the root navigator                                             |
+| `bool enableDrag`                         | true                                | Specifies whether the bottom sheet can be dragged up and down and dismissed by swiping downwards                                |
+| `bool isDismissible`                      | true                                | Specifies whether the bottom sheet will be dismissed when the user taps on the scrim                                            |
+| `double initialChildSize`                 | 0.7                                 | The initial fractional value of DraggableScrollableSheet                                                                        |
+| `double minChildSize`                     | 0.3                                 | The minimum fractional value of DraggableScrollableSheet                                                                        |
+| `double maxChildSize`                     | 0.9                                 | The maximum fractional value of DraggableScrollableSheet                                                                        |
+| `Color dropDownBackgroundColor`           | Colors.transparent                  | Sets the background color of the dropdown                                                                                       |
+| `String submitButtonText`                 | 'Submit'                            | Specifies the text displayed on the submit button when `[enableMultipleSelection]` is true                                      |
+| `String clearButtonText`                  | 'Clear'                             | Specifies the text displayed on the clear button when `[enableMultipleSelection]` is true                                       |
+| `bool isSearchVisible`                    | true                                | Controls the visibility of the search widget                                                                                    |
+| `String searchHintText`                   | 'Search'                            | Specifies the text displayed on the search widget as hint text                                                                  |
+| `Color searchFillColor`                   | Colors.black12                      | This is the fill color for the input field                                                                                      |
+| `Color searchCursorColor`                 | Colors.black                        | This is the cursor color for the input field                                                                                    |
+| `bool isSelectAllVisible`                 | true                                | Controls the visibility of the "select all" widget when `[enableMultipleSelection]` is true                                     |
+| `String selectAllButtonText`              | 'Select All'                        | Specifies the text displayed on the selectAll text button when `[enableMultipleSelection]` and `[isSelectAllVisible]` is true   |
+| `String deSelectAllButtonText`            | 'Deselect All'                      | Specifies the text displayed on the deSelectAll text button when `[enableMultipleSelection]` and `[isSelectAllVisible]` is true |
 
 ## Required parameters of DropDownState
 
-| Parameter            | Description                                                                                                          |
-|----------------------|----------------------------------------------------------------------------------------------------------------------|
-| DropDown<T> dropDown | The `DropDown` configuration object that defines the behavior, appearance, and other properties of the dropdown menu |
+| Parameter              | Description                                                                                                          |
+|------------------------|----------------------------------------------------------------------------------------------------------------------|
+| `DropDown<T> dropDown` | The `DropDown` configuration object that defines the behavior, appearance, and other properties of the dropdown menu |
 
 ## Optional parameters of DropDownState
 
-| Parameter                | Description                   |
-|--------------------------|-------------------------------|
-| ShapeBorder? shapeBorder | The shape of the bottom sheet |
+| Parameter                  | Description                   |
+|----------------------------|-------------------------------|
+| `ShapeBorder? shapeBorder` | The shape of the bottom sheet |
 
 ## Method of DropDownState
 
-| Method                               | Description                                        |
-|--------------------------------------|----------------------------------------------------|
-| void showModal(BuildContext context) | Displays the dropdown menu as a modal bottom sheet |
+| Method                                 | Description                                        |
+|----------------------------------------|----------------------------------------------------|
+| `void showModal(BuildContext context)` | Displays the dropdown menu as a modal bottom sheet |
 
 ## Guideline for contributors
 

@@ -28,38 +28,69 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   /// This is list of city which will pass to the drop down
-  final List<SelectedListItem> _listOfCities = [
-    SelectedListItem(
-      name: kTokyo,
-      value: "TYO",
+  final List<SelectedListItem<String>> _listOfCities = [
+    SelectedListItem<String>(data: kTokyo),
+    SelectedListItem<String>(data: kNewYork),
+    SelectedListItem<String>(data: kLondon),
+    SelectedListItem<String>(data: kParis),
+    SelectedListItem<String>(data: kMadrid),
+    SelectedListItem<String>(data: kDubai),
+    SelectedListItem<String>(data: kRome),
+    SelectedListItem<String>(data: kBarcelona),
+    SelectedListItem<String>(data: kCologne),
+    SelectedListItem<String>(data: kMonteCarlo),
+    SelectedListItem<String>(data: kPuebla),
+    SelectedListItem<String>(data: kFlorence),
+  ];
+
+  /// This is list of language with custom model which will pass to the drop down
+  final List<SelectedListItem<LanguageModel>> _listOfLanguages = [
+    SelectedListItem<LanguageModel>(
+      data: LanguageModel(name: kEnglish, code: kEn),
     ),
-    SelectedListItem(
-      name: kNewYork,
-      value: "NY",
+    SelectedListItem<LanguageModel>(
+      data: LanguageModel(name: kSpanish, code: kEs),
     ),
-    SelectedListItem(
-      name: kLondon,
-      value: "LDN",
+    SelectedListItem<LanguageModel>(
+      data: LanguageModel(name: kFrench, code: kFr),
     ),
-    SelectedListItem(name: kParis),
-    SelectedListItem(name: kMadrid),
-    SelectedListItem(name: kDubai),
-    SelectedListItem(name: kRome),
-    SelectedListItem(name: kBarcelona),
-    SelectedListItem(name: kCologne),
-    SelectedListItem(name: kMonteCarlo),
-    SelectedListItem(name: kPuebla),
-    SelectedListItem(name: kFlorence),
+    SelectedListItem<LanguageModel>(
+      data: LanguageModel(name: kGerman, code: kDe),
+    ),
+    SelectedListItem<LanguageModel>(
+      data: LanguageModel(name: kChinese, code: kZh),
+    ),
+    SelectedListItem<LanguageModel>(
+      data: LanguageModel(name: kHindi, code: kHi),
+    ),
+    SelectedListItem<LanguageModel>(
+      data: LanguageModel(name: kArabic, code: kAr),
+    ),
+    SelectedListItem<LanguageModel>(
+      data: LanguageModel(name: kRussian, code: kRu),
+    ),
+    SelectedListItem<LanguageModel>(
+      data: LanguageModel(name: kJapanese, code: kJa),
+    ),
+    SelectedListItem<LanguageModel>(
+      data: LanguageModel(name: kPortuguese, code: kPt),
+    ),
+    SelectedListItem<LanguageModel>(
+      data: LanguageModel(name: kItalian, code: kIt),
+    ),
+    SelectedListItem<LanguageModel>(
+      data: LanguageModel(name: kKorean, code: kKo),
+    ),
   ];
 
   /// This is register text field controllers
-  final TextEditingController _fullNameTextEditingController =
+  final TextEditingController _nameTextEditingController =
       TextEditingController();
   final TextEditingController _emailTextEditingController =
       TextEditingController();
-  final TextEditingController _phoneNumberTextEditingController =
-      TextEditingController();
   final TextEditingController _cityTextEditingController =
+      TextEditingController();
+  final TextEditingController _languageTextEditingController =
       TextEditingController();
   final TextEditingController _passwordTextEditingController =
       TextEditingController();
@@ -67,10 +98,10 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void dispose() {
     super.dispose();
-    _fullNameTextEditingController.dispose();
+    _nameTextEditingController.dispose();
     _emailTextEditingController.dispose();
-    _phoneNumberTextEditingController.dispose();
     _cityTextEditingController.dispose();
+    _languageTextEditingController.dispose();
     _passwordTextEditingController.dispose();
   }
 
@@ -79,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(12.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,35 +125,34 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               const SizedBox(height: 15.0),
               AppTextField(
-                textEditingController: _fullNameTextEditingController,
-                title: kFullName,
+                textEditingController: _nameTextEditingController,
+                title: kName,
                 hint: kEnterYourName,
-                isCitySelected: false,
               ),
               AppTextField(
                 textEditingController: _emailTextEditingController,
                 title: kEmail,
                 hint: kEnterYourEmail,
-                isCitySelected: false,
-              ),
-              AppTextField(
-                textEditingController: _phoneNumberTextEditingController,
-                title: kPhoneNumber,
-                hint: kEnterYourPhoneNumber,
-                isCitySelected: false,
               ),
               AppTextField(
                 textEditingController: _cityTextEditingController,
                 title: kCity,
                 hint: kChooseYourCity,
-                isCitySelected: true,
-                cities: _listOfCities,
+                isReadOnly: true,
+                onTextFieldTap: onCityTextFieldTap,
+              ),
+              AppTextField(
+                textEditingController: _languageTextEditingController,
+                title: kLanguage,
+                hint: kChooseYourLanguage,
+                isReadOnly: true,
+                onTextFieldTap: onLanguageTextFieldTap,
               ),
               AppTextField(
                 textEditingController: _passwordTextEditingController,
                 title: kPassword,
                 hint: kAddYourPassword,
-                isCitySelected: false,
+                isReadOnly: false,
               ),
               const SizedBox(height: 15.0),
               const AppElevatedButton(),
@@ -132,6 +162,79 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+
+  /// Handles the text field tap for the city
+  void onCityTextFieldTap() {
+    DropDownState<String>(
+      dropDown: DropDown<String>(
+        isDismissible: true,
+        bottomSheetTitle: const Text(
+          kCities,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20.0,
+          ),
+        ),
+        submitButtonText: 'Save',
+        clearButtonText: 'Clear',
+        data: _listOfCities,
+        onSelected: (selectedItems) {
+          List<String> list = [];
+          for (var item in selectedItems) {
+            list.add(item.data);
+          }
+          showSnackBar(list.toString());
+        },
+        enableMultipleSelection: true,
+        maxSelectedItems: 3,
+      ),
+    ).showModal(context);
+  }
+
+  /// Handles the text field tap for the language
+  void onLanguageTextFieldTap() {
+    DropDownState<LanguageModel>(
+      dropDown: DropDown<LanguageModel>(
+        isDismissible: true,
+        bottomSheetTitle: const Text(
+          kLanguages,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20.0,
+          ),
+        ),
+        submitButtonText: 'Save',
+        clearButtonText: 'Clear',
+        data: _listOfLanguages,
+        listItemBuilder: (index, dataItem) {
+          return Text(
+            '${dataItem.data.name} : ${dataItem.data.code}',
+          );
+        },
+        onSelected: (selectedItems) {
+          List<String> list = [];
+          for (var item in selectedItems) {
+            list.add('${item.data.name} : ${item.data.code}');
+          }
+          showSnackBar(list.toString());
+        },
+        searchDelegate: (query, dataItems) {
+          return dataItems
+              .where((item) =>
+                  item.data.name.toLowerCase().contains(query.toLowerCase()) ||
+                  item.data.code.toLowerCase().contains(query.toLowerCase()))
+              .toList();
+        },
+        enableMultipleSelection: true,
+        maxSelectedItems: 3,
+      ),
+    ).showModal(context);
+  }
+
+  void showSnackBar(String message) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
+  }
 }
 
 /// This is Common App text field class
@@ -139,15 +242,15 @@ class AppTextField extends StatefulWidget {
   final TextEditingController textEditingController;
   final String title;
   final String hint;
-  final bool isCitySelected;
-  final List<SelectedListItem>? cities;
+  final bool isReadOnly;
+  final VoidCallback? onTextFieldTap;
 
   const AppTextField({
     required this.textEditingController,
     required this.title,
     required this.hint,
-    required this.isCitySelected,
-    this.cities,
+    this.isReadOnly = false,
+    this.onTextFieldTap,
     super.key,
   });
 
@@ -166,11 +269,11 @@ class _AppTextFieldState extends State<AppTextField> {
         TextFormField(
           controller: widget.textEditingController,
           cursorColor: Colors.black,
-          readOnly: widget.isCitySelected,
-          onTap: widget.isCitySelected
+          readOnly: widget.isReadOnly,
+          onTap: widget.isReadOnly
               ? () {
                   FocusScope.of(context).unfocus();
-                  onTextFieldTap();
+                  widget.onTextFieldTap?.call();
                 }
               : null,
           decoration: InputDecoration(
@@ -197,41 +300,6 @@ class _AppTextFieldState extends State<AppTextField> {
         const SizedBox(height: 15.0),
       ],
     );
-  }
-
-  /// This is on text changed method which will display on city text field on changed
-  void onTextFieldTap() {
-    DropDownState(
-      dropDown: DropDown(
-        isDismissible: true,
-        bottomSheetTitle: const Text(
-          kCities,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20.0,
-          ),
-        ),
-        submitButtonText: 'Save',
-        clearButtonText: 'Clear',
-        data: widget.cities ?? [],
-        onSelected: (List<dynamic> selectedList) {
-          List<String> list = [];
-          for (var item in selectedList) {
-            if (item is SelectedListItem) {
-              list.add(item.name);
-            }
-          }
-          showSnackBar(list.toString());
-        },
-        enableMultipleSelection: true,
-        maxSelectedItems: 3,
-      ),
-    ).showModal(context);
-  }
-
-  void showSnackBar(String message) {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(message)));
   }
 }
 
@@ -261,4 +329,15 @@ class AppElevatedButton extends StatelessWidget {
       ),
     );
   }
+}
+
+/// This is custom model class which we will use in drop down
+class LanguageModel {
+  final String name;
+  final String code;
+
+  LanguageModel({
+    required this.name,
+    required this.code,
+  });
 }

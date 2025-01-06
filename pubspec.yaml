@@ -1,5 +1,5 @@
 name: drop_down_list
-description: A dropdown widget with rich customization options, supporting single or multiple selection, an integrated search feature in a bottom sheet.
+description: A customizable dropdown widget supporting single/multiple selection, integrated search in a bottom sheet, generic support for flexible, type-safe handling of custom data.
 repository: https://github.com/Mindinventory/drop_down_list
 issue_tracker: https://github.com/Mindinventory/drop_down_list/issues
 screenshots:
@@ -20,7 +20,7 @@ screenshots:
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0
+version: 2.0.0
 
 environment:
   sdk: ^3.2.0

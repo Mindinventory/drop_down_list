@@ -26,8 +26,8 @@
 <a href="https://pub.dev/packages/drop_down_list"><img src="https://img.shields.io/pub/v/drop_down_list?color=as&label=drop_down_list&logo=as1&logoColor=blue&style=social"></a>
 <a href="https://github.com/Mindinventory/drop_down_list"><img src="https://img.shields.io/github/stars/Mindinventory/drop_down_list?style=social" alt="MIT License"></a>
 
-A dropdown widget with rich customization options, supporting single or multiple selection, an
-integrated search feature in a bottom sheet.
+A customizable dropdown widget supporting single/multiple selection, integrated search in a bottom
+sheet, generic support for flexible, type-safe handling of custom data.
 
 # Preview
 
@@ -50,28 +50,17 @@ import 'package:drop_down_list/drop_down_list.dart';
 And add it in its most basic form like it:
 
 ```dart
-DropDownState(
-  dropDown: DropDown(
-    data: [
-      SelectedListItem(
-        name: 'Tokyo',
-        value: "TYO",
-      ),
-      SelectedListItem(
-        name: 'New York',
-        value: "NY",
-      ),
-      SelectedListItem(
-        name: 'London',
-        value: "LDN",
-      ),
+DropDownState<String>(
+  dropDown: DropDown<String>(
+    data: <SelectedListItem<String>>[
+      SelectedListItem<String>(data: 'Tokyo'),
+      SelectedListItem<String>(data: 'New York'),
+      SelectedListItem<String>(data: 'London'),
     ],
-    onSelected: (List<dynamic> selectedList) {
+    onSelected: (selectedItems) {
       List<String> list = [];
-      for (var item in selectedList) {
-        if (item is SelectedListItem) {
-          list.add(item.name);
-        }
+      for (var item in selectedItems) {
+        list.add(item.data);
       }
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -87,16 +76,16 @@ DropDownState(
 
 ## Required parameters of DropDown
 
-| Parameter                   | Description                                            |
-|-----------------------------|--------------------------------------------------------|
-| List<SelectedListItem> data | The list of data items to be displayed in the dropdown |
+| Parameter                      | Description                                                    |
+|--------------------------------|----------------------------------------------------------------|
+| List<SelectedListItem<T>> data | The list of generic data items to be displayed in the dropdown |
 
 ## Optional parameters of DropDown
 
 | Parameter                                | Description                                                                                                                                    |
 |------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------|
-| ItemSelectionCallBack? onSelected        | A callback function triggered when items are selected from the list                                                                            |
-| ListItemBuilder? listItemBuilder         | A function that takes an [index] as a parameter and returns a custom widget to display for the list item at that index                         |
+| ItemSelectionCallBack<T>? onSelected     | A callback function triggered when items are selected from the list                                                                            |
+| ListItemBuilder<T>? listItemBuilder      | A function that takes an [index] and [dataItem] as a parameter and returns a custom widget to display for the list item at that index          |
 | int? maxSelectedItems                    | The maximum number of items that can be selected when [enableMultipleSelection] is true                                                        |
 | VoidCallback? onMaxSelectionReached      | A callback function triggered when the maximum selection limit is reached                                                                      |
 | EdgeInsets? listViewPadding              | The padding applied to the `ListView` that contains the dropdown items                                                                         |
@@ -113,6 +102,7 @@ DropDownState(
 | EdgeInsets? selectAllTextButtonPadding   | The padding applied to the "select all" and "deselect all" TextButtons                                                                         |
 | Widget? selectAllTextButtonChild         | Defines a custom widget to display as the child of the selectAll text button when [enableMultipleSelection] and [isSelectAllVisible] is true   |
 | Widget? deSelectAllTextButtonChild       | Defines a custom widget to display as the child of the deSelectAll text button when [enableMultipleSelection] and [isSelectAllVisible] is true |
+| SearchDelegate<T>? searchDelegate        | A delegate used to configure the custom search functionality in the dropdown                                                                   |
 
 ## Optional parameters of DropDown with Default value
 
@@ -141,9 +131,9 @@ DropDownState(
 
 ## Required parameters of DropDownState
 
-| Parameter         | Description                                                                                                          |
-|-------------------|----------------------------------------------------------------------------------------------------------------------|
-| DropDown dropDown | The `DropDown` configuration object that defines the behavior, appearance, and other properties of the dropdown menu |
+| Parameter            | Description                                                                                                          |
+|----------------------|----------------------------------------------------------------------------------------------------------------------|
+| DropDown<T> dropDown | The `DropDown` configuration object that defines the behavior, appearance, and other properties of the dropdown menu |
 
 ## Optional parameters of DropDownState
 
@@ -159,20 +149,20 @@ DropDownState(
 
 ## Guideline for contributors
 
-* Contribution towards our repository is always welcome, we request contributors to create a pull
-  request for development.
+* Contributions to our repository are always welcome! We encourage contributors to submit pull
+  requests for development and improvements.
 
-## Guideline to report an issue/feature request
+## Guideline for Reporting an Issue or Feature Request
 
-It would be great for us if the reporter can share the below things to understand the root cause of
-the issue.
+To help us better understand and resolve the issue, please include the following details when
+reporting:
 
 * Library version
 * Code snippet
-* Logs if applicable
-* Device specification like (Manufacturer, OS version, etc)
-* Screenshot/video with steps to reproduce the issue
-* Library used
+* Logs (if applicable)
+* Device specifications (e.g., manufacturer, OS version)
+* Screenshot or video with steps to reproduce the issue
+* Any other relevant libraries used
 
 ## LICENSE!
 

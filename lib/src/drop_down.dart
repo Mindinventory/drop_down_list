@@ -4,13 +4,20 @@ import 'package:flutter/material.dart';
 import 'search_text_field.dart';
 
 /// A callback function that is invoked when items are selected
-typedef ItemSelectionCallBack = void Function(
-  List<SelectedListItem> selectedItems,
+typedef ItemSelectionCallBack<T> = void Function(
+  List<SelectedListItem<T>> selectedItems,
 );
 
 /// A function type definition for building a widget for a specific list item
-typedef ListItemBuilder = Widget Function(
+typedef ListItemBuilder<T> = Widget Function(
   int index,
+  SelectedListItem<T> dataItem,
+);
+
+/// A function type definition for searching through a list of items based on the user's query
+typedef SearchDelegate<T> = List<SelectedListItem<T>> Function(
+  String query,
+  List<SelectedListItem<T>> dataItems,
 );
 
 /// A function type definition for handling notifications from a draggable bottom sheet
@@ -18,22 +25,22 @@ typedef BottomSheetListener = bool Function(
   DraggableScrollableNotification draggableScrollableNotification,
 );
 
-/// A customizable dropdown widget with support for single and multiple selections,
+/// A generic and customizable dropdown widget with support for single and multiple selections,
 /// a searchable list, and advanced configuration options
 ///
 /// The `DropDown` widget provides a flexible way to display a list of items
 /// in a bottom sheet with optional features such as search, select all, and
 /// multiple selection
-class DropDown {
-  /// The list of data items to be displayed in the dropdown
-  final List<SelectedListItem> data;
+class DropDown<T> {
+  /// The list of generic data items to be displayed in the dropdown
+  final List<SelectedListItem<T>> data;
 
   /// A callback function triggered when items are selected from the list
-  final ItemSelectionCallBack? onSelected;
+  final ItemSelectionCallBack<T>? onSelected;
 
-  /// A function that takes an [index] as a parameter and returns a custom widget
+  /// A function that takes an [index] and [dataItem] as a parameter and returns a custom widget
   /// to display for the list item at that index
-  final ListItemBuilder? listItemBuilder;
+  final ListItemBuilder<T>? listItemBuilder;
 
   /// Enables single or multiple selection for the drop down list items
   /// Set to `true` to allow multiple items to be selected at once
@@ -252,6 +259,9 @@ class DropDown {
   /// Default Value: [Deselect All]
   final String deSelectAllButtonText;
 
+  /// A delegate used to configure the custom search functionality in the dropdown
+  final SearchDelegate<T>? searchDelegate;
+
   DropDown({
     Key? key,
     required this.data,
@@ -297,15 +307,16 @@ class DropDown {
     this.selectAllButtonText = 'Select All',
     this.deSelectAllTextButtonChild,
     this.deSelectAllButtonText = 'Deselect All',
+    this.searchDelegate,
   });
 }
 
 /// Manages the state and behavior of a dropdown
 /// This includes configuring and displaying a modal bottom sheet containing the dropdown items
-class DropDownState {
+class DropDownState<T> {
   /// The `DropDown` configuration object that defines the behavior, appearance,
   /// and other properties of the dropdown menu
-  final DropDown dropDown;
+  final DropDown<T> dropDown;
 
   /// The shape of the bottom sheet
   ///
@@ -340,7 +351,7 @@ class DropDownState {
       builder: (context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
-            return MainBody(dropDown: dropDown);
+            return MainBody<T>(dropDown: dropDown);
           },
         );
       },
@@ -349,10 +360,10 @@ class DropDownState {
 }
 
 /// This is main class to display the bottom sheet body
-class MainBody extends StatefulWidget {
+class MainBody<T> extends StatefulWidget {
   /// The `DropDown` configuration object that defines the behavior, appearance,
   /// and other properties of the dropdown menu
-  final DropDown dropDown;
+  final DropDown<T> dropDown;
 
   const MainBody({
     required this.dropDown,
@@ -360,12 +371,12 @@ class MainBody extends StatefulWidget {
   });
 
   @override
-  State<MainBody> createState() => _MainBodyState();
+  State<MainBody<T>> createState() => _MainBodyState<T>();
 }
 
-class _MainBodyState extends State<MainBody> {
+class _MainBodyState<T> extends State<MainBody<T>> {
   /// This list will set when the list of data is not available
-  List<SelectedListItem> mainList = [];
+  List<SelectedListItem<T>> mainList = [];
 
   @override
   void initState() {
@@ -513,9 +524,10 @@ class _MainBodyState extends State<MainBody> {
                               _onUnFocusKeyboardAndPop();
                             }
                           },
-                          title: widget.dropDown.listItemBuilder?.call(index) ??
+                          title: widget.dropDown.listItemBuilder
+                                  ?.call(index, mainList[index]) ??
                               Text(
-                                mainList[index].name,
+                                mainList[index].data.toString(),
                               ),
                           trailing: widget.dropDown.enableMultipleSelection
                               ? isSelected
@@ -553,15 +565,9 @@ class _MainBodyState extends State<MainBody> {
 
   /// Handle the submit button pressed
   void onSubmitButtonPressed() {
-    List<SelectedListItem> selectedList =
+    List<SelectedListItem<T>> selectedList =
         widget.dropDown.data.where((element) => element.isSelected).toList();
-    List<SelectedListItem> selectedNameList = [];
-
-    for (var element in selectedList) {
-      selectedNameList.add(element);
-    }
-
-    widget.dropDown.onSelected?.call(selectedNameList);
+    widget.dropDown.onSelected?.call(selectedList);
     _onUnFocusKeyboardAndPop();
   }
 
@@ -575,10 +581,15 @@ class _MainBodyState extends State<MainBody> {
 
   /// This helps when search enabled & show the filtered data in list.
   void _buildSearchList(String userSearchTerm) {
-    final results = widget.dropDown.data
-        .where((element) =>
-            element.name.toLowerCase().contains(userSearchTerm.toLowerCase()))
-        .toList();
+    final results = widget.dropDown.searchDelegate
+            ?.call(userSearchTerm, widget.dropDown.data) ??
+        widget.dropDown.data
+            .where((element) => element.data
+                .toString()
+                .toLowerCase()
+                .contains(userSearchTerm.toLowerCase()))
+            .toList();
+
     if (userSearchTerm.isEmpty) {
       mainList = widget.dropDown.data;
     } else {

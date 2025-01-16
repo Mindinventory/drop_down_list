@@ -7,8 +7,11 @@ class SelectedListItem<T> {
   /// Tha data of the item
   final T data;
 
+  final String description;
+
   SelectedListItem({
     required this.data,
+    this.description = "",
     this.isSelected = false,
   });
 }

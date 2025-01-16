@@ -526,8 +526,21 @@ class _MainBodyState<T> extends State<MainBody<T>> {
                           },
                           title: widget.dropDown.listItemBuilder
                                   ?.call(index, mainList[index]) ??
-                              Text(
-                                mainList[index].data.toString(),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    mainList[index].data.toString(),
+                                  ),
+                                  if (mainList[index].description.isNotEmpty)
+                                    Text(
+                                      mainList[index].description,
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                ],
                               ),
                           trailing: widget.dropDown.enableMultipleSelection
                               ? isSelected
@@ -579,21 +592,25 @@ class _MainBodyState<T> extends State<MainBody<T>> {
     setState(() {});
   }
 
-  /// This helps when search enabled & show the filtered data in list.
+  /// This helps when search enabled & show the filtered data or description in list.
   void _buildSearchList(String userSearchTerm) {
     final results = widget.dropDown.searchDelegate
             ?.call(userSearchTerm, widget.dropDown.data) ??
-        widget.dropDown.data
-            .where((element) => element.data
-                .toString()
-                .toLowerCase()
-                .contains(userSearchTerm.toLowerCase()))
-            .toList();
+        widget.dropDown.data.where((element) {
+          final dataContains = element.data
+              .toString()
+              .toLowerCase()
+              .contains(userSearchTerm.toLowerCase());
+          final descriptionContains = element.description
+              .toLowerCase()
+              .contains(userSearchTerm.toLowerCase());
+          return dataContains || descriptionContains;
+        });
 
     if (userSearchTerm.isEmpty) {
       mainList = widget.dropDown.data;
     } else {
-      mainList = results;
+      mainList = results.toList();
     }
     setState(() {});
   }

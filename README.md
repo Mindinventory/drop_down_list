@@ -84,6 +84,7 @@ DropDownState<String>(
 
 | Parameter                                  | Description                                                                                                                                        |
 |--------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `List<SelectedListItem<T>> description` | The description to be displayed under the data items in the dropdown |
 | `ItemSelectionCallBack<T>? onSelected`     | A callback function triggered when items are selected from the list                                                                                |
 | `ListItemBuilder<T>? listItemBuilder`      | A function that takes an `[index]` and `[dataItem]` as a parameter and returns a custom widget to display for the list item at that index          |
 | `int? maxSelectedItems`                    | The maximum number of items that can be selected when `[enableMultipleSelection]` is true                                                          |

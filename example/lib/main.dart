@@ -164,8 +164,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   /// Handles the text field tap for the city
-  void onCityTextFieldTap() {
-    DropDownState<String>(
+  void onCityTextFieldTap() async {
+    await DropDownState<String>(
       dropDown: DropDown<String>(
         isDismissible: true,
         bottomSheetTitle: const Text(
@@ -192,8 +192,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   /// Handles the text field tap for the language
-  void onLanguageTextFieldTap() {
-    DropDownState<LanguageModel>(
+  void onLanguageTextFieldTap() async {
+    await DropDownState<LanguageModel>(
       dropDown: DropDown<LanguageModel>(
         isDismissible: true,
         bottomSheetTitle: const Text(

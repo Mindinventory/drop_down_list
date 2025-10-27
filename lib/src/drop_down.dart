@@ -334,8 +334,8 @@ class DropDownState<T> {
   /// [context] is the BuildContext used to display the modal bottom sheet
   ///
   /// This method uses the configurations defined in the `dropDown` object
-  void showModal(BuildContext context) {
-    showModalBottomSheet(
+  Future showModal(BuildContext context) async {
+    await showModalBottomSheet(
       useRootNavigator: dropDown.useRootNavigator,
       isScrollControlled: true,
       enableDrag: dropDown.enableDrag,
@@ -492,60 +492,66 @@ class _MainBodyState<T> extends State<MainBody<T>> {
 
                 /// Listview (list of data with check box for multiple selection & on tile tap single selection)
                 Flexible(
-                  child: ListView.separated(
-                    controller: scrollController,
-                    itemCount: mainList.length,
-                    padding: widget.dropDown.listViewPadding ?? EdgeInsets.zero,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      bool isSelected = mainList[index].isSelected;
-                      return Material(
-                        color: Colors.transparent,
-                        clipBehavior: Clip.hardEdge,
-                        child: ListTile(
-                          onTap: () {
-                            if (widget.dropDown.enableMultipleSelection) {
-                              if (!isSelected &&
-                                  widget.dropDown.maxSelectedItems != null) {
-                                if (mainList
-                                        .where((e) => e.isSelected)
-                                        .length >=
-                                    widget.dropDown.maxSelectedItems!) {
-                                  widget.dropDown.onMaxSelectionReached?.call();
-                                  return;
+                  child: AnimatedPadding(
+                    duration: const Duration(milliseconds: 100),
+                    padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom,
+                    ),
+                    child: ListView.separated(
+                      controller: scrollController,
+                      itemCount: mainList.length,
+                      padding: widget.dropDown.listViewPadding ?? EdgeInsets.zero,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        bool isSelected = mainList[index].isSelected;
+                        return Material(
+                          color: Colors.transparent,
+                          clipBehavior: Clip.hardEdge,
+                          child: ListTile(
+                            onTap: () {
+                              if (widget.dropDown.enableMultipleSelection) {
+                                if (!isSelected &&
+                                    widget.dropDown.maxSelectedItems != null) {
+                                  if (mainList
+                                          .where((e) => e.isSelected)
+                                          .length >=
+                                      widget.dropDown.maxSelectedItems!) {
+                                    widget.dropDown.onMaxSelectionReached?.call();
+                                    return;
+                                  }
                                 }
+                                setState(() {
+                                  mainList[index].isSelected = !isSelected;
+                                });
+                              } else {
+                                widget.dropDown.onSelected
+                                    ?.call([mainList[index]]);
+                                _onUnFocusKeyboardAndPop();
                               }
-                              setState(() {
-                                mainList[index].isSelected = !isSelected;
-                              });
-                            } else {
-                              widget.dropDown.onSelected
-                                  ?.call([mainList[index]]);
-                              _onUnFocusKeyboardAndPop();
-                            }
-                          },
-                          title: widget.dropDown.listItemBuilder
-                                  ?.call(index, mainList[index]) ??
-                              Text(
-                                mainList[index].data.toString(),
-                              ),
-                          trailing: widget.dropDown.enableMultipleSelection
-                              ? isSelected
-                                  ? widget
-                                      .dropDown.selectedListTileTrailingWidget
-                                  : widget
-                                      .dropDown.deSelectedListTileTrailingWidget
-                              : const SizedBox.shrink(),
-                          contentPadding:
-                              widget.dropDown.listTileContentPadding ??
-                                  const EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                  ),
-                          tileColor: widget.dropDown.listTileColor,
-                        ),
-                      );
-                    },
-                    separatorBuilder: (context, index) => getSeparatorWidget,
+                            },
+                            title: widget.dropDown.listItemBuilder
+                                    ?.call(index, mainList[index]) ??
+                                Text(
+                                  mainList[index].data.toString(),
+                                ),
+                            trailing: widget.dropDown.enableMultipleSelection
+                                ? isSelected
+                                    ? widget
+                                        .dropDown.selectedListTileTrailingWidget
+                                    : widget
+                                        .dropDown.deSelectedListTileTrailingWidget
+                                : const SizedBox.shrink(),
+                            contentPadding:
+                                widget.dropDown.listTileContentPadding ??
+                                    const EdgeInsets.symmetric(
+                                      horizontal: 20,
+                                    ),
+                            tileColor: widget.dropDown.listTileColor,
+                          ),
+                        );
+                      },
+                      separatorBuilder: (context, index) => getSeparatorWidget,
+                    ),
                   ),
                 ),
               ],

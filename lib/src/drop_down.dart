@@ -4,26 +4,16 @@ import 'package:flutter/material.dart';
 import 'search_text_field.dart';
 
 /// A callback function that is invoked when items are selected
-typedef ItemSelectionCallBack<T> = void Function(
-  List<SelectedListItem<T>> selectedItems,
-);
+typedef ItemSelectionCallBack<T> = void Function(List<SelectedListItem<T>> selectedItems);
 
 /// A function type definition for building a widget for a specific list item
-typedef ListItemBuilder<T> = Widget Function(
-  int index,
-  SelectedListItem<T> dataItem,
-);
+typedef ListItemBuilder<T> = Widget Function(int index, SelectedListItem<T> dataItem);
 
 /// A function type definition for searching through a list of items based on the user's query
-typedef SearchDelegate<T> = List<SelectedListItem<T>> Function(
-  String query,
-  List<SelectedListItem<T>> dataItems,
-);
+typedef SearchDelegate<T> = List<SelectedListItem<T>> Function(String query, List<SelectedListItem<T>> dataItems);
 
 /// A function type definition for handling notifications from a draggable bottom sheet
-typedef BottomSheetListener = bool Function(
-  DraggableScrollableNotification draggableScrollableNotification,
-);
+typedef BottomSheetListener = bool Function(DraggableScrollableNotification draggableScrollableNotification);
 
 /// A generic and customizable dropdown widget with support for single and multiple selections,
 /// a searchable list, and advanced configuration options
@@ -156,13 +146,6 @@ class DropDown<T> {
   /// If not provided, no title will be displayed
   final Widget? bottomSheetTitle;
 
-  /// Defines a custom widget to display as the child of the submit button
-  /// when [enableMultipleSelection] is true
-  ///
-  /// This is typically used with an [ElevatedButton]
-  /// If not provided, a default button child will be used
-  final Widget? submitButtonChild;
-
   /// Specifies the text displayed on the submit button when [enableMultipleSelection] is true
   ///
   /// This is only used if a custom [submitButtonChild] widget is not provided
@@ -170,12 +153,15 @@ class DropDown<T> {
   /// Default Value: [Submit]
   final String submitButtonText;
 
-  /// Defines a custom widget to display as the child of the clear button
-  /// when [enableMultipleSelection] is true
-  ///
+  /// Specifies the button style of the submit button when [enableMultipleSelection] is true
   /// This is typically used with an [ElevatedButton]
-  /// If not provided, a default button child will be used
-  final Widget? clearButtonChild;
+  /// If not provided, a default button style will be used
+  final ButtonStyle? submitButtonStyle;
+
+  /// Specifies the button style of the clear button when [enableMultipleSelection] is true
+  /// This is typically used with an [ElevatedButton]
+  /// If not provided, a default button style will be used
+  final ButtonStyle? clearButtonStyle;
 
   /// Specifies the text displayed on the clear button when [enableMultipleSelection] is true
   ///
@@ -274,12 +260,8 @@ class DropDown<T> {
     this.listViewSeparatorWidget,
     this.listTileContentPadding,
     this.listTileColor = Colors.transparent,
-    this.selectedListTileTrailingWidget = const Icon(
-      Icons.check_box,
-    ),
-    this.deSelectedListTileTrailingWidget = const Icon(
-      Icons.check_box_outline_blank,
-    ),
+    this.selectedListTileTrailingWidget = const Icon(Icons.check_box),
+    this.deSelectedListTileTrailingWidget = const Icon(Icons.check_box_outline_blank),
     this.useRootNavigator = false,
     this.enableDrag = true,
     this.isDismissible = true,
@@ -291,9 +273,9 @@ class DropDown<T> {
     this.dropDownPadding,
     this.dropDownHeaderPadding,
     this.bottomSheetTitle,
-    this.submitButtonChild,
+    this.submitButtonStyle,
     this.submitButtonText = 'Submit',
-    this.clearButtonChild,
+    this.clearButtonStyle,
     this.clearButtonText = 'Clear',
     this.isSearchVisible = true,
     this.searchTextFieldPadding,
@@ -324,10 +306,7 @@ class DropDownState<T> {
   /// [RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(15.0)))]
   final ShapeBorder? shapeBorder;
 
-  DropDownState({
-    required this.dropDown,
-    this.shapeBorder,
-  });
+  DropDownState({required this.dropDown, this.shapeBorder});
 
   /// Displays the dropdown menu as a modal bottom sheet
   ///
@@ -340,12 +319,8 @@ class DropDownState<T> {
       isScrollControlled: true,
       enableDrag: dropDown.enableDrag,
       isDismissible: dropDown.isDismissible,
-      shape: shapeBorder ??
-          const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(15.0),
-            ),
-          ),
+      shape:
+          shapeBorder ?? const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(15.0))),
       context: context,
       clipBehavior: Clip.hardEdge,
       builder: (context) {
@@ -365,10 +340,7 @@ class MainBody<T> extends StatefulWidget {
   /// and other properties of the dropdown menu
   final DropDown<T> dropDown;
 
-  const MainBody({
-    required this.dropDown,
-    super.key,
-  });
+  const MainBody({required this.dropDown, super.key});
 
   @override
   State<MainBody<T>> createState() => _MainBodyState<T>();
@@ -398,28 +370,20 @@ class _MainBodyState<T> extends State<MainBody<T>> {
         builder: (BuildContext context, ScrollController scrollController) {
           return Container(
             color: widget.dropDown.dropDownBackgroundColor,
-            padding: widget.dropDown.dropDownPadding ??
-                EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom,
-                ),
+            padding: widget.dropDown.dropDownPadding ?? EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
-                  padding: widget.dropDown.dropDownHeaderPadding ??
-                      const EdgeInsets.only(
-                        left: 20.0,
-                        right: 20.0,
-                        top: 10.0,
-                      ),
+                  padding:
+                      widget.dropDown.dropDownHeaderPadding ??
+                      const EdgeInsets.only(left: 20.0, right: 20.0, top: 10.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       /// Bottom sheet title text
                       (widget.dropDown.bottomSheetTitle != null)
-                          ? Expanded(
-                              child: widget.dropDown.bottomSheetTitle!,
-                            )
+                          ? Expanded(child: widget.dropDown.bottomSheetTitle!)
                           : const Spacer(),
 
                       /// Submit Elevated Button
@@ -428,18 +392,24 @@ class _MainBodyState<T> extends State<MainBody<T>> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             ElevatedButton(
+                              style: widget.dropDown.submitButtonStyle,
                               onPressed: onSubmitButtonPressed,
-                              child: widget.dropDown.submitButtonChild ??
-                                  Text(widget.dropDown.submitButtonText),
+                              child: Text(
+                                widget.dropDown.submitButtonText,
+                                style: widget.dropDown.submitButtonStyle?.textStyle?.resolve({}),
+                              ),
                             ),
 
                             /// Clear Elevated Button
                             Padding(
                               padding: const EdgeInsets.only(left: 8.0),
                               child: ElevatedButton(
+                                style: widget.dropDown.clearButtonStyle,
                                 onPressed: onClearButtonPressed,
-                                child: widget.dropDown.clearButtonChild ??
-                                    Text(widget.dropDown.clearButtonText),
+                                child: Text(
+                                  widget.dropDown.clearButtonText,
+                                  style: widget.dropDown.clearButtonStyle?.textStyle?.resolve({}),
+                                ),
                               ),
                             ),
                           ],
@@ -451,12 +421,11 @@ class _MainBodyState<T> extends State<MainBody<T>> {
                 /// A [TextField] that displays a list of suggestions as the user types with clear button.
                 if (widget.dropDown.isSearchVisible)
                   Padding(
-                    padding: widget.dropDown.searchTextFieldPadding ??
-                        const EdgeInsets.symmetric(
-                          horizontal: 20.0,
-                          vertical: 10.0,
-                        ),
-                    child: widget.dropDown.searchWidget ??
+                    padding:
+                        widget.dropDown.searchTextFieldPadding ??
+                        const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                    child:
+                        widget.dropDown.searchWidget ??
                         SearchTextField(
                           dropDown: widget.dropDown,
                           onTextChanged: _buildSearchList,
@@ -473,8 +442,7 @@ class _MainBodyState<T> extends State<MainBody<T>> {
                   Align(
                     alignment: Alignment.centerRight,
                     child: Padding(
-                      padding: widget.dropDown.selectAllTextButtonPadding ??
-                          EdgeInsets.zero,
+                      padding: widget.dropDown.selectAllTextButtonPadding ?? EdgeInsets.zero,
                       child: TextButton(
                         onPressed: () => setState(() {
                           for (var element in mainList) {
@@ -482,10 +450,8 @@ class _MainBodyState<T> extends State<MainBody<T>> {
                           }
                         }),
                         child: isSelectAll
-                            ? widget.dropDown.deSelectAllTextButtonChild ??
-                                Text(widget.dropDown.deSelectAllButtonText)
-                            : widget.dropDown.selectAllTextButtonChild ??
-                                Text(widget.dropDown.selectAllButtonText),
+                            ? widget.dropDown.deSelectAllTextButtonChild ?? Text(widget.dropDown.deSelectAllButtonText)
+                            : widget.dropDown.selectAllTextButtonChild ?? Text(widget.dropDown.selectAllButtonText),
                       ),
                     ),
                   ),
@@ -494,9 +460,7 @@ class _MainBodyState<T> extends State<MainBody<T>> {
                 Flexible(
                   child: AnimatedPadding(
                     duration: const Duration(milliseconds: 100),
-                    padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).viewInsets.bottom,
-                    ),
+                    padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                     child: ListView.separated(
                       controller: scrollController,
                       itemCount: mainList.length,
@@ -510,12 +474,8 @@ class _MainBodyState<T> extends State<MainBody<T>> {
                           child: ListTile(
                             onTap: () {
                               if (widget.dropDown.enableMultipleSelection) {
-                                if (!isSelected &&
-                                    widget.dropDown.maxSelectedItems != null) {
-                                  if (mainList
-                                          .where((e) => e.isSelected)
-                                          .length >=
-                                      widget.dropDown.maxSelectedItems!) {
+                                if (!isSelected && widget.dropDown.maxSelectedItems != null) {
+                                  if (mainList.where((e) => e.isSelected).length >= widget.dropDown.maxSelectedItems!) {
                                     widget.dropDown.onMaxSelectionReached?.call();
                                     return;
                                   }
@@ -524,28 +484,20 @@ class _MainBodyState<T> extends State<MainBody<T>> {
                                   mainList[index].isSelected = !isSelected;
                                 });
                               } else {
-                                widget.dropDown.onSelected
-                                    ?.call([mainList[index]]);
+                                widget.dropDown.onSelected?.call([mainList[index]]);
                                 _onUnFocusKeyboardAndPop();
                               }
                             },
-                            title: widget.dropDown.listItemBuilder
-                                    ?.call(index, mainList[index]) ??
-                                Text(
-                                  mainList[index].data.toString(),
-                                ),
+                            title:
+                                widget.dropDown.listItemBuilder?.call(index, mainList[index]) ??
+                                Text(mainList[index].data.toString()),
                             trailing: widget.dropDown.enableMultipleSelection
                                 ? isSelected
-                                    ? widget
-                                        .dropDown.selectedListTileTrailingWidget
-                                    : widget
-                                        .dropDown.deSelectedListTileTrailingWidget
+                                      ? widget.dropDown.selectedListTileTrailingWidget
+                                      : widget.dropDown.deSelectedListTileTrailingWidget
                                 : const SizedBox.shrink(),
                             contentPadding:
-                                widget.dropDown.listTileContentPadding ??
-                                    const EdgeInsets.symmetric(
-                                      horizontal: 20,
-                                    ),
+                                widget.dropDown.listTileContentPadding ?? const EdgeInsets.symmetric(horizontal: 20),
                             tileColor: widget.dropDown.listTileColor,
                           ),
                         );
@@ -563,16 +515,11 @@ class _MainBodyState<T> extends State<MainBody<T>> {
   }
 
   Widget get getSeparatorWidget =>
-      widget.dropDown.listViewSeparatorWidget ??
-      const Divider(
-        color: Colors.black12,
-        height: 0,
-      );
+      widget.dropDown.listViewSeparatorWidget ?? const Divider(color: Colors.black12, height: 0);
 
   /// Handle the submit button pressed
   void onSubmitButtonPressed() {
-    List<SelectedListItem<T>> selectedList =
-        widget.dropDown.data.where((element) => element.isSelected).toList();
+    List<SelectedListItem<T>> selectedList = widget.dropDown.data.where((element) => element.isSelected).toList();
     widget.dropDown.onSelected?.call(selectedList);
     _onUnFocusKeyboardAndPop();
   }
@@ -587,13 +534,10 @@ class _MainBodyState<T> extends State<MainBody<T>> {
 
   /// This helps when search enabled & show the filtered data in list.
   void _buildSearchList(String userSearchTerm) {
-    final results = widget.dropDown.searchDelegate
-            ?.call(userSearchTerm, widget.dropDown.data) ??
+    final results =
+        widget.dropDown.searchDelegate?.call(userSearchTerm, widget.dropDown.data) ??
         widget.dropDown.data
-            .where((element) => element.data
-                .toString()
-                .toLowerCase()
-                .contains(userSearchTerm.toLowerCase()))
+            .where((element) => element.data.toString().toLowerCase().contains(userSearchTerm.toLowerCase()))
             .toList();
 
     if (userSearchTerm.isEmpty) {

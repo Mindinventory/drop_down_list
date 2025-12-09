@@ -95,8 +95,8 @@ DropDownState<String>(
 | `EdgeInsets? dropDownPadding`              | The padding applied to the dropdown container                                                                                                      |
 | `EdgeInsets? dropDownHeaderPadding`        | The padding applied to the dropdown header                                                                                                         |
 | `Widget? bottomSheetTitle`                 | The widget displayed as the title of the bottom sheet                                                                                              |
-| `Widget? submitButtonChild`                | Defines a custom widget to display as the child of the submit button when `[enableMultipleSelection]` is true                                      |
-| `Widget? clearButtonChild`                 | Defines a custom widget to display as the child of the clear button when `[enableMultipleSelection]` is true                                       |
+| `ButtonStyle? submitButtonStyle`           | Defines a button style to display as the style of the submit button when `[enableMultipleSelection]` is true                                       |
+| `ButtonStyle? clearButtonStyle`            | Defines a button style to display as the style of the clear button when `[enableMultipleSelection]` is true                                        |
 | `EdgeInsets? searchTextFieldPadding`       | The padding applied to the search text field                                                                                                       |
 | `TextFormField? searchWidget`              | Defines a custom widget to display the text box for searching                                                                                      |
 | `EdgeInsets? selectAllTextButtonPadding`   | The padding applied to the "select all" and "deselect all" TextButtons                                                                             |

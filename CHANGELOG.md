@@ -1,10 +1,20 @@
+## 2.1.1
+
+* Fixed issues.
+    - [#41](https://github.com/Mindinventory/drop_down_list/issues/39) - Issue with restyling
+      submitButtonChild and clearButtonChild. Added `submitButtonStyle`, `clearButtonStyle` and
+      removed `submitButtonChild`, `clearButtonChild`
+* Updated the library details.
+
 ## 2.1.0
 
 * Fixed issues.
-    - [#39](https://github.com/Mindinventory/drop_down_list/issues/39) - `showModal` currently returns `void`. Instead, it should return a `Future`
+    - [#39](https://github.com/Mindinventory/drop_down_list/issues/39) - `showModal` currently
+      returns `void`. Instead, it should return a `Future`
       indicating when the dropdown has been closed - either due to selection,
       external tap, or any other method..
-    - [#40](https://github.com/Mindinventory/drop_down_list/issues/40) - When the keyboard is shown, the bottom part of the list will be behind the
+    - [#40](https://github.com/Mindinventory/drop_down_list/issues/40) - When the keyboard is shown,
+      the bottom part of the list will be behind the
       keyboard. However, dropDownPadding cannot be adjusted after the modal has been shown.
 * Updated the library details.
 

@@ -176,6 +176,10 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         submitButtonText: 'Save',
+        submitButtonStyle: ElevatedButton.styleFrom(
+          backgroundColor: const Color.fromRGBO(70, 76, 222, 1),
+          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
         clearButtonText: 'Clear',
         data: _listOfCities,
         onSelected: (selectedItems) {
